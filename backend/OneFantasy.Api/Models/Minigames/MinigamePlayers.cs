@@ -15,8 +15,8 @@ namespace OneFantasy.Api.Models.Minigames
             Type = type;
         }
 
-        public List<OptionPlayer> Options { get; }
-        public MinigamePlayersType Type { get;  }
+        public List<OptionPlayer> Options { get; set; }
+        public MinigamePlayersType Type { get; set; }
 
         public enum MinigamePlayersType
         {

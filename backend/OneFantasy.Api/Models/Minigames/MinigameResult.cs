@@ -11,13 +11,21 @@ namespace OneFantasy.Api.Models.Minigames
         public MinigameResult(OptionTeam homeVictory, int drawPrice, OptionTeam visitingVictory) : base()
         {
             HomeVictory = homeVictory;
+            HomeVictoryId = homeVictory.Id;
             Draw = new Option(drawPrice);
+            DrawId = Draw.Id;
             VisitingVictory = visitingVictory;
+            VisitingVictoryId = visitingVictory.Id;
         }
 
-        public OptionTeam HomeVictory { get; }
-        public Option Draw { get; }
-        public OptionTeam VisitingVictory { get; }
+        public int DrawId { get; set; }
+        public Option Draw { get; set; } = null!;
+
+        public int HomeVictoryId { get; set; }
+        public OptionTeam HomeVictory { get; set; } = null!;
+
+        public int VisitingVictoryId { get; set; }
+        public OptionTeam VisitingVictory { get; set; } = null!;
 
 
     }

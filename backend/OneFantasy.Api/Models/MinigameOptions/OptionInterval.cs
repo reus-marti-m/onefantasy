@@ -13,8 +13,8 @@ namespace OneFantasy.Api.Models.MinigameOptions
             Max = max;
         }
 
-        public int? Min { get; }
-        public int? Max { get; }
+        public int? Min { get; set; }
+        public int? Max { get; set; }
 
         public static OptionInterval FromMin(MinigameMatch minigameMatch, int price, int min) => new(price, min, null);
 

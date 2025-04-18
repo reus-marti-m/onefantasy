@@ -12,6 +12,7 @@ namespace OneFantasy.Api.Models.MinigameOptions
             Price = price;
         }
 
+        public int MinigameId { get; set; }
         public Minigame Minigame { get; set; } = null!;
         public int Id { get; set; }
         public int Price { get; set; }

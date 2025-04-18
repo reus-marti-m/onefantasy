@@ -14,7 +14,7 @@ namespace OneFantasy.Api.Models.Minigames
             Options = options;
         }
 
-        public List<OptionScore> Options { get; }
+        public List<OptionScore> Options { get; set; }
 
     }
 }
