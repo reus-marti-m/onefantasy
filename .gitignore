@@ -2,7 +2,22 @@
 bin/
 obj/
 *.db
-# Node/Angular
+
+# Visual Studio (IDE)
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Node / Angular
 node_modules/
 dist/
 .angular/
+
+# VS Code (editor)
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
