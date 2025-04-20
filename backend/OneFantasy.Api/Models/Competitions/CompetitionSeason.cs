@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using OneFantasy.Api.Models.Competitions;
 using OneFantasy.Api.Models.Participations;
 
-namespace OneFantasy.Api.Models.Seasons
+namespace OneFantasy.Api.Models.Competitions
 {
     public class CompetitionSeason
     {

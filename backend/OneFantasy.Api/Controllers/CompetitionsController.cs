@@ -8,7 +8,6 @@ namespace OneFantasy.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = "RequireAdmin")]
     public class CompetitionsController : ControllerBase
     {
 
@@ -16,19 +15,29 @@ namespace OneFantasy.Api.Controllers
         public CompetitionsController(ICompetitionService svc) => _svc = svc;
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateCompetitionDto dto)
+        [Authorize(Policy = "RequireAdmin")]
+        public async Task<IActionResult> Post([FromBody] CompetitionDto dto)
         {
             var comp = await _svc.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = comp.Id }, comp);
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Put(int id, [FromBody] CompetitionDto dto)
         {
-            var comp = await _svc.GetByIdAsync(id);
-            if (comp is null) return NotFound();
-            return Ok(comp);
+            var updated = await _svc.UpdateAsync(id, dto);
+            return Ok(updated);
         }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id) => Ok(
+            await _svc.GetByIdAsync(id)
+        );
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll() => Ok(
+            await _svc.GetAllAsync()
+        );
 
     }
 }

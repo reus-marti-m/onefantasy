@@ -20,18 +20,15 @@ namespace OneFantasy.Api.Domain.Implementations
 
         private readonly UserManager<ApplicationUser> _users;
         private readonly SignInManager<ApplicationUser> _signIn;
-        private readonly RoleManager<IdentityRole> _roles;
         private readonly IConfiguration _config;
 
         public AuthService(
             UserManager<ApplicationUser> users,
             SignInManager<ApplicationUser> signIn,
-            RoleManager<IdentityRole> roles,
             IConfiguration config)
         {
             _users = users;
             _signIn = signIn;
-            _roles = roles;
             _config = config;
         }
 
@@ -75,8 +72,8 @@ namespace OneFantasy.Api.Domain.Implementations
 
             var roles = await _users.GetRolesAsync(user);
             var claims = new List<Claim> {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName)
+                new(JwtRegisteredClaimNames.Sub, user.Id),
+                new(ClaimTypes.Name, user.UserName)
             };
             claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 

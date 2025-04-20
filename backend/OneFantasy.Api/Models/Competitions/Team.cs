@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OneFantasy.Api.Models.Seasons
+namespace OneFantasy.Api.Models.Competitions
 {
     public class Team
     {
@@ -18,6 +18,8 @@ namespace OneFantasy.Api.Models.Seasons
         public string Name { get; set; }
         public string Abbreviation { get; set; }
         public List<Player> Players { get; set; }
+        public int CompetitionSeasonId { get; set; }
+        public CompetitionSeason CompetitionSeason { get; set; } = null!;
 
     }
 }

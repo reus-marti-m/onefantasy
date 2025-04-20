@@ -17,31 +17,31 @@ namespace OneFantasy.Api.Controllers
             var ex = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
 
             // 409 Conflict
-            if (ex is DuplicateCompetitionException dup)
+            if (ex is DuplicateException || ex is DuplicateSeasonException)
             {
                 return Problem(
                     title: "Conflict",
-                    detail: dup.Message,
+                    detail: ex.Message,
                     statusCode: StatusCodes.Status409Conflict
                 );
             }
 
             // 404 Not Found
-            if (ex is NotFoundException nf)
+            if (ex is NotFoundException)
             {
                 return Problem(
                     title: "Not Found",
-                    detail: nf.Message,
+                    detail: ex.Message,
                     statusCode: StatusCodes.Status404NotFound
                 );
             }
 
             // 401 Unauthorized for invalid credentials
-            if (ex is InvalidCredentialsException ic)
+            if (ex is InvalidCredentialsException)
             {
                 return Problem(
                     title: "Invalid Credentials",
-                    detail: ic.Message,
+                    detail: ex.Message,
                     statusCode: StatusCodes.Status401Unauthorized
                 );
             }

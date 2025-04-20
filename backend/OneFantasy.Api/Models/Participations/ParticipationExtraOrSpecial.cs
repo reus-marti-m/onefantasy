@@ -1,6 +1,6 @@
 ﻿using System;
+using OneFantasy.Api.Models.Competitions;
 using OneFantasy.Api.Models.MinigameGroups;
-using OneFantasy.Api.Models.Seasons;
 
 namespace OneFantasy.Api.Models.Participations
 {

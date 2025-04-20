@@ -1,5 +1,5 @@
 ﻿using System;
-using OneFantasy.Api.Models.Seasons;
+using OneFantasy.Api.Models.Competitions;
 
 namespace OneFantasy.Api.Models.Participations
 {

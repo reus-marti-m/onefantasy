@@ -1,4 +1,4 @@
-﻿namespace OneFantasy.Api.Models.Seasons
+﻿namespace OneFantasy.Api.Models.Competitions
 {
     public class Player
     {

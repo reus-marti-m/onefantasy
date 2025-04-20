@@ -1,5 +1,5 @@
-﻿using OneFantasy.Api.Models.Minigames;
-using OneFantasy.Api.Models.Seasons;
+﻿using OneFantasy.Api.Models.Competitions;
+using OneFantasy.Api.Models.Minigames;
 
 namespace OneFantasy.Api.Models.MinigameGroups
 {

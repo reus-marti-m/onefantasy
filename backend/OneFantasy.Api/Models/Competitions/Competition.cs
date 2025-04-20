@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using OneFantasy.Api.Models.Seasons;
 
 namespace OneFantasy.Api.Models.Competitions
 {

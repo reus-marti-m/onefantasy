@@ -3,10 +3,10 @@ using static OneFantasy.Api.Models.Competitions.Competition;
 
 namespace OneFantasy.Api.DTOs
 {
-    public class CreateCompetitionDto
+    public class CompetitionDto
     {
 
-        [Required]
+        [Required, StringLength(100)]
         public string Name { get; set; }
 
         [EnumDataType(typeof(CompetitionType))]

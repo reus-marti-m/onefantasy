@@ -1,17 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-using System;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using OneFantasy.Api.Models.Authentication;
 using OneFantasy.Api.DTOs;
-using System.Linq;
 using OneFantasy.Api.Domain.Abstractions;
 
 namespace OneFantasy.Api.Controllers

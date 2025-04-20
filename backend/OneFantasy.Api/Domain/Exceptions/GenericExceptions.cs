@@ -6,4 +6,9 @@ namespace OneFantasy.Api.Domain.Exceptions
     {
         public NotFoundException(string entity, int id) : base($"{entity} with id '{id}' was not found.") { }
     }
+
+    public class DuplicateException : Exception
+    {
+        public DuplicateException(string entity, string name) : base($"{entity} with name '{name}' already exists.") { }
+    }
 }
