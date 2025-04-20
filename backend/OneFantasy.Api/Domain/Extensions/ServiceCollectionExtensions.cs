@@ -9,9 +9,8 @@ namespace OneFantasy.Api.Domain.Extensions
 
         public static IServiceCollection AddDomainServices(this IServiceCollection services)
         {
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICompetitionService, CompetitionService>();
-            //services.AddScoped<IParticipationService, ParticipationService>();
-            // … 
             return services;
         }
 

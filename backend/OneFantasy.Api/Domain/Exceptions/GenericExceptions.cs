@@ -2,13 +2,8 @@
 
 namespace OneFantasy.Api.Domain.Exceptions
 {
-    public class GenericExceptions
+    public class NotFoundException : Exception
     {
-
-        public class NotFoundException : Exception
-        {
-            public NotFoundException(string entity, int id) : base($"{entity} with id '{id}' was not found.") { }
-        }
-
+        public NotFoundException(string entity, int id) : base($"{entity} with id '{id}' was not found.") { }
     }
 }

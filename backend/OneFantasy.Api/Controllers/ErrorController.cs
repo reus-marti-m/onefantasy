@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using static OneFantasy.Api.Domain.Exceptions.CompetitionExceptions;
-using static OneFantasy.Api.Domain.Exceptions.GenericExceptions;
+using OneFantasy.Api.Domain.Exceptions;
+
 
 namespace OneFantasy.Api.Controllers
 {
@@ -36,11 +36,32 @@ namespace OneFantasy.Api.Controllers
                 );
             }
 
+            // 401 Unauthorized for invalid credentials
+            if (ex is InvalidCredentialsException ic)
+            {
+                return Problem(
+                    title: "Invalid Credentials",
+                    detail: ic.Message,
+                    statusCode: StatusCodes.Status401Unauthorized
+                );
+            }
+
+            // 403 Forbidden for unauthorized admin actions
+            if (ex is UnauthorizedAdminException ua)
+            {
+                return Problem(
+                    title: "Forbidden",
+                    detail: ua.Message,
+                    statusCode: StatusCodes.Status403Forbidden
+                );
+            }
+
             // 500 Internal Server Error fallback
             return Problem(
                 title: "Internal Server Error",
                 detail: "An unexpected error occurred. Please contact the administrator.",
-                statusCode: StatusCodes.Status500InternalServerError);
+                statusCode: StatusCodes.Status500InternalServerError
+            );
         }
 
     }

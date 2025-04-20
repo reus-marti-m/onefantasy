@@ -5,10 +5,12 @@ using OneFantasy.Api.Models.Seasons;
 using OneFantasy.Api.Models.MinigameGroups;
 using OneFantasy.Api.Models.Minigames;
 using OneFantasy.Api.Models.MinigameOptions;
+using OneFantasy.Api.Models.Authentication;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace OneFantasy.Api.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { }

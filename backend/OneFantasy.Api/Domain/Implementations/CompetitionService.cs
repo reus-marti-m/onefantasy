@@ -4,8 +4,7 @@ using OneFantasy.Api.Models.Competitions;
 using System.Threading.Tasks;
 using OneFantasy.Api.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
-using static OneFantasy.Api.Domain.Exceptions.CompetitionExceptions;
-using static OneFantasy.Api.Domain.Exceptions.GenericExceptions;
+using OneFantasy.Api.Domain.Exceptions;
 
 namespace OneFantasy.Api.Domain.Implementations
 {
@@ -19,7 +18,6 @@ namespace OneFantasy.Api.Domain.Implementations
         {
             if (await _db.Competitions.AnyAsync(c => c.Name == dto.Name))
                 throw new DuplicateCompetitionException(dto.Name);
-
             var comp = new Competition(dto.Name, dto.Type, dto.Format);
             _db.Competitions.Add(comp);
             await _db.SaveChangesAsync();
