@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using OneFantasy.Api.Data;
 using OneFantasy.Api.Domain.Abstractions;
 using OneFantasy.Api.Domain.Exceptions;
-using OneFantasy.Api.Domain.Mappers;
 using OneFantasy.Api.DTOs;
 using OneFantasy.Api.Models.Competitions;
 using System.Collections.Generic;
@@ -14,16 +14,24 @@ namespace OneFantasy.Api.Domain.Implementations
     public class TeamService : ITeamService
     {
         private readonly AppDbContext _db;
-        public TeamService(AppDbContext db) => _db = db;
+        private readonly IMapper _mapper;
+        public TeamService(AppDbContext db, IMapper mapper)
+        {
+            _db = db;
+            _mapper = mapper;
+        }
 
         public async Task<TeamDtoResponse> CreateAsync(int seasonId, TeamDto dto)
         {
             var season = await _db.Seasons.FindAsync(seasonId) ?? throw new NotFoundException(nameof(Season), seasonId);
 
-            var team = dto.ToTeam(season);
+            var team = _mapper.Map<Team>(dto, opts =>
+            {
+                opts.Items["Season"] = season;
+            });
             season.Teams.Add(team);
             await _db.SaveChangesAsync();
-            return team.ToDtoResponse();
+            return _mapper.Map<TeamDtoResponse>(team);
         }
 
         public async Task<TeamDtoResponse> UpdateAsync(int teamId, TeamDto dto)
@@ -38,7 +46,7 @@ namespace OneFantasy.Api.Domain.Implementations
             team.Name = dto.Name;
             team.Abbreviation = dto.Abbreviation;
             await _db.SaveChangesAsync();
-            return team.ToDtoResponse();
+            return _mapper.Map<TeamDtoResponse>(team);
         }
 
         public async Task<IEnumerable<TeamDtoResponse>> GetBySeasonAsync(int seasonId)
@@ -51,7 +59,7 @@ namespace OneFantasy.Api.Domain.Implementations
                 .Include(t => t.Players)
                 .ToListAsync();
 
-            return teams.Select(t => t.ToDtoResponse());
+            return teams.Select(_mapper.Map<TeamDtoResponse>);
         }
 
         public async Task<TeamDtoResponse> GetByIdAsync(int teamId)
@@ -60,7 +68,7 @@ namespace OneFantasy.Api.Domain.Implementations
                 .Include(t => t.Players)
                 .FirstOrDefaultAsync(t => t.Id == teamId);
 
-            return team?.ToDtoResponse() ?? throw new NotFoundException(nameof(Team), teamId);
+            return _mapper.Map<TeamDtoResponse>(team) ?? throw new NotFoundException(nameof(Team), teamId);
         }
     }
 }

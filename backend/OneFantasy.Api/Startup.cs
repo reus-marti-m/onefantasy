@@ -80,6 +80,9 @@ namespace OneFantasy.Api
             // Register domain services
             services.AddDomainServices();
 
+            // Automapper configuration (profiles)
+            services.AddAutoMapper(typeof(Startup).Assembly);
+
             // Controllers with automatic validation responses
             services.AddControllers()
                 .ConfigureApiBehaviorOptions(opts =>

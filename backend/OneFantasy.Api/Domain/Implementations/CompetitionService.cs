@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using OneFantasy.Api.Domain.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
-using OneFantasy.Api.Domain.Mappers;
+using AutoMapper;
 
 namespace OneFantasy.Api.Domain.Implementations
 {
@@ -15,18 +15,23 @@ namespace OneFantasy.Api.Domain.Implementations
     {
 
         private readonly AppDbContext _db;
+        private readonly IMapper _mapper;
 
-        public CompetitionService(AppDbContext db) => _db = db;
+        public CompetitionService(AppDbContext db, IMapper mapper)
+        {
+            _db = db;
+            _mapper = mapper;
+        }
 
         public async Task<CompetitionDtoResponse> CreateAsync(CompetitionDto dto)
         {
             if (await _db.Competitions.AnyAsync(c => c.Name == dto.Name))
                 throw new DuplicateException(nameof(Competition), dto.Name);
             
-            var comp = dto.ToCompetition();
+            var comp = _mapper.Map<Competition>(dto);
             _db.Competitions.Add(comp);
             await _db.SaveChangesAsync();
-            return comp.ToDtoResponse();
+            return _mapper.Map<CompetitionDtoResponse>(comp);
         }
 
         public async Task<CompetitionDtoResponse> UpdateAsync(int id, CompetitionDto dto)
@@ -42,13 +47,13 @@ namespace OneFantasy.Api.Domain.Implementations
             comp.Format = dto.Format;
 
             await _db.SaveChangesAsync();
-            return comp.ToDtoResponse();
+            return _mapper.Map<CompetitionDtoResponse>(comp);
         }
 
         public async Task<CompetitionDtoResponse> GetByIdAsync(int id)
         {
             var comp = await _db.Competitions.FindAsync(id);
-            return comp is null ? throw new NotFoundException(nameof(Competition), id) : comp.ToDtoResponse();
+            return comp is null ? throw new NotFoundException(nameof(Competition), id) : _mapper.Map<CompetitionDtoResponse>(comp);
         }
 
         public async Task<IEnumerable<CompetitionDtoResponse>> GetAllAsync()
@@ -57,7 +62,7 @@ namespace OneFantasy.Api.Domain.Implementations
                 .Include(c => c.Seasons)
                 .ToListAsync();
 
-            return comps.Select(c => c.ToDtoResponse());
+            return comps.Select(_mapper.Map<CompetitionDtoResponse>);
         }
 
     }

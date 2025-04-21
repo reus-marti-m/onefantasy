@@ -5,16 +5,22 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using OneFantasy.Api.Data;
 using OneFantasy.Api.Domain.Abstractions;
-using OneFantasy.Api.Domain.Mappers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
+using OneFantasy.Api.Models.Participations;
 
 namespace OneFantasy.Api.Domain.Implementations
 {
     public class ParticipationService : IParticipationService
     {
         private readonly AppDbContext _db;
-        public ParticipationService(AppDbContext db) => _db = db;
+        private readonly IMapper _mapper;
+        public ParticipationService(AppDbContext db, IMapper mapper)
+        {
+            _db = db;
+            _mapper = mapper;
+        }
 
         public async Task<ParticipationStandartDtoResponse> CreateStandardAsync(int seasonId, ParticipationStandartDto dto)
         {
@@ -46,10 +52,13 @@ namespace OneFantasy.Api.Domain.Implementations
             );
 
             // Validations ok
-            var entity = dto.CreateParticipationStandard(season);
+            var entity = _mapper.Map<ParticipationStandard>(dto, opts =>
+            {
+                opts.Items["Season"] = season;
+            });
             _db.Participations.Add(entity);
             await _db.SaveChangesAsync();
-            return entity.ToDtoResponse();
+            return _mapper.Map<ParticipationStandartDtoResponse>(entity);
         }
 
         public async Task<ParticipationSpecialDtoResponse> CreateSpecialAsync(int seasonId, ParticipationSpecialDto dto)
@@ -62,10 +71,13 @@ namespace OneFantasy.Api.Domain.Implementations
             );
 
             // Validations ok
-            var entity = dto.CreateParticipationSpecial(season);
+            var entity = _mapper.Map<ParticipationSpecial>(dto, opts =>
+            {
+                opts.Items["Season"] = season;
+            });
             _db.Participations.Add(entity);
             await _db.SaveChangesAsync();
-            return entity.ToDtoResponse();
+            return _mapper.Map<ParticipationSpecialDtoResponse>(entity);
         }
 
         public async Task<ParticipationExtraDtoResponse> CreateExtraAsync(int seasonId, ParticipationExtraDto dto)
@@ -78,10 +90,13 @@ namespace OneFantasy.Api.Domain.Implementations
             );
 
             // Validations ok
-            var entity = dto.CreateParticipationExtra(season);
+            var entity = _mapper.Map<ParticipationExtra>(dto, opts =>
+            {
+                opts.Items["Season"] = season;
+            });
             _db.Participations.Add(entity);
             await _db.SaveChangesAsync();
-            return entity.ToDtoResponse();
+            return _mapper.Map<ParticipationExtraDtoResponse>(entity);
         }
 
         private async Task<Season> ExtraAndSpecialValidations(MinigameGroupMatch2ADto dto2A, MinigameGroupMatch2BDto dto2B, int seasonId)
