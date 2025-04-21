@@ -16,7 +16,7 @@ namespace OneFantasy.Api.Models.Participations.Minigames
                 Options.Add(o);
         }
 
-        public IEnumerable<OptionScore> ScoreOptions => Options.OfType<OptionScore>();
+        public List<OptionScore> ScoreOptions => [.. Options.OfType<OptionScore>()];
 
     }
 }

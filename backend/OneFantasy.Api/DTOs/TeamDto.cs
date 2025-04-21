@@ -20,17 +20,4 @@ namespace OneFantasy.Api.DTOs
     {
         public int Id { get; set; }
     }
-
-    public static class TeamDtoExtensions
-    {
-        public static Team ToTeam(this TeamDto t, Season season) => new(t.Name, t.Abbreviation, season);
-
-        public static TeamDtoResponse ToDtoResponse(this Team t) => new()
-        {
-            Name = t.Name,
-            Abbreviation = t.Abbreviation,
-            Id = t.Id,
-            Players = t.Players.Select(p => p.ToDtoResponse())
-        };
-    }
 }

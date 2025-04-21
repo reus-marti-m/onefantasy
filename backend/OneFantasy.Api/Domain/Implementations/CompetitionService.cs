@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using OneFantasy.Api.Domain.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
+using OneFantasy.Api.Domain.Mappers;
 
 namespace OneFantasy.Api.Domain.Implementations
 {

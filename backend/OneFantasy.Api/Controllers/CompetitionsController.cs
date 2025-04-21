@@ -16,26 +16,28 @@ namespace OneFantasy.Api.Controllers
 
         [HttpPost]
         [Authorize(Policy = "RequireAdmin")]
-        public async Task<IActionResult> Post([FromBody] CompetitionDto dto)
-        {
-            var comp = await _svc.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = comp.Id }, comp);
-        }
+        public async Task<IActionResult> Post([FromBody] CompetitionDto dto) => CreatedAtAction
+        (
+            nameof(GetById), 
+            await _svc.CreateAsync(dto)
+        );
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Put(int id, [FromBody] CompetitionDto dto)
-        {
-            var updated = await _svc.UpdateAsync(id, dto);
-            return Ok(updated);
-        }
+        [Authorize(Policy = "RequireAdmin")]
+        public async Task<IActionResult> Put(int id, [FromBody] CompetitionDto dto) => Ok
+        (
+            await _svc.UpdateAsync(id, dto)
+        );
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id) => Ok(
+        public async Task<IActionResult> GetById(int id) => Ok
+        (
             await _svc.GetByIdAsync(id)
         );
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() => Ok(
+        public async Task<IActionResult> GetAll() => Ok
+        (
             await _svc.GetAllAsync()
         );
 

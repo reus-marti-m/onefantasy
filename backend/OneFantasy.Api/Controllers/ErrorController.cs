@@ -17,7 +17,7 @@ namespace OneFantasy.Api.Controllers
             var ex = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
 
             // 409 Conflict
-            if (ex is DuplicateException || ex is DuplicateSeasonException)
+            if (ex is DuplicateException || ex is DuplicateSeasonException || ex is PlayerNotInMatchTeamsException)
             {
                 return Problem(
                     title: "Conflict",

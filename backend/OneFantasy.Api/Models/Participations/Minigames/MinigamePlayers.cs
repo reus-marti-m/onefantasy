@@ -16,7 +16,7 @@ namespace OneFantasy.Api.Models.Participations.Minigames
             Type = type;
         }
 
-        public IEnumerable<OptionPlayer> IntervalOptions => Options.OfType<OptionPlayer>();
+        public List<OptionPlayer> PlayerOptions => [.. Options.OfType<OptionPlayer>()];
         public MinigamePlayersType Type { get; set; }
 
         public enum MinigamePlayersType

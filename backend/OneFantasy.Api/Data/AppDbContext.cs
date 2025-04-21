@@ -18,9 +18,9 @@ namespace OneFantasy.Api.Data
         public DbSet<Team> Teams { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Participation> Participations { get; set; }
-        public DbSet<MinigameGroup> MinigameGroups { get; set; }
-        public DbSet<Minigame> Minigames { get; set; }
-        public DbSet<Option> Options { get; set; }
+        //public DbSet<MinigameGroup> MinigameGroups { get; set; }
+        //public DbSet<Minigame> Minigames { get; set; }
+        //public DbSet<Option> Options { get; set; }
 
         protected override void OnModelCreating(ModelBuilder mb)
         {

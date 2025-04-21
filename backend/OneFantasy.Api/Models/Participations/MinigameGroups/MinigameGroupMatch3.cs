@@ -1,5 +1,4 @@
 ﻿using OneFantasy.Api.Models.Competitions;
-using OneFantasy.Api.Models.Participations;
 using OneFantasy.Api.Models.Participations.Minigames;
 
 namespace OneFantasy.Api.Models.Participations.MinigameGroups
@@ -10,13 +9,13 @@ namespace OneFantasy.Api.Models.Participations.MinigameGroups
         protected MinigameGroupMatch3() { }
 
         public MinigameGroupMatch3(MinigameScores minigameScores, MinigamePlayers minigamePlayers1, MinigamePlayers minigamePlayers2, 
-            Team homeTeam, Team visitingTeam)
+            int homeTeamId, int visitingTeamId)
         {
             MinigameScores = minigameScores;
             MinigamePlayers1 = minigamePlayers1;
             MinigamePlayers2 = minigamePlayers2;
-            HomeTeam = homeTeam;
-            VisitingTeam = visitingTeam;
+            HomeTeamId = homeTeamId;
+            VisitingTeamId = visitingTeamId;
         }
 
         public int MinigameScoresId { get; set; }

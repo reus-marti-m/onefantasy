@@ -2,6 +2,7 @@
 using OneFantasy.Api.Data;
 using OneFantasy.Api.Domain.Abstractions;
 using OneFantasy.Api.Domain.Exceptions;
+using OneFantasy.Api.Domain.Mappers;
 using OneFantasy.Api.DTOs;
 using OneFantasy.Api.Models.Competitions;
 using System.Collections.Generic;

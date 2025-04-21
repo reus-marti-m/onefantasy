@@ -9,12 +9,12 @@ namespace OneFantasy.Api.Models.Participations.MinigameGroups
 
         protected MinigameGroupMatch2A() { }
 
-        public MinigameGroupMatch2A(MinigameScores minigameScores, MinigamePlayers minigamePlayers, Team homeTeam, Team visitingTeam)
+        public MinigameGroupMatch2A(MinigameScores minigameScores, MinigamePlayers minigamePlayers, int homeTeamId, int visitingTeamId)
         {
             MinigameScores = minigameScores;
             MinigamePlayers = minigamePlayers;
-            HomeTeam = homeTeam;
-            VisitingTeam = visitingTeam;
+            HomeTeamId = homeTeamId;
+            VisitingTeamId = visitingTeamId;
         }
 
         public int MinigameScoresId { get; set; }

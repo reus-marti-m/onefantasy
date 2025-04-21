@@ -8,10 +8,9 @@ namespace OneFantasy.Api.Models.Participations.MinigameOptions
 
         protected OptionTeam() { }
 
-        public OptionTeam(int price, Team team) : base(price)
+        public OptionTeam(int price, int teamId) : base(price)
         {
-            Team = team;
-            TeamId = team.Id;
+            TeamId = teamId;
         }
 
         public int TeamId { get; set; }

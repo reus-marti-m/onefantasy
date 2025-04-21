@@ -15,20 +15,28 @@ namespace OneFantasy.Api.Controllers
         public SeasonsController(ISeasonService svc) => _svc = svc;
 
         [HttpPost]
-        public async Task<IActionResult> Post(int competitionId, SeasonDto dto)
-        {
-            var season = await _svc.CreateAsync(competitionId, dto);
-            return CreatedAtAction(nameof(GetById),
-                new { competitionId, seasonId = season.Id }, season);
-        }
+        public async Task<IActionResult> Post(int competitionId, SeasonDto dto) => CreatedAtAction
+        (
+            nameof(GetById), 
+            await _svc.CreateAsync(competitionId, dto)
+        );
 
         [HttpPut("{seasonId:int}")]
-        public async Task<IActionResult> Put(int seasonId, [FromBody] SeasonDto dto) => Ok(await _svc.UpdateAsync(seasonId, dto));
+        public async Task<IActionResult> Put(int seasonId, [FromBody] SeasonDto dto) => Ok
+        (
+            await _svc.UpdateAsync(seasonId, dto)
+        );
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(int competitionId) => Ok(await _svc.GetByCompetitionAsync(competitionId));
+        public async Task<IActionResult> GetAll(int competitionId) => Ok
+        (
+            await _svc.GetByCompetitionAsync(competitionId)
+        );
 
         [HttpGet("{seasonId:int}")]
-        public async Task<IActionResult> GetById(int seasonId) => Ok(await _svc.GetByIdAsync(seasonId));
+        public async Task<IActionResult> GetById(int seasonId) => Ok
+        (
+            await _svc.GetByIdAsync(seasonId)
+        );
     }
 }

@@ -11,26 +11,35 @@ namespace OneFantasy.Api.Controllers
     public class PlayersController : ControllerBase
     {
         private readonly IPlayerService _svc;
+
         public PlayersController(IPlayerService svc) => _svc = svc;
 
         [HttpPost]
         [Authorize(Policy = "RequireAdmin")]
-        public async Task<IActionResult> Post(int teamId, PlayerDto dto)
-        {
-            var player = await _svc.CreateAsync(teamId, dto);
-            return CreatedAtAction(nameof(GetById),
-                new { teamId, playerId = player.Id }, player);
-        }
+        public async Task<IActionResult> Post(int teamId, PlayerDto dto) => CreatedAtAction
+        (
+            nameof(GetById), 
+            await _svc.CreateAsync(teamId, dto)
+        );
 
         [HttpPut("{playerId:int}")]
         [Authorize(Policy = "RequireAdmin")]
-        public async Task<IActionResult> Put(int playerId, [FromBody] PlayerDto dto) => Ok(await _svc.UpdateAsync(playerId, dto));
+        public async Task<IActionResult> Put(int playerId, [FromBody] PlayerDto dto) => Ok
+        (
+            await _svc.UpdateAsync(playerId, dto)
+        );
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(int teamId) => Ok(await _svc.GetByTeamAsync(teamId));
+        public async Task<IActionResult> GetAll(int teamId) => Ok
+        (
+            await _svc.GetByTeamAsync(teamId)
+        );
 
         [HttpGet("{playerId:int}")]
-        public async Task<IActionResult> GetById(int playerId) => Ok(await _svc.GetByIdAsync(playerId));
+        public async Task<IActionResult> GetById(int playerId) => Ok
+        (
+            await _svc.GetByIdAsync(playerId)
+        );
     }
 
 }
