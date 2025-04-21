@@ -1,5 +1,5 @@
 ﻿using OneFantasy.Api.Models.Competitions;
-using OneFantasy.Api.Models.MinigameGroups;
+using OneFantasy.Api.Models.Participations.MinigameGroups;
 using System;
 
 namespace OneFantasy.Api.Models.Participations
@@ -10,8 +10,8 @@ namespace OneFantasy.Api.Models.Participations
         protected ParticipationStandard() { }
 
         public ParticipationStandard(
-            DateTime date, CompetitionSeason competitionSeason, MinigameGroupMulti minigameGroupMulti, MinigameGroupMatch3 minigameGroupMatch3
-        ) : base(date, competitionSeason)
+            DateTime date, Season season, MinigameGroupMulti minigameGroupMulti, MinigameGroupMatch3 minigameGroupMatch3
+        ) : base(date, season)
         {
             MinigameGroupMulti = minigameGroupMulti;
             MinigameGroupMatch3 = minigameGroupMatch3;

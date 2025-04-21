@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OneFantasy.Api.Data;
 
@@ -10,9 +11,11 @@ using OneFantasy.Api.Data;
 namespace OneFantasy.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250421150815_AjustModel")]
+    partial class AjustModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.14");
@@ -386,7 +389,7 @@ namespace OneFantasy.Api.Migrations
 
                     b.Property<string>("ParticipationType")
                         .IsRequired()
-                        .HasMaxLength(13)
+                        .HasMaxLength(21)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("SeasonId")
@@ -655,18 +658,11 @@ namespace OneFantasy.Api.Migrations
                     b.HasDiscriminator().HasValue("Scores");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Participations.ParticipationExtra", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.ParticipationExtraOrSpecial", b =>
                 {
                     b.HasBaseType("OneFantasy.Api.Models.Participations.Participation");
 
-                    b.HasDiscriminator().HasValue("Extra");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.Participations.ParticipationSpecial", b =>
-                {
-                    b.HasBaseType("OneFantasy.Api.Models.Participations.Participation");
-
-                    b.HasDiscriminator().HasValue("Special");
+                    b.HasDiscriminator().HasValue("ExtraOrSpecial");
                 });
 
             modelBuilder.Entity("OneFantasy.Api.Models.Participations.ParticipationStandard", b =>
@@ -824,19 +820,12 @@ namespace OneFantasy.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OneFantasy.Api.Models.Participations.ParticipationExtra", null)
+                    b.HasOne("OneFantasy.Api.Models.Participations.ParticipationExtraOrSpecial", null)
                         .WithOne("MinigameGroupMatch2A")
                         .HasForeignKey("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroupMatch2A", "ParticipationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_MinigameGroups_Participations_ParticipationId1");
-
-                    b.HasOne("OneFantasy.Api.Models.Participations.ParticipationSpecial", null)
-                        .WithOne("MinigameGroupMatch2A")
-                        .HasForeignKey("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroupMatch2A", "ParticipationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_MinigameGroups_Participations_ParticipationId2");
 
                     b.HasOne("OneFantasy.Api.Models.Competitions.Team", "VisitingTeam")
                         .WithMany()
@@ -873,19 +862,12 @@ namespace OneFantasy.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OneFantasy.Api.Models.Participations.ParticipationExtra", null)
+                    b.HasOne("OneFantasy.Api.Models.Participations.ParticipationExtraOrSpecial", null)
                         .WithOne("MinigameGroupMatch2B")
                         .HasForeignKey("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroupMatch2B", "ParticipationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_MinigameGroups_Participations_ParticipationId3");
-
-                    b.HasOne("OneFantasy.Api.Models.Participations.ParticipationSpecial", null)
-                        .WithOne("MinigameGroupMatch2B")
-                        .HasForeignKey("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroupMatch2B", "ParticipationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_MinigameGroups_Participations_ParticipationId4");
+                        .HasConstraintName("FK_MinigameGroups_Participations_ParticipationId2");
 
                     b.HasOne("OneFantasy.Api.Models.Competitions.Team", "VisitingTeam")
                         .WithMany()
@@ -933,7 +915,7 @@ namespace OneFantasy.Api.Migrations
                         .HasForeignKey("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroupMatch3", "ParticipationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_MinigameGroups_Participations_ParticipationId5");
+                        .HasConstraintName("FK_MinigameGroups_Participations_ParticipationId3");
 
                     b.HasOne("OneFantasy.Api.Models.Competitions.Team", "VisitingTeam")
                         .WithMany()
@@ -977,7 +959,7 @@ namespace OneFantasy.Api.Migrations
                         .HasForeignKey("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroupMulti", "ParticipationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK_MinigameGroups_Participations_ParticipationId6");
+                        .HasConstraintName("FK_MinigameGroups_Participations_ParticipationId4");
 
                     b.Navigation("Match1");
 
@@ -1100,14 +1082,7 @@ namespace OneFantasy.Api.Migrations
                     b.Navigation("ScoreOptions");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Participations.ParticipationExtra", b =>
-                {
-                    b.Navigation("MinigameGroupMatch2A");
-
-                    b.Navigation("MinigameGroupMatch2B");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.Participations.ParticipationSpecial", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.ParticipationExtraOrSpecial", b =>
                 {
                     b.Navigation("MinigameGroupMatch2A");
 

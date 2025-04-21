@@ -1,21 +1,22 @@
 ﻿using System.Collections.Generic;
-using OneFantasy.Api.Models.MinigameGroups;
-using OneFantasy.Api.Models.MinigameOptions;
+using System.Linq;
+using OneFantasy.Api.Models.Participations.MinigameOptions;
 
-namespace OneFantasy.Api.Models.Minigames
+namespace OneFantasy.Api.Models.Participations.Minigames
 {
     public class MinigamePlayers : Minigame
     {
 
         protected MinigamePlayers() { }
 
-        public MinigamePlayers(List<OptionPlayer> options, MinigamePlayersType type) : base()
+        public MinigamePlayers(List<OptionPlayer> options, MinigamePlayersType type)
         {
-            Options = options;
+            foreach (var o in options)
+                Options.Add(o);
             Type = type;
         }
 
-        public List<OptionPlayer> Options { get; set; }
+        public IEnumerable<OptionPlayer> IntervalOptions => Options.OfType<OptionPlayer>();
         public MinigamePlayersType Type { get; set; }
 
         public enum MinigamePlayersType

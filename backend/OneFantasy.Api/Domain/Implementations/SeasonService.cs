@@ -15,23 +15,21 @@ namespace OneFantasy.Api.Domain.Implementations
         private readonly AppDbContext _db;
         public SeasonService(AppDbContext db) => _db = db;
 
-        public async Task<CompetitionSeason> CreateAsync(int competitionId, SeasonDto dto)
+        public async Task<SeasonDtoResponse> CreateAsync(int competitionId, SeasonDto dto)
         {
-            var comp = await _db.Competitions.FindAsync(competitionId)
-                      ?? throw new NotFoundException(nameof(Competition), competitionId);
+            var comp = await _db.Competitions.FindAsync(competitionId) ?? throw new NotFoundException(nameof(Competition), competitionId);
 
-            var season = new CompetitionSeason(dto.Year, comp, []);
+            var season = dto.ToSeason(comp);
             _db.Seasons.Add(season);
             await _db.SaveChangesAsync();
-            return season;
+            return season.ToDtoResponse();
         }
 
-        public async Task<CompetitionSeason> UpdateAsync(int seasonId, SeasonDto dto)
+        public async Task<SeasonDtoResponse> UpdateAsync(int seasonId, SeasonDto dto)
         {
             var season = await _db.Seasons
                 .Include(s => s.Competition)
-                .FirstOrDefaultAsync(s => s.Id == seasonId)
-                ?? throw new NotFoundException(nameof(CompetitionSeason), seasonId);
+                .FirstOrDefaultAsync(s => s.Id == seasonId) ?? throw new NotFoundException(nameof(Season), seasonId);
 
             var compId = season.Competition.Id;
             if (await _db.Seasons.AnyAsync(s => s.Competition.Id == compId && s.Year == dto.Year && s.Id != seasonId))
@@ -39,28 +37,31 @@ namespace OneFantasy.Api.Domain.Implementations
 
             season.Year = dto.Year;
             await _db.SaveChangesAsync();
-            return season;
+            return season.ToDtoResponse();
         }
 
-        public async Task<IEnumerable<CompetitionSeason>> GetByCompetitionAsync(int competitionId)
+        public async Task<IEnumerable<SeasonDtoResponse>> GetByCompetitionAsync(int competitionId)
         {
             if (!await _db.Competitions.AnyAsync(c => c.Id == competitionId))
                 throw new NotFoundException(nameof(Competition), competitionId);
 
-            return await _db.Seasons
+            var comp = await _db.Seasons
                 .Where(s => s.Competition.Id == competitionId)
+                .Include(s => s.Competition)
                 .Include(s => s.Teams)
                 .ToListAsync();
+
+            return comp.Select(s => s.ToDtoResponse());
         }
 
-        public async Task<CompetitionSeason> GetByIdAsync(int seasonId)
+        public async Task<SeasonDtoResponse> GetByIdAsync(int seasonId)
         {
             var season = await _db.Seasons
+                .Include(s => s.Competition)
                 .Include(s => s.Teams)
                 .FirstOrDefaultAsync(s => s.Id == seasonId);
 
-            return season
-                ?? throw new NotFoundException(nameof(CompetitionSeason), seasonId);
+            return season?.ToDtoResponse() ?? throw new NotFoundException(nameof(Season), seasonId);
         }
     }
 }

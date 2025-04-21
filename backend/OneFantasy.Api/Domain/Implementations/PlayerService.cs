@@ -15,41 +15,42 @@ namespace OneFantasy.Api.Domain.Implementations
         private readonly AppDbContext _db;
         public PlayerService(AppDbContext db) => _db = db;
 
-        public async Task<Player> CreateAsync(int teamId, PlayerDto dto)
+        public async Task<PlayerDtoResponse> CreateAsync(int teamId, PlayerDto dto)
         {
-            var team = await _db.Teams.FindAsync(teamId)
-                       ?? throw new NotFoundException(nameof(Team), teamId);
+            var team = await _db.Teams.FindAsync(teamId) ?? throw new NotFoundException(nameof(Team), teamId);
 
-            var player = new Player(dto.Name) { Team = team };
+            var player = dto.ToPlayer(team);
             _db.Players.Add(player);
             await _db.SaveChangesAsync();
-            return player;
+            return player.ToDtoResponse();
         }
 
-        public async Task<Player> UpdateAsync(int playerId, PlayerDto dto)
+        public async Task<PlayerDtoResponse> UpdateAsync(int playerId, PlayerDto dto)
         {
-            var player = await _db.Players.FindAsync(playerId)
-                         ?? throw new NotFoundException(nameof(Player), playerId);
+            var player = await _db.Players.FindAsync(playerId) ?? throw new NotFoundException(nameof(Player), playerId);
 
             player.Name = dto.Name;
             await _db.SaveChangesAsync();
-            return player;
+            return player.ToDtoResponse();
         }
 
-        public async Task<IEnumerable<Player>> GetByTeamAsync(int teamId)
+        public async Task<IEnumerable<PlayerDtoResponse>> GetByTeamAsync(int teamId)
         {
             if (!await _db.Teams.AnyAsync(t => t.Id == teamId))
                 throw new NotFoundException(nameof(Team), teamId);
 
-            return await _db.Players
+            var teams = await _db.Players
                 .Where(p => p.Team.Id == teamId)
+                .Include(p => p.Team.Players)
                 .ToListAsync();
+
+            return teams.Select(t => t.ToDtoResponse());
         }
 
-        public async Task<Player> GetByIdAsync(int playerId)
+        public async Task<PlayerDtoResponse> GetByIdAsync(int playerId)
         {
             var player = await _db.Players.FindAsync(playerId);
-            return player ?? throw new NotFoundException(nameof(Player), playerId);
+            return player is null ? throw new NotFoundException(nameof(Player), playerId) : player.ToDtoResponse();
         }
     }
 }

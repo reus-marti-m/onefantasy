@@ -7,9 +7,9 @@ namespace OneFantasy.Api.Domain.Abstractions
 {
     public interface ITeamService
     {
-        Task<Team> CreateAsync(int seasonId, TeamDto dto);
-        Task<Team> UpdateAsync(int teamId, TeamDto dto);
-        Task<IEnumerable<Team>> GetBySeasonAsync(int seasonId);
-        Task<Team> GetByIdAsync(int teamId);
+        Task<TeamDtoResponse> CreateAsync(int seasonId, TeamDto dto);
+        Task<TeamDtoResponse> UpdateAsync(int teamId, TeamDto dto);
+        Task<IEnumerable<TeamDtoResponse>> GetBySeasonAsync(int seasonId);
+        Task<TeamDtoResponse> GetByIdAsync(int teamId);
     }
 }

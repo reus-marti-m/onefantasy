@@ -7,19 +7,20 @@ namespace OneFantasy.Api.Models.Competitions
 
         protected Team() { }
 
-        public Team(string name, string abbreviation, List<Player> players)
+        public Team(string name, string abbreviation, Season season)
         {
             Name = name;
             Abbreviation = abbreviation;
-            Players = players;
+            Season = season;
+            SeasonId = season.Id;
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
         public string Abbreviation { get; set; }
-        public List<Player> Players { get; set; }
-        public int CompetitionSeasonId { get; set; }
-        public CompetitionSeason CompetitionSeason { get; set; } = null!;
+        public List<Player> Players { get; set; } = [];
+        public int SeasonId { get; set; }
+        public Season Season { get; set; }
 
     }
 }

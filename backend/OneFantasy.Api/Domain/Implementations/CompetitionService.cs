@@ -6,6 +6,7 @@ using OneFantasy.Api.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using OneFantasy.Api.Domain.Exceptions;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OneFantasy.Api.Domain.Implementations
 {
@@ -13,19 +14,21 @@ namespace OneFantasy.Api.Domain.Implementations
     {
 
         private readonly AppDbContext _db;
+
         public CompetitionService(AppDbContext db) => _db = db;
 
-        public async Task<Competition> CreateAsync(CompetitionDto dto)
+        public async Task<CompetitionDtoResponse> CreateAsync(CompetitionDto dto)
         {
             if (await _db.Competitions.AnyAsync(c => c.Name == dto.Name))
                 throw new DuplicateException(nameof(Competition), dto.Name);
-            var comp = new Competition(dto.Name, dto.Type, dto.Format);
+            
+            var comp = dto.ToCompetition();
             _db.Competitions.Add(comp);
             await _db.SaveChangesAsync();
-            return comp;
+            return comp.ToDtoResponse();
         }
 
-        public async Task<Competition> UpdateAsync(int id, CompetitionDto dto)
+        public async Task<CompetitionDtoResponse> UpdateAsync(int id, CompetitionDto dto)
         {
             var comp = await _db.Competitions.FindAsync(id)
                        ?? throw new NotFoundException(nameof(Competition), id);
@@ -38,16 +41,23 @@ namespace OneFantasy.Api.Domain.Implementations
             comp.Format = dto.Format;
 
             await _db.SaveChangesAsync();
-            return comp;
+            return comp.ToDtoResponse();
         }
 
-        public async Task<Competition> GetByIdAsync(int id)
+        public async Task<CompetitionDtoResponse> GetByIdAsync(int id)
         {
             var comp = await _db.Competitions.FindAsync(id);
-            return comp is null ? throw new NotFoundException(nameof(Competition), id) : comp;
+            return comp is null ? throw new NotFoundException(nameof(Competition), id) : comp.ToDtoResponse();
         }
 
-        public async Task<IEnumerable<Competition>> GetAllAsync() => await _db.Competitions.ToListAsync();
+        public async Task<IEnumerable<CompetitionDtoResponse>> GetAllAsync()
+        {
+            var comps = await _db.Competitions
+                .Include(c => c.Seasons)
+                .ToListAsync();
+
+            return comps.Select(c => c.ToDtoResponse());
+        }
 
     }
 }

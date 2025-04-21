@@ -17,7 +17,7 @@ namespace OneFantasy.Api.Models.Competitions
         public string Name { get; set; }
         public CompetitionType Type { get; set; }
         public CompetitionFormat Format { get; set; }
-        public List<CompetitionSeason> Seasons { get; set; } = [];
+        public List<Season> Seasons { get; set; } = [];
 
         public enum CompetitionType
         {

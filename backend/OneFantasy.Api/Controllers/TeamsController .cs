@@ -22,11 +22,11 @@ namespace OneFantasy.Api.Controllers
 
         [HttpPost]
         [Authorize(Policy = "RequireAdmin")]
-        public async Task<IActionResult> Post(int seasonId, [FromBody] TeamWithPlayersDto dto)
+        public async Task<IActionResult> Post(int seasonId, [FromBody] TeamDto dto)
         {
             await using var tx = await HttpContext.RequestServices.GetRequiredService<AppDbContext>().Database.BeginTransactionAsync();
 
-            var team = await _teamSvc.CreateAsync(seasonId, dto.Team);
+            var team = await _teamSvc.CreateAsync(seasonId, dto);
 
             if (dto.Players != null)
                 foreach (var p in dto.Players)
@@ -41,11 +41,11 @@ namespace OneFantasy.Api.Controllers
 
         [HttpPut("{teamId:int}")]
         [Authorize(Policy = "RequireAdmin")]
-        public async Task<IActionResult> Put(int teamId, [FromBody] TeamWithPlayersDto dto)
+        public async Task<IActionResult> Put(int teamId, [FromBody] TeamDto dto)
         {
             await using var tx = await HttpContext.RequestServices.GetRequiredService<AppDbContext>().Database.BeginTransactionAsync();
 
-            var team = await _teamSvc.UpdateAsync(teamId, dto.Team);
+            var team = await _teamSvc.UpdateAsync(teamId, dto);
 
             if (dto.Players != null)
                 foreach (var p in dto.Players)

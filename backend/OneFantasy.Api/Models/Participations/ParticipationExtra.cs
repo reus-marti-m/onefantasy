@@ -1,17 +1,17 @@
 ﻿using System;
 using OneFantasy.Api.Models.Competitions;
-using OneFantasy.Api.Models.MinigameGroups;
+using OneFantasy.Api.Models.Participations.MinigameGroups;
 
 namespace OneFantasy.Api.Models.Participations
 {
-    public class ParticipationExtraOrSpecial : Participation
+    public class ParticipationExtra : Participation
     {
 
-        protected ParticipationExtraOrSpecial() { }
+        protected ParticipationExtra() { }
 
-        public ParticipationExtraOrSpecial(
-            DateTime date, CompetitionSeason competitionSeason, MinigameGroupMatch2A minigameGroupMatch2A, MinigameGroupMatch2B minigameGroupMatch2B
-        ) : base(date, competitionSeason)
+        public ParticipationExtra(
+            DateTime date, Season season, MinigameGroupMatch2A minigameGroupMatch2A, MinigameGroupMatch2B minigameGroupMatch2B
+        ) : base(date, season)
         {
             MinigameGroupMatch2A = minigameGroupMatch2A;
             MinigameGroupMatch2B = minigameGroupMatch2B;

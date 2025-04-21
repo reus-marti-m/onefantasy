@@ -1,7 +1,7 @@
 ﻿using OneFantasy.Api.Models.Competitions;
-using OneFantasy.Api.Models.Minigames;
+using OneFantasy.Api.Models.Participations.Minigames;
 
-namespace OneFantasy.Api.Models.MinigameOptions
+namespace OneFantasy.Api.Models.Participations.MinigameOptions
 {
     public class OptionPlayer : Option
     {
@@ -11,8 +11,10 @@ namespace OneFantasy.Api.Models.MinigameOptions
         public OptionPlayer(int price, Player player) : base(price)
         {
             Player = player;
+            PlayerId = player.Id;
         }
 
+        public int PlayerId { get; set; }
         public Player Player { get; set; }
     }
 }

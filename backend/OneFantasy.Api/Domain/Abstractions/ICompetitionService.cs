@@ -7,9 +7,9 @@ namespace OneFantasy.Api.Domain.Abstractions
 {
     public interface ICompetitionService
     {
-        Task<Competition> CreateAsync(CompetitionDto dto);
-        Task<Competition> UpdateAsync(int id, CompetitionDto dto);
-        Task<Competition> GetByIdAsync(int id);
-        Task<IEnumerable<Competition>> GetAllAsync();
+        Task<CompetitionDtoResponse> CreateAsync(CompetitionDto dto);
+        Task<CompetitionDtoResponse> UpdateAsync(int id, CompetitionDto dto);
+        Task<CompetitionDtoResponse> GetByIdAsync(int id);
+        Task<IEnumerable<CompetitionDtoResponse>> GetAllAsync();
     }
 }

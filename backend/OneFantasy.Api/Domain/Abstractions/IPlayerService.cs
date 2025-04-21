@@ -7,9 +7,9 @@ namespace OneFantasy.Api.Domain.Abstractions
 {
     public interface IPlayerService
     {
-        Task<Player> CreateAsync(int teamId, PlayerDto dto);
-        Task<Player> UpdateAsync(int playerId, PlayerDto dto);
-        Task<IEnumerable<Player>> GetByTeamAsync(int teamId);
-        Task<Player> GetByIdAsync(int playerId);
+        Task<PlayerDtoResponse> CreateAsync(int teamId, PlayerDto dto);
+        Task<PlayerDtoResponse> UpdateAsync(int playerId, PlayerDto dto);
+        Task<IEnumerable<PlayerDtoResponse>> GetByTeamAsync(int teamId);
+        Task<PlayerDtoResponse> GetByIdAsync(int playerId);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace OneFantasy.Api.Models.MinigameOptions
+﻿using OneFantasy.Api.Models.Participations.Minigames;
+
+namespace OneFantasy.Api.Models.Participations.MinigameOptions
 {
     public class OptionScore : Option
     {

@@ -1,6 +1,6 @@
-﻿using OneFantasy.Api.Models.Minigames;
+﻿using OneFantasy.Api.Models.Participations.Minigames;
 
-namespace OneFantasy.Api.Models.MinigameOptions
+namespace OneFantasy.Api.Models.Participations.MinigameOptions
 {
     public class Option
     {
@@ -13,7 +13,7 @@ namespace OneFantasy.Api.Models.MinigameOptions
         }
 
         public int MinigameId { get; set; }
-        public Minigame Minigame { get; set; } = null!;
+        public Minigame Minigame { get; set; }
         public int Id { get; set; }
         public int Price { get; set; }
 
