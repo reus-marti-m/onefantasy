@@ -54,7 +54,7 @@ namespace OneFantasy.Api.Domain.Implementations
             // Validations ok
             var entity = _mapper.Map<ParticipationStandard>(dto, opts =>
             {
-                opts.Items["Season"] = season;
+                opts.Items["season"] = season;
             });
             _db.Participations.Add(entity);
             await _db.SaveChangesAsync();
@@ -73,7 +73,7 @@ namespace OneFantasy.Api.Domain.Implementations
             // Validations ok
             var entity = _mapper.Map<ParticipationSpecial>(dto, opts =>
             {
-                opts.Items["Season"] = season;
+                opts.Items["season"] = season;
             });
             _db.Participations.Add(entity);
             await _db.SaveChangesAsync();
@@ -92,7 +92,7 @@ namespace OneFantasy.Api.Domain.Implementations
             // Validations ok
             var entity = _mapper.Map<ParticipationExtra>(dto, opts =>
             {
-                opts.Items["Season"] = season;
+                opts.Items["season"] = season;
             });
             _db.Participations.Add(entity);
             await _db.SaveChangesAsync();

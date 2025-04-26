@@ -1,4 +1,8 @@
-﻿using OneFantasy.Api.Models.Participations.MinigameGroups;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text.RegularExpressions;
+using OneFantasy.Api.Models.Participations.MinigameGroups;
 using OneFantasy.Api.Models.Participations.MinigameOptions;
 
 namespace OneFantasy.Api.Models.Participations.Minigames
@@ -10,19 +14,20 @@ namespace OneFantasy.Api.Models.Participations.Minigames
 
         public MinigameResult(OptionTeam homeVictory, int drawPrice, OptionTeam visitingVictory)
         {
-            HomeVictory = homeVictory;
-            Draw = new Option(drawPrice);
-            VisitingVictory = visitingVictory;
+            Options.Add(homeVictory);
+            Options.Add(new Option(drawPrice));
+            Options.Add(visitingVictory);
         }
 
-        public int DrawId { get; set; }
-        public Option Draw { get; set; }
+        //public int DrawId { get; set; }
+        [NotMapped]
+        public Option Draw => Options.OfType<Option>().Single();
 
-        public int HomeVictoryId { get; set; }
-        public OptionTeam HomeVictory { get; set; }
+        [NotMapped]
+        public OptionTeam HomeVictory => Options.OfType<OptionTeam>().First();
 
-        public int VisitingVictoryId { get; set; }
-        public OptionTeam VisitingVictory { get; set; }
+        [NotMapped]
+        public OptionTeam VisitingVictory => Options.OfType<OptionTeam>().Last();
 
     }
 }

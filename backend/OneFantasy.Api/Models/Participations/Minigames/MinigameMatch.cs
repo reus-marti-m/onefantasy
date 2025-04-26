@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using OneFantasy.Api.Models.Participations.MinigameGroups;
 using OneFantasy.Api.Models.Participations.MinigameOptions;
@@ -18,6 +19,8 @@ namespace OneFantasy.Api.Models.Participations.Minigames
         }
 
         public MinigameMatchType Type { get; set; }
+
+        [NotMapped]
         public List<OptionInterval> IntervalOptions => [.. Options.OfType<OptionInterval>()];
 
         public enum MinigameMatchType

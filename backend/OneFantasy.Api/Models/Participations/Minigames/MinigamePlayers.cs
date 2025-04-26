@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using OneFantasy.Api.Models.Participations.MinigameOptions;
 
@@ -16,7 +17,9 @@ namespace OneFantasy.Api.Models.Participations.Minigames
             Type = type;
         }
 
+        [NotMapped]
         public List<OptionPlayer> PlayerOptions => [.. Options.OfType<OptionPlayer>()];
+
         public MinigamePlayersType Type { get; set; }
 
         public enum MinigamePlayersType

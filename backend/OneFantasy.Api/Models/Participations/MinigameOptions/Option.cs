@@ -16,6 +16,7 @@ namespace OneFantasy.Api.Models.Participations.MinigameOptions
         public Minigame Minigame { get; set; }
         public int Id { get; set; }
         public int Price { get; set; }
+        public bool HasOccurred { get; set; }
 
     }
 }

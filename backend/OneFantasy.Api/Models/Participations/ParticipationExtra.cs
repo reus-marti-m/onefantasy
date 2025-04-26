@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using OneFantasy.Api.Models.Competitions;
 using OneFantasy.Api.Models.Participations.MinigameGroups;
 
@@ -13,12 +15,15 @@ namespace OneFantasy.Api.Models.Participations
             DateTime date, Season season, MinigameGroupMatch2A minigameGroupMatch2A, MinigameGroupMatch2B minigameGroupMatch2B
         ) : base(date, season)
         {
-            MinigameGroupMatch2A = minigameGroupMatch2A;
-            MinigameGroupMatch2B = minigameGroupMatch2B;
+            Groups.Add(minigameGroupMatch2A);
+            Groups.Add(minigameGroupMatch2B);
         }
 
-        public MinigameGroupMatch2A MinigameGroupMatch2A { get; set; }
-        public MinigameGroupMatch2B MinigameGroupMatch2B { get; set; }
+        [NotMapped]
+        public MinigameGroupMatch2A MinigameGroupMatch2A => Groups.OfType<MinigameGroupMatch2A>().Single();
+
+        [NotMapped]
+        public MinigameGroupMatch2B MinigameGroupMatch2B => Groups.OfType<MinigameGroupMatch2B>().Single();
 
     }
 }

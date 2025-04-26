@@ -27,7 +27,7 @@ namespace OneFantasy.Api.Domain.Implementations
 
             var player = _mapper.Map<Player>(dto, opts =>
             {
-                opts.Items["team"] = team;
+                opts.Items["Team"] = team;
             });
             _db.Players.Add(player);
             await _db.SaveChangesAsync();

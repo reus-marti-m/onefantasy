@@ -28,9 +28,9 @@ namespace OneFantasy.Api.Controllers
 
             var team = await _teamSvc.CreateAsync(seasonId, dto);
 
-            if (dto.Players != null)
-                foreach (var p in dto.Players)
-                    await _playerSvc.CreateAsync(team.Id, p);
+            //if (dto.Players != null)
+            //    foreach (var p in dto.Players)
+            //        await _playerSvc.CreateAsync(team.Id, p);
 
             await tx.CommitAsync();
 
@@ -47,9 +47,9 @@ namespace OneFantasy.Api.Controllers
 
             var team = await _teamSvc.UpdateAsync(teamId, dto);
 
-            if (dto.Players != null)
-                foreach (var p in dto.Players)
-                    await _playerSvc.CreateAsync(team.Id, p);
+            //if (dto.Players != null)
+            //    foreach (var p in dto.Players)
+            //        await _playerSvc.CreateAsync(team.Id, p);
 
             await tx.CommitAsync();
 

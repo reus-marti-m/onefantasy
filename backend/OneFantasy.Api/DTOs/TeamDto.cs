@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using OneFantasy.Api.Models.Competitions;
 
 namespace OneFantasy.Api.DTOs
 {
@@ -19,5 +17,6 @@ namespace OneFantasy.Api.DTOs
     public class TeamDtoResponse : TeamDto
     {
         public int Id { get; set; }
+        public new IEnumerable<OptionPlayerDtoResponse> Players { get; set; } = [];
     }
 }

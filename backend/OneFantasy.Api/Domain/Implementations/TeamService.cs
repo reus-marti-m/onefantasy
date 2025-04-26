@@ -27,7 +27,7 @@ namespace OneFantasy.Api.Domain.Implementations
 
             var team = _mapper.Map<Team>(dto, opts =>
             {
-                opts.Items["Season"] = season;
+                opts.Items["season"] = season;
             });
             season.Teams.Add(team);
             await _db.SaveChangesAsync();

@@ -1,6 +1,7 @@
 ﻿using OneFantasy.Api.Models.Participations.MinigameGroups;
 using OneFantasy.Api.Models.Participations.MinigameOptions;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace OneFantasy.Api.Models.Participations.Minigames
@@ -16,6 +17,7 @@ namespace OneFantasy.Api.Models.Participations.Minigames
                 Options.Add(o);
         }
 
+        [NotMapped]
         public List<OptionScore> ScoreOptions => [.. Options.OfType<OptionScore>()];
 
     }
