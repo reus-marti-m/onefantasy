@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using static OneFantasy.Api.Models.Participations.Minigames.MinigameMatch;
 using static OneFantasy.Api.Models.Participations.Minigames.MinigamePlayers;
 
@@ -10,10 +11,24 @@ namespace OneFantasy.Api.DTOs
 
     #region "Participations"
 
+    public class ParticipationResultDto
+    {
+        [Required]
+        public int MinigameId { get; set; }
+
+        [Required]
+        public List<int> OcurredOptions { get; set; }
+    }
+
     public abstract class ParticipationDto
     {
         [Required]
         public DateTime Date { get; set; }
+    }
+
+    public interface IParticipationDtoResponse
+    {
+        public int Id { get; set; }
     }
 
     public class ParticipationStandartDto : ParticipationDto
@@ -25,7 +40,7 @@ namespace OneFantasy.Api.DTOs
         public MinigameGroupMatch3Dto MinigameGroupMatch3 { get; set; }
     }
 
-    public class ParticipationStandartDtoResponse : ParticipationStandartDto
+    public class ParticipationStandartDtoResponse : ParticipationStandartDto, IParticipationDtoResponse
     {
         public int Id { get; set; }
         public new MinigameGroupMultiDtoResponse MinigameGroupMulti { get; set; }
@@ -41,7 +56,7 @@ namespace OneFantasy.Api.DTOs
         public MinigameGroupMatch2BDto MinigameGroupMatch2B { get; set; }
     }
 
-    public class ParticipationExtraDtoResponse : ParticipationExtraDto
+    public class ParticipationExtraDtoResponse : ParticipationExtraDto, IParticipationDtoResponse
     {
         public int Id { get; set; }
         public new MinigameGroupMatch2ADtoResponse MinigameGroupMatch2A { get; set; }
@@ -57,7 +72,7 @@ namespace OneFantasy.Api.DTOs
         public MinigameGroupMatch2BDto MinigameGroupMatch2B { get; set; }
     }
 
-    public class ParticipationSpecialDtoResponse : ParticipationSpecialDto
+    public class ParticipationSpecialDtoResponse : ParticipationSpecialDto, IParticipationDtoResponse
     {
         public int Id { get; set; }
         public new MinigameGroupMatch2ADtoResponse MinigameGroupMatch2A { get; set; }
@@ -69,6 +84,11 @@ namespace OneFantasy.Api.DTOs
 
 
     #region "MinigameGroups"
+
+    public interface IMinigameGroupDtoResponse
+    {
+        public int Id { get; set; }
+    }
 
     public class MinigameGroupMultiDto
     {
@@ -82,7 +102,7 @@ namespace OneFantasy.Api.DTOs
         public MinigameResultDto Match3 { get; set; }
     }
 
-    public class MinigameGroupMultiDtoResponse : MinigameGroupMultiDto
+    public class MinigameGroupMultiDtoResponse : MinigameGroupMultiDto, IMinigameGroupDtoResponse
     {
         public int Id { get; set; }
 
@@ -109,7 +129,7 @@ namespace OneFantasy.Api.DTOs
         public int VisitingTeamId { get; set; }
     }
 
-    public class MinigameGroupMatch2ADtoResponse : MinigameGroupMatch2ADto
+    public class MinigameGroupMatch2ADtoResponse : MinigameGroupMatch2ADto, IMinigameGroupDtoResponse
     {
         public int Id { get; set; }
 
@@ -136,7 +156,7 @@ namespace OneFantasy.Api.DTOs
         public int VisitingTeamId { get; set; }
     }
 
-    public class MinigameGroupMatch3DtoResponse : MinigameGroupMatch3Dto
+    public class MinigameGroupMatch3DtoResponse : MinigameGroupMatch3Dto, IMinigameGroupDtoResponse
     {
         public int Id { get; set; }
         public new MinigameScoresDtoResponse MinigameScores { get; set; }
@@ -159,7 +179,7 @@ namespace OneFantasy.Api.DTOs
         public int VisitingTeamId { get; set; }
     }
 
-    public class MinigameGroupMatch2BDtoResponse : MinigameGroupMatch2BDto
+    public class MinigameGroupMatch2BDtoResponse : MinigameGroupMatch2BDto, IMinigameGroupDtoResponse
     {
         public int Id { get; set; }
         public new MinigameMatchDtoResponse MinigameMatch { get; set; }
@@ -170,6 +190,12 @@ namespace OneFantasy.Api.DTOs
 
 
     #region "Minigames"
+
+    public interface IMinigameDtoResponse
+    {
+        public int Id { get; set; }
+        public bool IsResolved { get; set; }
+    }
 
     public class MinigameResultDto
     {
@@ -183,7 +209,7 @@ namespace OneFantasy.Api.DTOs
         public OptionTeamDto VisitingVictory { get; set; }
     }
 
-    public class MinigameResultDtoResponse : MinigameResultDto
+    public class MinigameResultDtoResponse : MinigameResultDto, IMinigameDtoResponse
     {
         public int Id { get; set; }
         public bool IsResolved { get; set; }
@@ -200,7 +226,7 @@ namespace OneFantasy.Api.DTOs
         public MinigameMatchType Type { get; set; }
     }
 
-    public class MinigameMatchDtoResponse : MinigameMatchDto
+    public class MinigameMatchDtoResponse : MinigameMatchDto, IMinigameDtoResponse
     {
         public int Id { get; set; }
         public bool IsResolved { get; set; }
@@ -213,7 +239,7 @@ namespace OneFantasy.Api.DTOs
         public List<OptionScoreDto> Options { get; set; }
     }
 
-    public class MinigameScoresDtoResponse : MinigameScoresDto
+    public class MinigameScoresDtoResponse : MinigameScoresDto, IMinigameDtoResponse
     {
         public int Id { get; set; }
         public bool IsResolved { get; set; }
@@ -229,7 +255,7 @@ namespace OneFantasy.Api.DTOs
         public MinigamePlayersType Type { get; set; }
     }
 
-    public class MinigamePlayersDtoResponse : MinigamePlayersDto
+    public class MinigamePlayersDtoResponse : MinigamePlayersDto, IMinigameDtoResponse
     {
         public int Id { get; set; }
         public bool IsResolved { get; set; }
@@ -248,17 +274,27 @@ namespace OneFantasy.Api.DTOs
         public decimal Probability { get; set; }
     }
 
+    public interface IOptionDtoResponse
+    {
+        public int Id { get; set; }
+        public int Price { get; set; }
+        public bool HasOccurred { get; set; }
+    }
+
     public class OptionTeamDto : OptionDto
     {
         [Required]
         public int TeamId { get; set; }
     }
 
-    public class OptionTeamDtoResponse : OptionTeamDto
+    public class OptionTeamDtoResponse : OptionTeamDto, IOptionDtoResponse
     {
         public int Id { get; set; }
         public int Price { get; set; }
         public bool HasOccurred { get; set; }
+
+        [JsonIgnore]
+        public new decimal Probability { get; set; }
     }
 
     public class OptionScoreDto : OptionDto
@@ -272,11 +308,14 @@ namespace OneFantasy.Api.DTOs
         public int AwayGoals { get; set; }
     }
 
-    public class OptionScoreDtoResponse : OptionScoreDto
+    public class OptionScoreDtoResponse : OptionScoreDto, IOptionDtoResponse
     {
         public int Id { get; set; }
         public int Price { get; set; }
         public bool HasOccurred { get; set; }
+
+        [JsonIgnore]
+        public new decimal Probability { get; set; }
     }
 
     public class OptionPlayerDto : OptionDto
@@ -285,11 +324,14 @@ namespace OneFantasy.Api.DTOs
         public int PlayerId { get; set; }
     }
 
-    public class OptionPlayerDtoResponse : OptionPlayerDto
+    public class OptionPlayerDtoResponse : OptionPlayerDto, IOptionDtoResponse
     {
         public int Id { get; set; }
         public int Price { get; set; }
         public bool HasOccurred { get; set; }
+
+        [JsonIgnore]
+        public new decimal Probability { get; set; }
     }
 
     public class OptionIntervalDto : OptionDto
@@ -298,11 +340,14 @@ namespace OneFantasy.Api.DTOs
         public int? Max { get; set; }
     }
 
-    public class OptionIntervalDtoResponse : OptionIntervalDto
+    public class OptionIntervalDtoResponse : OptionIntervalDto, IOptionDtoResponse
     {
         public int Id { get; set; }
         public int Price { get; set; }
         public bool HasOccurred { get; set; }
+
+        [JsonIgnore]
+        public new decimal Probability { get; set; }
     }
 
     #endregion

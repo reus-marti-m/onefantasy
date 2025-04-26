@@ -2,38 +2,70 @@
 using Microsoft.AspNetCore.Mvc;
 using OneFantasy.Api.Domain.Abstractions;
 using OneFantasy.Api.DTOs;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OneFantasy.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/seasons/{seasonId:int}/participations")]
     public class ParticipationsController : ControllerBase
     {
         private readonly IParticipationService _service;
 
         public ParticipationsController(IParticipationService service)  => _service = service;
 
-        [HttpPost("{seasonId}/standard")]
+        [HttpPost("standard")]
         [Authorize(Policy = "RequireAdmin")]
-        public async Task<IActionResult> CreateStandard([FromRoute] int seasonId, [FromBody] ParticipationStandartDto dto) => Ok
+        public async Task<IActionResult> CreateStandard(int seasonId, [FromBody] ParticipationStandartDto body)
+        {
+            var dto = await _service.CreateStandardAsync(seasonId, body);
+            return CreatedAtAction
+            (
+                nameof(GetById),
+                new { seasonId, participationId = dto.Id },
+                dto
+            );
+        }
+
+        [HttpPost("special")]
+        [Authorize(Policy = "RequireAdmin")]
+        public async Task<IActionResult> CreateSpecial(int seasonId, [FromBody] ParticipationSpecialDto body)
+        {
+            var dto = await _service.CreateSpecialAsync(seasonId, body);
+            return CreatedAtAction
+            (
+                nameof(GetById),
+                new { seasonId, participationId = dto.Id },
+                dto
+            );
+        }
+
+        [HttpPost("extra")]
+        [Authorize(Policy = "RequireAdmin")]
+        public async Task<IActionResult> CreateExtra(int seasonId, [FromBody] ParticipationExtraDto body)
+        {
+            var dto = await _service.CreateExtraAsync(seasonId, body);
+            return CreatedAtAction
+            (
+                nameof(GetById),
+                new { seasonId, participationId = dto.Id },
+                dto
+            );
+        }
+
+        [HttpPost("{participationId:int}/resolve")]
+        [Authorize(Policy = "RequireAdmin")]
+        public async Task<IActionResult> ResolveMinigame(int seasonId, int participationId, [FromBody] List<ParticipationResultDto> dtos) => Ok
         (
-            await _service.CreateStandardAsync(seasonId, dto)
+            await _service.ResolveMinigamesAsync(seasonId, participationId, dtos)
         );
 
-        [HttpPost("{seasonId}/special")]
-        [Authorize(Policy = "RequireAdmin")]
-        public async Task<IActionResult> CreateSpecial([FromRoute] int seasonId, [FromBody] ParticipationSpecialDto dto) => Ok
-        (
-            await _service.CreateSpecialAsync(seasonId, dto)
-        );
+        [HttpGet]
+        public async Task<IActionResult> GetAll(int seasonId) => Ok(await _service.GetBySeasonAsync(seasonId));
 
-        [HttpPost("{seasonId}/extra")]
-        [Authorize(Policy = "RequireAdmin")]
-        public async Task<IActionResult> CreateExtra([FromRoute] int seasonId, [FromBody] ParticipationExtraDto dto) => Ok
-        (
-            await _service.CreateExtraAsync(seasonId, dto)
-        );
+        [HttpGet("{participationId:int}")]
+        public async Task<IActionResult> GetById(int seasonId, int participationId) => Ok(await _service.GetByIdAsync(seasonId, participationId));
 
     }
 }
