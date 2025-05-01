@@ -1,244 +1,240 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OneFantasy.Api.Models.Competitions;
 using OneFantasy.Api.Models.Participations;
-using OneFantasy.Api.Models.Seasons;
-using OneFantasy.Api.Models.MinigameGroups;
-using OneFantasy.Api.Models.Minigames;
-using OneFantasy.Api.Models.MinigameOptions;
 using OneFantasy.Api.Models.Authentication;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using OneFantasy.Api.Models.Participations.MinigameGroups;
+using OneFantasy.Api.Models.Participations.MinigameOptions;
+using OneFantasy.Api.Models.Participations.Minigames;
 
 namespace OneFantasy.Api.Data
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        // DbSet per a cada arrel d’entitat
         public DbSet<Competition> Competitions { get; set; }
-        public DbSet<CompetitionSeason> CompetitionSeasons { get; set; }
+        public DbSet<Season> Seasons { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Player> Players { get; set; }
-
         public DbSet<Participation> Participations { get; set; }
-        public DbSet<MinigameGroup> MinigameGroups { get; set; }
-        public DbSet<Minigame> Minigames { get; set; }
-        public DbSet<Option> Options { get; set; }
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
             base.OnModelCreating(mb);
 
-            //
-            // —— Competition ⟷ CompetitionSeason (1:N)
-            //
-            mb.Entity<Competition>()
-                .HasMany(c => c.Seasons)
-                .WithOne(s => s.Competition)
-                .HasForeignKey("CompetitionId")
-                .IsRequired();
+            mb.Entity<Competition>(e =>
+            {
+                e.HasKey(c => c.Id);
 
-            //
-            // —— CompetitionSeason ⟷ Team (1:N) and ⟷ Participation (1:N)
-            //
-            mb.Entity<CompetitionSeason>()
-                .HasMany(s => s.Teams)
-                .WithOne()
-                .HasForeignKey("CompetitionSeasonId")
-                .IsRequired();
+                e.Property(c => c.Name)
+                 .IsRequired()
+                 .HasMaxLength(200);
 
-            mb.Entity<CompetitionSeason>()
-                .HasMany(s => s.Participations)
-                .WithOne(p => p.CompetitionSeason)
-                .HasForeignKey("CompetitionSeasonId")
-                .IsRequired();
+                e.HasMany(c => c.Seasons)
+                 .WithOne(s => s.Competition)
+                 .HasForeignKey(s => s.CompetitionId)
+                 .IsRequired();
+            });
 
-            //
-            // —— Team ⟷ Player (1:N)
-            //
-            mb.Entity<Team>()
-                .HasMany(t => t.Players)
-                .WithOne(p => p.Team)
-                .HasForeignKey("TeamId")
-                .IsRequired();
+            mb.Entity<Season>(e =>
+            {
+                e.HasKey(s => s.Id);
 
-            //
-            // —— Participation inheritance TPH: ExtraOrSpecial, Standard
-            //
-            mb.Entity<Participation>()
-                .HasDiscriminator<string>("ParticipationType")
-                .HasValue<ParticipationExtraOrSpecial>("ExtraOrSpecial")
-                .HasValue<ParticipationStandard>("Standard");
+                e.Property(s => s.Year)
+                 .IsRequired();
 
-            //
-            // —— Participation ⟷ MinigameGroup (1:N)
-            //
-            mb.Entity<Participation>()
-                .HasMany<MinigameGroup>()
-                .WithOne(g => g.Participation)
-                .HasForeignKey("ParticipationId")
-                .IsRequired();
+                e.HasMany(s => s.Teams)
+                 .WithOne(t => t.Season)
+                 .HasForeignKey(t => t.SeasonId)
+                 .IsRequired();
 
-            //
-            // —— MinigameGroup inheritance TPH
-            //
-            mb.Entity<MinigameGroup>()
-                .HasDiscriminator<string>("GroupType")
-                .HasValue<MinigameGroupMatch2A>("Match2A")
-                .HasValue<MinigameGroupMatch2B>("Match2B")
-                .HasValue<MinigameGroupMatch3>("Match3")
-                .HasValue<MinigameGroupMulti>("Multi");
+                e.HasMany(s => s.Participations)
+                 .WithOne(p => p.Season)
+                 .HasForeignKey(p => p.SeasonId)
+                 .IsRequired();
+            });
 
-            //
-            // —— Group → Minigame relations (1:1) 
-            //     cada subtipo té nav propi, FK automàtic (shadow) 
-            //
-            mb.Entity<MinigameGroupMatch2A>()
-                .HasOne(g => g.MinigameScores)
-                .WithOne()
-                .HasForeignKey<MinigameGroupMatch2A>("MinigameScoresId")
-                .IsRequired();
+            mb.Entity<Team>(e =>
+            {
+                e.HasKey(t => t.Id);
+                e.Property(t => t.Name)
+                 .IsRequired()
+                 .HasMaxLength(100);
 
-            mb.Entity<MinigameGroupMatch2A>()
-                .HasOne(g => g.MinigamePlayers)
-                .WithOne()
-                .HasForeignKey<MinigameGroupMatch2A>("MinigamePlayersId")
-                .IsRequired();
+                e.Property(t => t.Abbreviation)
+                 .HasMaxLength(10);
 
-            mb.Entity<MinigameGroupMatch2A>()
-                .HasOne(g => g.HomeTeam)
-                .WithMany()
-                .HasForeignKey("HomeTeamId")
-                .IsRequired();
+                e.HasMany(t => t.Players)
+                 .WithOne(p => p.Team)
+                 .HasForeignKey(p => p.TeamId)
+                 .IsRequired();
+            });
 
-            mb.Entity<MinigameGroupMatch2A>()
-                .HasOne(g => g.VisitingTeam)
-                .WithMany()
-                .HasForeignKey("VisitingTeamId")
-                .IsRequired();
+            mb.Entity<Player>(e =>
+            {
+                e.HasKey(p => p.Id);
 
-            mb.Entity<MinigameGroupMatch2B>()
-                .HasOne(g => g.MinigameMatch)
-                .WithOne()
-                .HasForeignKey<MinigameGroupMatch2B>("MinigameMatchId")
-                .IsRequired();
+                e.Property(p => p.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+            });
 
-            mb.Entity<MinigameGroupMatch2B>()
-                .HasOne(g => g.MinigamePlayers)
-                .WithOne()
-                .HasForeignKey<MinigameGroupMatch2B>("MinigamePlayersId")
-                .IsRequired();
+            mb.Entity<Option>(e =>
+            {
+                e.ToTable("MinigameOptions");
+                e.HasKey(o => o.Id);
 
-            mb.Entity<MinigameGroupMatch2B>()
-                .HasOne(g => g.HomeTeam)
-                .WithMany()
-                .HasForeignKey("HomeTeamId")
-                .IsRequired();
+                e.Property(o => o.Price)
+                 .IsRequired();
 
-            mb.Entity<MinigameGroupMatch2B>()
-                .HasOne(g => g.VisitingTeam)
-                .WithMany()
-                .HasForeignKey("VisitingTeamId")
-                .IsRequired();
+                e.Property(o => o.HasOccurred)
+                 .IsRequired()
+                 .HasDefaultValue(false);
 
-            mb.Entity<MinigameGroupMatch3>()
-                .HasOne(g => g.MinigameScores)
-                .WithOne()
-                .HasForeignKey<MinigameGroupMatch3>("MinigameScoresId")
-                .IsRequired();
+                e.HasOne(o => o.Minigame)
+                 .WithMany(m => m.Options)
+                 .HasForeignKey(o => o.MinigameId)
+                 .IsRequired();
 
-            mb.Entity<MinigameGroupMatch3>()
-                .HasOne(g => g.MinigamePlayers1)
-                .WithOne()
-                .HasForeignKey<MinigameGroupMatch3>("MinigamePlayers1Id")
-                .IsRequired();
+                e.HasDiscriminator<string>("OptionType")
+                 .HasValue<Option>("Base")
+                 .HasValue<OptionInterval>("Interval")
+                 .HasValue<OptionPlayer>("Player")
+                 .HasValue<OptionScore>("Score")
+                 .HasValue<OptionTeam>("Team");
+            });
 
-            mb.Entity<MinigameGroupMatch3>()
-                .HasOne(g => g.MinigamePlayers2)
-                .WithOne()
-                .HasForeignKey<MinigameGroupMatch3>("MinigamePlayers2Id")
-                .IsRequired();
+            mb.Entity<OptionPlayer>(e =>
+            {
+                e.HasOne(o => o.Player)
+                 .WithMany()
+                 .HasForeignKey(o => o.PlayerId)
+                 .IsRequired();
+            });
 
-            mb.Entity<MinigameGroupMatch3>()
-                .HasOne(g => g.HomeTeam)
-                .WithMany()
-                .HasForeignKey("HomeTeamId")
-                .IsRequired();
+            mb.Entity<OptionTeam>(e =>
+            {
+                e.HasOne(o => o.Team)
+                 .WithMany()
+                 .HasForeignKey(o => o.TeamId)
+                 .IsRequired();
+            });
 
-            mb.Entity<MinigameGroupMatch3>()
-                .HasOne(g => g.VisitingTeam)
-                .WithMany()
-                .HasForeignKey("VisitingTeamId")
-                .IsRequired();
+            mb.Entity<Minigame>(e =>
+            {
+                e.HasKey(m => m.Id);
 
-            mb.Entity<MinigameGroupMulti>()
-                .HasOne(g => g.Match1)
-                .WithOne()
-                .HasForeignKey<MinigameGroupMulti>("Match1Id")
-                .IsRequired();
+                e.HasMany(m => m.Options)
+                 .WithOne(o => o.Minigame)
+                 .HasForeignKey(o => o.MinigameId)
+                 .IsRequired();
 
-            mb.Entity<MinigameGroupMulti>()
-                .HasOne(g => g.Match2)
-                .WithOne()
-                .HasForeignKey<MinigameGroupMulti>("Match2Id")
-                .IsRequired();
+                e.HasOne(m => m.Group)
+                 .WithMany(g => g.Minigames)
+                 .HasForeignKey(m => m.GroupId)
+                 .IsRequired();
 
-            mb.Entity<MinigameGroupMulti>()
-                .HasOne(g => g.Match3)
-                .WithOne()
-                .HasForeignKey<MinigameGroupMulti>("Match3Id")
-                .IsRequired();
+                e.Property(m => m.IsResolved)
+                 .IsRequired()
+                 .HasDefaultValue(false);
 
-            //
-            // —— Minigame inheritance TPH
-            //
-            mb.Entity<Minigame>()
-                .HasDiscriminator<string>("MinigameType")
-                .HasValue<MinigameMatch>("Match")
-                .HasValue<MinigamePlayers>("Players")
-                .HasValue<MinigameResult>("Result")
-                .HasValue<MinigameScores>("Scores");
+                e.HasDiscriminator<string>("MinigameType")
+                 .HasValue<MinigameMatch>("Match")
+                 .HasValue<MinigamePlayers>("Players")
+                 .HasValue<MinigameResult>("Result")
+                 .HasValue<MinigameScores>("Scores");
+            });
 
-            //
-            // —— Option inheritance TPH
-            //
-            mb.Entity<Option>()
-                .HasDiscriminator<string>("OptionType")
-                .HasValue<OptionInterval>("Interval")
-                .HasValue<OptionPlayer>("Player")
-                .HasValue<OptionScore>("Score")
-                .HasValue<OptionTeam>("Team");
+            mb.Entity<MinigameMatch>(e =>
+            {
+                e.Property(m => m.Type)
+                 .IsRequired();
+            });
 
-            //
-            // —— MinigameMatch/Players/Scores → Options (1:N) com a entitats normals
-            //
-            mb.Entity<Option>()
-                .HasOne(o => o.Minigame)
-                .WithMany()               // sense llista a la punta “1”, ja que no la tens al base
-                .HasForeignKey(o => o.MinigameId)
-                .IsRequired();
-            //
-            // —— MinigameResult → Draw, HomeVictory, VisitingVictory (1:1)
-            //
-            // (suposant que has afegit DrawId, HomeVictoryId i VisitingVictoryId com a FK a MinigameResult)
-            mb.Entity<MinigameResult>()
-                .HasOne(m => m.Draw)
-                .WithMany()
-                .HasForeignKey("DrawId")
-                .IsRequired();
+            mb.Entity<MinigamePlayers>(e =>
+            {
+                e.Property(m => m.Type)
+                 .IsRequired();
+            });
 
-            mb.Entity<MinigameResult>()
-                .HasOne(m => m.HomeVictory)
-                .WithMany()
-                .HasForeignKey("HomeVictoryId")
-                .IsRequired();
+            mb.Entity<MinigameGroup>(e =>
+            {
+                e.HasKey(g => g.Id);
 
-            mb.Entity<MinigameResult>()
-                .HasOne(m => m.VisitingVictory)
-                .WithMany()
-                .HasForeignKey("VisitingVictoryId")
-                .IsRequired();
+                e.HasMany(p => p.Minigames)
+                    .WithOne(m => m.Group)
+                    .HasForeignKey(p => p.GroupId)
+                    .IsRequired();
+
+                e.HasDiscriminator<string>("GroupType")
+                 .HasValue<MinigameGroupMatch2A>("Match2A")
+                 .HasValue<MinigameGroupMatch2B>("Match2B")
+                 .HasValue<MinigameGroupMatch3>("Match3")
+                 .HasValue<MinigameGroupMulti>("Multi");
+            });
+
+            mb.Entity<MinigameGroupMatch2A>(e =>
+            {
+                e.HasOne(g => g.HomeTeam)
+                 .WithMany()
+                 .HasForeignKey(g => g.HomeTeamId)
+                 .IsRequired();
+
+                e.HasOne(g => g.VisitingTeam)
+                 .WithMany()
+                 .HasForeignKey(g => g.VisitingTeamId)
+                 .IsRequired();
+            });
+
+            mb.Entity<MinigameGroupMatch2B>(e =>
+            {
+                e.HasOne(g => g.HomeTeam)
+                 .WithMany()
+                 .HasForeignKey(g => g.HomeTeamId)
+                 .IsRequired();
+
+                e.HasOne(g => g.VisitingTeam)
+                 .WithMany()
+                 .HasForeignKey(g => g.VisitingTeamId)
+                 .IsRequired();
+            });
+
+            mb.Entity<MinigameGroupMatch3>(e =>
+            {
+                e.HasOne(g => g.HomeTeam)
+                 .WithMany()
+                 .HasForeignKey(g => g.HomeTeamId)
+                 .IsRequired();
+
+                e.HasOne(g => g.VisitingTeam)
+                 .WithMany()
+                 .HasForeignKey(g => g.VisitingTeamId)
+                 .IsRequired();
+            });
+
+            mb.Entity<Participation>(e =>
+            {
+                e.HasKey(p => p.Id);
+
+                e.Property(p => p.Date)
+                    .IsRequired();
+
+                e.HasOne(p => p.Season)
+                    .WithMany(s => s.Participations)
+                    .HasForeignKey(p => p.SeasonId)
+                    .IsRequired();
+
+                e.HasMany(p => p.Groups)
+                    .WithOne(g => g.Participation)
+                    .HasForeignKey(g => g.ParticipationId)
+                    .IsRequired();
+
+                e.HasDiscriminator<string>("ParticipationType")
+                    .HasValue<ParticipationExtra>("Extra")
+                    .HasValue<ParticipationSpecial>("Special")
+                    .HasValue<ParticipationStandard>("Standard");
+            });
         }
     }
 }

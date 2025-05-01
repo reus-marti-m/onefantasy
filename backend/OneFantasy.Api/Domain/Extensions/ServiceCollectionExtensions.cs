@@ -11,6 +11,10 @@ namespace OneFantasy.Api.Domain.Extensions
         {
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICompetitionService, CompetitionService>();
+            services.AddScoped<IPlayerService, PlayerService>();
+            services.AddScoped<ISeasonService, SeasonService>();
+            services.AddScoped<ITeamService, TeamService>();
+            services.AddScoped<IParticipationService, ParticipationService>();
             return services;
         }
 

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OneFantasy.Api.Domain.Exceptions;
 
-
 namespace OneFantasy.Api.Controllers
 {
     [ApiController]
@@ -16,43 +15,13 @@ namespace OneFantasy.Api.Controllers
         {
             var ex = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
 
-            // 409 Conflict
-            if (ex is DuplicateCompetitionException dup)
+            // Typed exceptions
+            if (ex is ApiException apiEx)
             {
                 return Problem(
-                    title: "Conflict",
-                    detail: dup.Message,
-                    statusCode: StatusCodes.Status409Conflict
-                );
-            }
-
-            // 404 Not Found
-            if (ex is NotFoundException nf)
-            {
-                return Problem(
-                    title: "Not Found",
-                    detail: nf.Message,
-                    statusCode: StatusCodes.Status404NotFound
-                );
-            }
-
-            // 401 Unauthorized for invalid credentials
-            if (ex is InvalidCredentialsException ic)
-            {
-                return Problem(
-                    title: "Invalid Credentials",
-                    detail: ic.Message,
-                    statusCode: StatusCodes.Status401Unauthorized
-                );
-            }
-
-            // 403 Forbidden for unauthorized admin actions
-            if (ex is UnauthorizedAdminException ua)
-            {
-                return Problem(
-                    title: "Forbidden",
-                    detail: ua.Message,
-                    statusCode: StatusCodes.Status403Forbidden
+                   title: apiEx.Title,
+                   detail: apiEx.Message,
+                   statusCode: apiEx.StatusCode
                 );
             }
 

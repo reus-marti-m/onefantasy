@@ -1,5 +1,7 @@
 ﻿using System;
-using OneFantasy.Api.Models.Seasons;
+using System.Collections.Generic;
+using OneFantasy.Api.Models.Competitions;
+using OneFantasy.Api.Models.Participations.MinigameGroups;
 
 namespace OneFantasy.Api.Models.Participations
 {
@@ -8,15 +10,18 @@ namespace OneFantasy.Api.Models.Participations
 
         protected Participation() { }
 
-        public Participation(DateTime date, CompetitionSeason competitionSeason)
+        protected Participation(DateTime date, Season season)
         {
             Date = date;
-            CompetitionSeason = competitionSeason;
+            Season = season;
+            SeasonId = season.Id;
         }
 
         public int Id { get; set; }
         public DateTime Date { get; set; }
-        public CompetitionSeason CompetitionSeason { get; set; }
+        public int SeasonId { get; set; }
+        public Season Season { get; set; }
+        public virtual ICollection<MinigameGroup> Groups { get; set; } = [];
 
     }
 }

@@ -219,6 +219,8 @@ namespace OneFantasy.Api.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Type")
@@ -229,7 +231,72 @@ namespace OneFantasy.Api.Migrations
                     b.ToTable("Competitions");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameGroups.MinigameGroup", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Competitions.Player", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("Players");
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Competitions.Season", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CompetitionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompetitionId");
+
+                    b.ToTable("Seasons");
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Competitions.Team", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Abbreviation")
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SeasonId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SeasonId");
+
+                    b.ToTable("Teams");
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -247,18 +314,23 @@ namespace OneFantasy.Api.Migrations
 
                     b.HasIndex("ParticipationId");
 
-                    b.ToTable("MinigameGroups");
+                    b.ToTable("MinigameGroup");
 
                     b.HasDiscriminator<string>("GroupType").HasValue("MinigameGroup");
 
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameOptions.Option", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameOptions.Option", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<bool>("HasOccurred")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("MinigameId")
                         .HasColumnType("INTEGER");
@@ -275,21 +347,26 @@ namespace OneFantasy.Api.Migrations
 
                     b.HasIndex("MinigameId");
 
-                    b.ToTable("Options");
+                    b.ToTable("MinigameOptions", (string)null);
 
-                    b.HasDiscriminator<string>("OptionType").HasValue("Option");
+                    b.HasDiscriminator<string>("OptionType").HasValue("Base");
 
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Minigames.Minigame", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.Minigames.Minigame", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("GroupId")
+                    b.Property<int>("GroupId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsResolved")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("MinigameType")
                         .IsRequired()
@@ -300,7 +377,7 @@ namespace OneFantasy.Api.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Minigames");
+                    b.ToTable("Minigame");
 
                     b.HasDiscriminator<string>("MinigameType").HasValue("Minigame");
 
@@ -313,20 +390,20 @@ namespace OneFantasy.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CompetitionSeasonId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ParticipationType")
                         .IsRequired()
-                        .HasMaxLength(21)
+                        .HasMaxLength(13)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("SeasonId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompetitionSeasonId");
+                    b.HasIndex("SeasonId");
 
                     b.ToTable("Participations");
 
@@ -335,106 +412,28 @@ namespace OneFantasy.Api.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Seasons.CompetitionSeason", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroupMatch2A", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CompetitionId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompetitionId");
-
-                    b.ToTable("CompetitionSeasons");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.Seasons.Player", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("TeamId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("Players");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.Seasons.Team", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Abbreviation")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("CompetitionSeasonId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompetitionSeasonId");
-
-                    b.ToTable("Teams");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch2A", b =>
-                {
-                    b.HasBaseType("OneFantasy.Api.Models.MinigameGroups.MinigameGroup");
+                    b.HasBaseType("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroup");
 
                     b.Property<int>("HomeTeamId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MinigamePlayersId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MinigameScoresId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("VisitingTeamId")
                         .HasColumnType("INTEGER");
 
                     b.HasIndex("HomeTeamId");
-
-                    b.HasIndex("MinigamePlayersId")
-                        .IsUnique();
-
-                    b.HasIndex("MinigameScoresId")
-                        .IsUnique();
 
                     b.HasIndex("VisitingTeamId");
 
                     b.HasDiscriminator().HasValue("Match2A");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch2B", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroupMatch2B", b =>
                 {
-                    b.HasBaseType("OneFantasy.Api.Models.MinigameGroups.MinigameGroup");
+                    b.HasBaseType("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroup");
 
                     b.Property<int>("HomeTeamId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MinigameMatchId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MinigamePlayersId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("VisitingTeamId")
@@ -442,21 +441,12 @@ namespace OneFantasy.Api.Migrations
 
                     b.HasIndex("HomeTeamId");
 
-                    b.HasIndex("MinigameMatchId")
-                        .IsUnique();
-
-                    b.HasIndex("MinigamePlayersId")
-                        .IsUnique();
-
                     b.HasIndex("VisitingTeamId");
 
-                    b.ToTable("MinigameGroups", t =>
+                    b.ToTable("MinigameGroup", t =>
                         {
                             t.Property("HomeTeamId")
                                 .HasColumnName("MinigameGroupMatch2B_HomeTeamId");
-
-                            t.Property("MinigamePlayersId")
-                                .HasColumnName("MinigameGroupMatch2B_MinigamePlayersId");
 
                             t.Property("VisitingTeamId")
                                 .HasColumnName("MinigameGroupMatch2B_VisitingTeamId");
@@ -465,20 +455,11 @@ namespace OneFantasy.Api.Migrations
                     b.HasDiscriminator().HasValue("Match2B");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch3", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroupMatch3", b =>
                 {
-                    b.HasBaseType("OneFantasy.Api.Models.MinigameGroups.MinigameGroup");
+                    b.HasBaseType("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroup");
 
                     b.Property<int>("HomeTeamId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MinigamePlayers1Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MinigamePlayers2Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MinigameScoresId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("VisitingTeamId")
@@ -486,24 +467,12 @@ namespace OneFantasy.Api.Migrations
 
                     b.HasIndex("HomeTeamId");
 
-                    b.HasIndex("MinigamePlayers1Id")
-                        .IsUnique();
-
-                    b.HasIndex("MinigamePlayers2Id")
-                        .IsUnique();
-
-                    b.HasIndex("MinigameScoresId")
-                        .IsUnique();
-
                     b.HasIndex("VisitingTeamId");
 
-                    b.ToTable("MinigameGroups", t =>
+                    b.ToTable("MinigameGroup", t =>
                         {
                             t.Property("HomeTeamId")
                                 .HasColumnName("MinigameGroupMatch3_HomeTeamId");
-
-                            t.Property("MinigameScoresId")
-                                .HasColumnName("MinigameGroupMatch3_MinigameScoresId");
 
                             t.Property("VisitingTeamId")
                                 .HasColumnName("MinigameGroupMatch3_VisitingTeamId");
@@ -512,34 +481,16 @@ namespace OneFantasy.Api.Migrations
                     b.HasDiscriminator().HasValue("Match3");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMulti", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroupMulti", b =>
                 {
-                    b.HasBaseType("OneFantasy.Api.Models.MinigameGroups.MinigameGroup");
-
-                    b.Property<int>("Match1Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Match2Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Match3Id")
-                        .HasColumnType("INTEGER");
-
-                    b.HasIndex("Match1Id")
-                        .IsUnique();
-
-                    b.HasIndex("Match2Id")
-                        .IsUnique();
-
-                    b.HasIndex("Match3Id")
-                        .IsUnique();
+                    b.HasBaseType("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroup");
 
                     b.HasDiscriminator().HasValue("Multi");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameOptions.OptionInterval", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameOptions.OptionInterval", b =>
                 {
-                    b.HasBaseType("OneFantasy.Api.Models.MinigameOptions.Option");
+                    b.HasBaseType("OneFantasy.Api.Models.Participations.MinigameOptions.Option");
 
                     b.Property<int?>("Max")
                         .HasColumnType("INTEGER");
@@ -547,34 +498,24 @@ namespace OneFantasy.Api.Migrations
                     b.Property<int?>("Min")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MinigameMatchId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasIndex("MinigameMatchId");
-
                     b.HasDiscriminator().HasValue("Interval");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameOptions.OptionPlayer", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameOptions.OptionPlayer", b =>
                 {
-                    b.HasBaseType("OneFantasy.Api.Models.MinigameOptions.Option");
+                    b.HasBaseType("OneFantasy.Api.Models.Participations.MinigameOptions.Option");
 
-                    b.Property<int?>("MinigamePlayersId")
+                    b.Property<int>("PlayerId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<int?>("PlayerId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasIndex("MinigamePlayersId");
 
                     b.HasIndex("PlayerId");
 
                     b.HasDiscriminator().HasValue("Player");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameOptions.OptionScore", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameOptions.OptionScore", b =>
                 {
-                    b.HasBaseType("OneFantasy.Api.Models.MinigameOptions.Option");
+                    b.HasBaseType("OneFantasy.Api.Models.Participations.MinigameOptions.Option");
 
                     b.Property<int>("AwayGoals")
                         .HasColumnType("INTEGER");
@@ -582,19 +523,14 @@ namespace OneFantasy.Api.Migrations
                     b.Property<int>("HomeGoals")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MinigameScoresId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasIndex("MinigameScoresId");
-
                     b.HasDiscriminator().HasValue("Score");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameOptions.OptionTeam", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameOptions.OptionTeam", b =>
                 {
-                    b.HasBaseType("OneFantasy.Api.Models.MinigameOptions.Option");
+                    b.HasBaseType("OneFantasy.Api.Models.Participations.MinigameOptions.Option");
 
-                    b.Property<int?>("TeamId")
+                    b.Property<int>("TeamId")
                         .HasColumnType("INTEGER");
 
                     b.HasIndex("TeamId");
@@ -602,9 +538,9 @@ namespace OneFantasy.Api.Migrations
                     b.HasDiscriminator().HasValue("Team");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Minigames.MinigameMatch", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.Minigames.MinigameMatch", b =>
                 {
-                    b.HasBaseType("OneFantasy.Api.Models.Minigames.Minigame");
+                    b.HasBaseType("OneFantasy.Api.Models.Participations.Minigames.Minigame");
 
                     b.Property<int>("Type")
                         .HasColumnType("INTEGER");
@@ -612,14 +548,14 @@ namespace OneFantasy.Api.Migrations
                     b.HasDiscriminator().HasValue("Match");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Minigames.MinigamePlayers", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.Minigames.MinigamePlayers", b =>
                 {
-                    b.HasBaseType("OneFantasy.Api.Models.Minigames.Minigame");
+                    b.HasBaseType("OneFantasy.Api.Models.Participations.Minigames.Minigame");
 
                     b.Property<int>("Type")
                         .HasColumnType("INTEGER");
 
-                    b.ToTable("Minigames", t =>
+                    b.ToTable("Minigame", t =>
                         {
                             t.Property("Type")
                                 .HasColumnName("MinigamePlayers_Type");
@@ -628,65 +564,37 @@ namespace OneFantasy.Api.Migrations
                     b.HasDiscriminator().HasValue("Players");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Minigames.MinigameResult", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.Minigames.MinigameResult", b =>
                 {
-                    b.HasBaseType("OneFantasy.Api.Models.Minigames.Minigame");
-
-                    b.Property<int>("DrawId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("HomeVictoryId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("VisitingVictoryId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasIndex("DrawId");
-
-                    b.HasIndex("HomeVictoryId");
-
-                    b.HasIndex("VisitingVictoryId");
+                    b.HasBaseType("OneFantasy.Api.Models.Participations.Minigames.Minigame");
 
                     b.HasDiscriminator().HasValue("Result");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Minigames.MinigameScores", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.Minigames.MinigameScores", b =>
                 {
-                    b.HasBaseType("OneFantasy.Api.Models.Minigames.Minigame");
+                    b.HasBaseType("OneFantasy.Api.Models.Participations.Minigames.Minigame");
 
                     b.HasDiscriminator().HasValue("Scores");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Participations.ParticipationExtraOrSpecial", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.ParticipationExtra", b =>
                 {
                     b.HasBaseType("OneFantasy.Api.Models.Participations.Participation");
 
-                    b.Property<int?>("MinigameGroupMatch2AId")
-                        .HasColumnType("INTEGER");
+                    b.HasDiscriminator().HasValue("Extra");
+                });
 
-                    b.Property<int?>("MinigameGroupMatch2BId")
-                        .HasColumnType("INTEGER");
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.ParticipationSpecial", b =>
+                {
+                    b.HasBaseType("OneFantasy.Api.Models.Participations.Participation");
 
-                    b.HasIndex("MinigameGroupMatch2AId");
-
-                    b.HasIndex("MinigameGroupMatch2BId");
-
-                    b.HasDiscriminator().HasValue("ExtraOrSpecial");
+                    b.HasDiscriminator().HasValue("Special");
                 });
 
             modelBuilder.Entity("OneFantasy.Api.Models.Participations.ParticipationStandard", b =>
                 {
                     b.HasBaseType("OneFantasy.Api.Models.Participations.Participation");
-
-                    b.Property<int?>("MinigameGroupMatch3Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("MinigameGroupMultiId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasIndex("MinigameGroupMatch3Id");
-
-                    b.HasIndex("MinigameGroupMultiId");
 
                     b.HasDiscriminator().HasValue("Standard");
                 });
@@ -742,49 +650,18 @@ namespace OneFantasy.Api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameGroups.MinigameGroup", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Competitions.Player", b =>
                 {
-                    b.HasOne("OneFantasy.Api.Models.Participations.Participation", "Participation")
-                        .WithMany()
-                        .HasForeignKey("ParticipationId")
+                    b.HasOne("OneFantasy.Api.Models.Competitions.Team", "Team")
+                        .WithMany("Players")
+                        .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Participation");
+                    b.Navigation("Team");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameOptions.Option", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.Minigames.Minigame", "Minigame")
-                        .WithMany()
-                        .HasForeignKey("MinigameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Minigame");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.Minigames.Minigame", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.MinigameGroups.MinigameGroup", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId");
-
-                    b.Navigation("Group");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.Participations.Participation", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.Seasons.CompetitionSeason", "CompetitionSeason")
-                        .WithMany("Participations")
-                        .HasForeignKey("CompetitionSeasonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CompetitionSeason");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.Seasons.CompetitionSeason", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Competitions.Season", b =>
                 {
                     b.HasOne("OneFantasy.Api.Models.Competitions.Competition", "Competition")
                         .WithMany("Seasons")
@@ -795,10 +672,133 @@ namespace OneFantasy.Api.Migrations
                     b.Navigation("Competition");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Seasons.Player", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Competitions.Team", b =>
                 {
-                    b.HasOne("OneFantasy.Api.Models.Seasons.Team", "Team")
-                        .WithMany("Players")
+                    b.HasOne("OneFantasy.Api.Models.Competitions.Season", "Season")
+                        .WithMany("Teams")
+                        .HasForeignKey("SeasonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Season");
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroup", b =>
+                {
+                    b.HasOne("OneFantasy.Api.Models.Participations.Participation", "Participation")
+                        .WithMany("Groups")
+                        .HasForeignKey("ParticipationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Participation");
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameOptions.Option", b =>
+                {
+                    b.HasOne("OneFantasy.Api.Models.Participations.Minigames.Minigame", "Minigame")
+                        .WithMany("Options")
+                        .HasForeignKey("MinigameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Minigame");
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.Minigames.Minigame", b =>
+                {
+                    b.HasOne("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroup", "Group")
+                        .WithMany("Minigames")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.Participation", b =>
+                {
+                    b.HasOne("OneFantasy.Api.Models.Competitions.Season", "Season")
+                        .WithMany("Participations")
+                        .HasForeignKey("SeasonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Season");
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroupMatch2A", b =>
+                {
+                    b.HasOne("OneFantasy.Api.Models.Competitions.Team", "HomeTeam")
+                        .WithMany()
+                        .HasForeignKey("HomeTeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OneFantasy.Api.Models.Competitions.Team", "VisitingTeam")
+                        .WithMany()
+                        .HasForeignKey("VisitingTeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HomeTeam");
+
+                    b.Navigation("VisitingTeam");
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroupMatch2B", b =>
+                {
+                    b.HasOne("OneFantasy.Api.Models.Competitions.Team", "HomeTeam")
+                        .WithMany()
+                        .HasForeignKey("HomeTeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OneFantasy.Api.Models.Competitions.Team", "VisitingTeam")
+                        .WithMany()
+                        .HasForeignKey("VisitingTeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HomeTeam");
+
+                    b.Navigation("VisitingTeam");
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroupMatch3", b =>
+                {
+                    b.HasOne("OneFantasy.Api.Models.Competitions.Team", "HomeTeam")
+                        .WithMany()
+                        .HasForeignKey("HomeTeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OneFantasy.Api.Models.Competitions.Team", "VisitingTeam")
+                        .WithMany()
+                        .HasForeignKey("VisitingTeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HomeTeam");
+
+                    b.Navigation("VisitingTeam");
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameOptions.OptionPlayer", b =>
+                {
+                    b.HasOne("OneFantasy.Api.Models.Competitions.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameOptions.OptionTeam", b =>
+                {
+                    b.HasOne("OneFantasy.Api.Models.Competitions.Team", "Team")
+                        .WithMany()
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -806,278 +806,36 @@ namespace OneFantasy.Api.Migrations
                     b.Navigation("Team");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Seasons.Team", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.Seasons.CompetitionSeason", null)
-                        .WithMany("Teams")
-                        .HasForeignKey("CompetitionSeasonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch2A", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.Seasons.Team", "HomeTeam")
-                        .WithMany()
-                        .HasForeignKey("HomeTeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.Minigames.MinigamePlayers", "MinigamePlayers")
-                        .WithOne()
-                        .HasForeignKey("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch2A", "MinigamePlayersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.Minigames.MinigameScores", "MinigameScores")
-                        .WithOne()
-                        .HasForeignKey("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch2A", "MinigameScoresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.Seasons.Team", "VisitingTeam")
-                        .WithMany()
-                        .HasForeignKey("VisitingTeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("HomeTeam");
-
-                    b.Navigation("MinigamePlayers");
-
-                    b.Navigation("MinigameScores");
-
-                    b.Navigation("VisitingTeam");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch2B", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.Seasons.Team", "HomeTeam")
-                        .WithMany()
-                        .HasForeignKey("HomeTeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.Minigames.MinigameMatch", "MinigameMatch")
-                        .WithOne()
-                        .HasForeignKey("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch2B", "MinigameMatchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.Minigames.MinigamePlayers", "MinigamePlayers")
-                        .WithOne()
-                        .HasForeignKey("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch2B", "MinigamePlayersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.Seasons.Team", "VisitingTeam")
-                        .WithMany()
-                        .HasForeignKey("VisitingTeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("HomeTeam");
-
-                    b.Navigation("MinigameMatch");
-
-                    b.Navigation("MinigamePlayers");
-
-                    b.Navigation("VisitingTeam");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch3", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.Seasons.Team", "HomeTeam")
-                        .WithMany()
-                        .HasForeignKey("HomeTeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.Minigames.MinigamePlayers", "MinigamePlayers1")
-                        .WithOne()
-                        .HasForeignKey("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch3", "MinigamePlayers1Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.Minigames.MinigamePlayers", "MinigamePlayers2")
-                        .WithOne()
-                        .HasForeignKey("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch3", "MinigamePlayers2Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.Minigames.MinigameScores", "MinigameScores")
-                        .WithOne()
-                        .HasForeignKey("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch3", "MinigameScoresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.Seasons.Team", "VisitingTeam")
-                        .WithMany()
-                        .HasForeignKey("VisitingTeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("HomeTeam");
-
-                    b.Navigation("MinigamePlayers1");
-
-                    b.Navigation("MinigamePlayers2");
-
-                    b.Navigation("MinigameScores");
-
-                    b.Navigation("VisitingTeam");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMulti", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.Minigames.MinigameResult", "Match1")
-                        .WithOne()
-                        .HasForeignKey("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMulti", "Match1Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.Minigames.MinigameResult", "Match2")
-                        .WithOne()
-                        .HasForeignKey("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMulti", "Match2Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.Minigames.MinigameResult", "Match3")
-                        .WithOne()
-                        .HasForeignKey("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMulti", "Match3Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Match1");
-
-                    b.Navigation("Match2");
-
-                    b.Navigation("Match3");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameOptions.OptionInterval", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.Minigames.MinigameMatch", null)
-                        .WithMany("Options")
-                        .HasForeignKey("MinigameMatchId");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameOptions.OptionPlayer", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.Minigames.MinigamePlayers", null)
-                        .WithMany("Options")
-                        .HasForeignKey("MinigamePlayersId");
-
-                    b.HasOne("OneFantasy.Api.Models.Seasons.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId");
-
-                    b.Navigation("Player");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameOptions.OptionScore", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.Minigames.MinigameScores", null)
-                        .WithMany("Options")
-                        .HasForeignKey("MinigameScoresId");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.MinigameOptions.OptionTeam", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.Seasons.Team", "Team")
-                        .WithMany()
-                        .HasForeignKey("TeamId");
-
-                    b.Navigation("Team");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.Minigames.MinigameResult", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.MinigameOptions.Option", "Draw")
-                        .WithMany()
-                        .HasForeignKey("DrawId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.MinigameOptions.OptionTeam", "HomeVictory")
-                        .WithMany()
-                        .HasForeignKey("HomeVictoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OneFantasy.Api.Models.MinigameOptions.OptionTeam", "VisitingVictory")
-                        .WithMany()
-                        .HasForeignKey("VisitingVictoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Draw");
-
-                    b.Navigation("HomeVictory");
-
-                    b.Navigation("VisitingVictory");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.Participations.ParticipationExtraOrSpecial", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch2A", "MinigameGroupMatch2A")
-                        .WithMany()
-                        .HasForeignKey("MinigameGroupMatch2AId");
-
-                    b.HasOne("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch2B", "MinigameGroupMatch2B")
-                        .WithMany()
-                        .HasForeignKey("MinigameGroupMatch2BId");
-
-                    b.Navigation("MinigameGroupMatch2A");
-
-                    b.Navigation("MinigameGroupMatch2B");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.Participations.ParticipationStandard", b =>
-                {
-                    b.HasOne("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMatch3", "MinigameGroupMatch3")
-                        .WithMany()
-                        .HasForeignKey("MinigameGroupMatch3Id");
-
-                    b.HasOne("OneFantasy.Api.Models.MinigameGroups.MinigameGroupMulti", "MinigameGroupMulti")
-                        .WithMany()
-                        .HasForeignKey("MinigameGroupMultiId");
-
-                    b.Navigation("MinigameGroupMatch3");
-
-                    b.Navigation("MinigameGroupMulti");
-                });
-
             modelBuilder.Entity("OneFantasy.Api.Models.Competitions.Competition", b =>
                 {
                     b.Navigation("Seasons");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Seasons.CompetitionSeason", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Competitions.Season", b =>
                 {
                     b.Navigation("Participations");
 
                     b.Navigation("Teams");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Seasons.Team", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Competitions.Team", b =>
                 {
                     b.Navigation("Players");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Minigames.MinigameMatch", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.MinigameGroups.MinigameGroup", b =>
+                {
+                    b.Navigation("Minigames");
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.Minigames.Minigame", b =>
                 {
                     b.Navigation("Options");
                 });
 
-            modelBuilder.Entity("OneFantasy.Api.Models.Minigames.MinigamePlayers", b =>
+            modelBuilder.Entity("OneFantasy.Api.Models.Participations.Participation", b =>
                 {
-                    b.Navigation("Options");
-                });
-
-            modelBuilder.Entity("OneFantasy.Api.Models.Minigames.MinigameScores", b =>
-                {
-                    b.Navigation("Options");
+                    b.Navigation("Groups");
                 });
 #pragma warning restore 612, 618
         }

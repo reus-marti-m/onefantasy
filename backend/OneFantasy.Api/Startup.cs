@@ -16,6 +16,7 @@ using OneFantasy.Api.Models.Authentication;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OneFantasy.Api
 {
@@ -73,30 +74,43 @@ namespace OneFantasy.Api
             //});
 
             // Authorization policies per role
-            services.AddAuthorizationBuilder()
-                .AddPolicy("RequireUser", p => p.RequireRole("User", "Admin"))
-                .AddPolicy("RequireAdmin", p => p.RequireRole("Admin"));
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireUser", p => p.RequireRole("User", "Admin"));
+                options.AddPolicy("RequireAdmin", p => p.RequireRole("Admin"));
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+            });
 
             // Register domain services
             services.AddDomainServices();
 
+            // Automapper configuration (profiles)
+            services.AddAutoMapper(typeof(Startup).Assembly);
+
             // Controllers with automatic validation responses
-            services.AddControllers()
-                .ConfigureApiBehaviorOptions(opts =>
+            services.AddControllers(opts =>
+            {
+#if DEBUG
+                opts.Filters.Add(new Microsoft.AspNetCore.Mvc.Authorization.AllowAnonymousFilter());
+#endif
+            })
+            .ConfigureApiBehaviorOptions(opts =>
+            {
+                opts.InvalidModelStateResponseFactory = ctx =>
                 {
-                    opts.InvalidModelStateResponseFactory = ctx =>
+                    var pd = new ValidationProblemDetails(ctx.ModelState)
                     {
-                        var pd = new ValidationProblemDetails(ctx.ModelState)
-                        {
-                            Title = "One or more validation errors occurred.",
-                            Status = StatusCodes.Status400BadRequest,
-                        };
-                        return new BadRequestObjectResult(pd)
-                        {
-                            ContentTypes = { "application/problem+json" }
-                        };
+                        Title = "One or more validation errors occurred.",
+                        Status = StatusCodes.Status400BadRequest,
                     };
-                });
+                    return new BadRequestObjectResult(pd)
+                    {
+                        ContentTypes = { "application/problem+json" }
+                    };
+                };
+            });
 
             // Swagger/OpenAPI
             services.AddSwaggerGen(c =>
@@ -160,12 +174,14 @@ namespace OneFantasy.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(
-                endpoints =>
+            app.UseEndpoints(endpoints =>
+            {
+                var controllerBuilder = endpoints.MapControllers();
+                if (env.IsDevelopment())
                 {
-                    endpoints.MapControllers();
+                    controllerBuilder.WithMetadata(new AllowAnonymousAttribute());
                 }
-            );
+            });
 
             // Seed roles at startup
             SeedRolesAsync(svcProvider).GetAwaiter().GetResult();
