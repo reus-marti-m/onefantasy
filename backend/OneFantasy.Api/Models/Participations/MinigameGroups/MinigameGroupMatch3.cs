@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using OneFantasy.Api.Models.Competitions;
 using OneFantasy.Api.Models.Participations.Minigames;
@@ -22,10 +20,8 @@ namespace OneFantasy.Api.Models.Participations.MinigameGroups
             VisitingTeamId = visitingTeamId;
         }
 
-        //public int MinigameScoresId { get; set; }
-        //public int MinigamePlayers1Id { get; set; }
-        //public int MinigamePlayers2Id { get; set; }
         public int HomeTeamId { get; set; }
+
         public int VisitingTeamId { get; set; }
 
         [NotMapped]

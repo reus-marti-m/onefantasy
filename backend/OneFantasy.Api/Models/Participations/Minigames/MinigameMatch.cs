@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using OneFantasy.Api.Models.Participations.MinigameGroups;
 using OneFantasy.Api.Models.Participations.MinigameOptions;
 
 namespace OneFantasy.Api.Models.Participations.Minigames

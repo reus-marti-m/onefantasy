@@ -1,6 +1,4 @@
-﻿using OneFantasy.Api.Models.Participations.Minigames;
-
-namespace OneFantasy.Api.Models.Participations.MinigameOptions
+﻿namespace OneFantasy.Api.Models.Participations.MinigameOptions
 {
     public class OptionInterval : Option
     {

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using OneFantasy.Api.Models.Competitions;
 
 namespace OneFantasy.Api.DTOs
 {

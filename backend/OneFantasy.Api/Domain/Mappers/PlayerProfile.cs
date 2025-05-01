@@ -10,6 +10,8 @@ namespace OneFantasy.Api.Domain.Mappers
         {
             CreateMap<PlayerDto, Player>()
                 .ConstructUsing((src, ctx) => new Player(src.Name, (Team)ctx.Items["team"]));
+            CreateMap<PlayerDtoResponse, Player>()
+                .ConstructUsing((src, ctx) => new Player(src.Name, (Team)ctx.Items["team"]) { Id = src.Id });
             CreateMap<Player, PlayerDtoResponse>();
         }
     }

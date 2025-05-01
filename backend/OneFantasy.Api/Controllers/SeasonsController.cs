@@ -15,13 +15,20 @@ namespace OneFantasy.Api.Controllers
         public SeasonsController(ISeasonService svc) => _svc = svc;
 
         [HttpPost]
-        public async Task<IActionResult> Post(int competitionId, SeasonDto dto) => CreatedAtAction
-        (
-            nameof(GetById), 
-            await _svc.CreateAsync(competitionId, dto)
-        );
+        [Authorize(Policy = "RequireAdmin")]
+        public async Task<IActionResult> Post(int competitionId, SeasonDto dto)
+        {
+            var created = await _svc.CreateAsync(competitionId, dto);
+            return CreatedAtAction
+            (
+                nameof(GetById),
+                new { competitionId, seasonId = created.Id },
+                created
+            );
+        }
 
         [HttpPut("{seasonId:int}")]
+        [Authorize(Policy = "RequireAdmin")]
         public async Task<IActionResult> Put(int seasonId, [FromBody] SeasonDto dto) => Ok
         (
             await _svc.UpdateAsync(seasonId, dto)

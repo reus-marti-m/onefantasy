@@ -27,7 +27,7 @@ namespace OneFantasy.Api.Domain.Implementations
         public async Task<ParticipationStandartDtoResponse> CreateStandardAsync(int seasonId, ParticipationStandartDto dto)
         {
             // Validations
-            var season = StandartValidations(seasonId, dto);
+            var season = await StandartValidations(seasonId, dto);
 
             // Validations ok
             var entity = _mapper.Map<ParticipationStandard>(dto, opts =>
@@ -113,13 +113,12 @@ namespace OneFantasy.Api.Domain.Implementations
                 throw new NotFoundException(nameof(Season), seasonId);
 
             var participations = await LoadFullParticipationsQuery().ToListAsync();
+            var temp = participations
+                .Select(p => MapParticipation(p))
+                .Where(dto => dto is not null)
+                .ToList();
 
-            return
-            [
-                .. participations
-                    .Select(p => MapParticipation(p))
-                    .Where(dto => dto is not null)
-            ];
+            return temp;
         }
 
         public async Task<IParticipationDtoResponse> GetByIdAsync(int seasonId, int participationId)

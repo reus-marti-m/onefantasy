@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using OneFantasy.Api.Models.Competitions;
+﻿using OneFantasy.Api.Models.Competitions;
 using OneFantasy.Api.Models.Participations.MinigameGroups;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;

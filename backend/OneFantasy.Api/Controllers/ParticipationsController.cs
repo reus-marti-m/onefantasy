@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OneFantasy.Api.Domain.Abstractions;
 using OneFantasy.Api.DTOs;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OneFantasy.Api.Controllers
@@ -62,7 +63,7 @@ namespace OneFantasy.Api.Controllers
         );
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(int seasonId) => Ok(await _service.GetBySeasonAsync(seasonId));
+        public async Task<IActionResult> GetAll(int seasonId) => Ok((await _service.GetBySeasonAsync(seasonId)).Select(x => (object)x));
 
         [HttpGet("{participationId:int}")]
         public async Task<IActionResult> GetById(int seasonId, int participationId) => Ok(await _service.GetByIdAsync(seasonId, participationId));

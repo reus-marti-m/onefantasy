@@ -158,24 +158,6 @@ namespace OneFantasy.Api.Data
                  .IsRequired();
             });
 
-            //mb.Entity<MinigameResult>(e =>
-            //{
-            //    e.HasOne(r => r.Draw)
-            //     .WithOne() 
-            //     .HasForeignKey<Option>(r => r.MinigameId)
-            //     .IsRequired();
-
-            //    e.HasOne(r => r.HomeVictory)
-            //     .WithOne()
-            //     .HasForeignKey<OptionTeam>(r => r.MinigameId)
-            //     .IsRequired();
-
-            //    e.HasOne(r => r.VisitingVictory)
-            //     .WithOne()
-            //     .HasForeignKey<OptionTeam>(r => r.MinigameId)
-            //     .IsRequired();
-            //});
-
             mb.Entity<MinigameGroup>(e =>
             {
                 e.HasKey(g => g.Id);
@@ -194,16 +176,6 @@ namespace OneFantasy.Api.Data
 
             mb.Entity<MinigameGroupMatch2A>(e =>
             {
-                //e.HasOne(g => g.MinigameScores)
-                // .WithOne()
-                // .HasForeignKey<MinigameScores>(m => m.GroupId)
-                // .IsRequired();
-
-                //e.HasOne(g => g.MinigamePlayers)
-                // .WithOne()
-                // .HasForeignKey<MinigamePlayers>(m => m.GroupId)
-                // .IsRequired();
-
                 e.HasOne(g => g.HomeTeam)
                  .WithMany()
                  .HasForeignKey(g => g.HomeTeamId)
@@ -217,16 +189,6 @@ namespace OneFantasy.Api.Data
 
             mb.Entity<MinigameGroupMatch2B>(e =>
             {
-                //e.HasOne(g => g.MinigameMatch)
-                // .WithOne()
-                // .HasForeignKey<MinigameMatch>(m => m.GroupId)
-                // .IsRequired();
-
-                //e.HasOne(g => g.MinigamePlayers)
-                // .WithOne()
-                // .HasForeignKey<MinigamePlayers>(m => m.GroupId)
-                // .IsRequired();
-
                 e.HasOne(g => g.HomeTeam)
                  .WithMany()
                  .HasForeignKey(g => g.HomeTeamId)
@@ -240,21 +202,6 @@ namespace OneFantasy.Api.Data
 
             mb.Entity<MinigameGroupMatch3>(e =>
             {
-                //e.HasOne(g => g.MinigameScores)
-                // .WithOne()
-                // .HasForeignKey<MinigameScores>(m => m.GroupId)
-                // .IsRequired();
-
-                //e.HasOne(g => g.MinigamePlayers1)
-                // .WithOne()
-                // .HasForeignKey<MinigamePlayers>(m => m.GroupId)
-                // .IsRequired();
-
-                //e.HasOne(g => g.MinigamePlayers2)
-                // .WithOne()
-                // .HasForeignKey<MinigamePlayers>(m => m.GroupId)
-                // .IsRequired();
-
                 e.HasOne(g => g.HomeTeam)
                  .WithMany()
                  .HasForeignKey(g => g.HomeTeamId)
@@ -265,24 +212,6 @@ namespace OneFantasy.Api.Data
                  .HasForeignKey(g => g.VisitingTeamId)
                  .IsRequired();
             });
-
-            //mb.Entity<MinigameGroupMulti>(e =>
-            //{
-            //    e.HasOne(g => g.Match1)
-            //     .WithOne()
-            //     .HasForeignKey<MinigameResult>(m => m.GroupId)
-            //     .IsRequired();
-
-            //    e.HasOne(g => g.Match2)
-            //     .WithOne()
-            //     .HasForeignKey<MinigameResult>(m => m.GroupId)
-            //     .IsRequired();
-
-            //    e.HasOne(g => g.Match3)
-            //     .WithOne()
-            //     .HasForeignKey<MinigameResult>(m => m.GroupId)
-            //     .IsRequired();
-            //});
 
             mb.Entity<Participation>(e =>
             {
@@ -306,45 +235,6 @@ namespace OneFantasy.Api.Data
                     .HasValue<ParticipationSpecial>("Special")
                     .HasValue<ParticipationStandard>("Standard");
             });
-
-            //mb.Entity<ParticipationExtra>(e =>
-            //{
-            //    e.HasOne(p => p.MinigameGroupMatch2A)
-            //        .WithOne()
-            //        .HasForeignKey<MinigameGroupMatch2A>(g => g.ParticipationId)
-            //        .IsRequired();
-
-            //    e.HasOne(p => p.MinigameGroupMatch2B)
-            //        .WithOne()
-            //        .HasForeignKey<MinigameGroupMatch2B>(g => g.ParticipationId)
-            //        .IsRequired();
-            //});
-
-            //mb.Entity<ParticipationSpecial>(e =>
-            //{
-            //    e.HasOne(p => p.MinigameGroupMatch2A)
-            //        .WithOne()
-            //        .HasForeignKey<MinigameGroupMatch2A>(g => g.ParticipationId)
-            //        .IsRequired();
-
-            //    e.HasOne(p => p.MinigameGroupMatch2B)
-            //        .WithOne()
-            //        .HasForeignKey<MinigameGroupMatch2B>(g => g.ParticipationId)
-            //        .IsRequired();
-            //});
-
-            //mb.Entity<ParticipationStandard>(e =>
-            //{
-            //    e.HasOne(p => p.MinigameGroupMulti)
-            //        .WithOne()
-            //        .HasForeignKey<MinigameGroupMulti>(g => g.ParticipationId)
-            //        .IsRequired();
-
-            //    e.HasOne(p => p.MinigameGroupMatch3)
-            //        .WithOne()
-            //        .HasForeignKey<MinigameGroupMatch3>(g => g.ParticipationId)
-            //        .IsRequired();
-            //});
         }
     }
 }

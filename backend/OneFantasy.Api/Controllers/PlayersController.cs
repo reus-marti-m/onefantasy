@@ -16,11 +16,16 @@ namespace OneFantasy.Api.Controllers
 
         [HttpPost]
         [Authorize(Policy = "RequireAdmin")]
-        public async Task<IActionResult> Post(int teamId, PlayerDto dto) => CreatedAtAction
-        (
-            nameof(GetById), 
-            await _svc.CreateAsync(teamId, dto)
-        );
+        public async Task<IActionResult> Post(int teamId, PlayerDto dto)
+        {
+            var created = await _svc.CreateAsync(teamId, dto);
+            return CreatedAtAction
+            (
+                nameof(GetById),
+                new { teamId, playerId = created.Id },
+                created
+            );
+        }
 
         [HttpPut("{playerId:int}")]
         [Authorize(Policy = "RequireAdmin")]

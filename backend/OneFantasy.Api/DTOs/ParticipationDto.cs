@@ -215,6 +215,7 @@ namespace OneFantasy.Api.DTOs
         public bool IsResolved { get; set; }
         public new OptionTeamDtoResponse HomeVictory { get; set; }
         public new OptionTeamDtoResponse VisitingVictory { get; set; }
+        public new OptionDtoResponse Draw { get; set; }
     }
 
     public class MinigameMatchDto
@@ -272,6 +273,16 @@ namespace OneFantasy.Api.DTOs
         [Required]
         [Range(0.01, 10)]
         public decimal Probability { get; set; }
+    }
+
+    public class OptionDtoResponse : OptionDto, IOptionDtoResponse
+    {
+        public int Id { get; set; }
+        public int Price { get; set; }
+        public bool HasOccurred { get; set; }
+
+        [JsonIgnore]
+        public new decimal Probability { get; set; }
     }
 
     public interface IOptionDtoResponse

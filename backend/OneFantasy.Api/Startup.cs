@@ -17,7 +17,6 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
-using System.Net;
 
 namespace OneFantasy.Api
 {
@@ -97,21 +96,21 @@ namespace OneFantasy.Api
                 opts.Filters.Add(new Microsoft.AspNetCore.Mvc.Authorization.AllowAnonymousFilter());
 #endif
             })
-                .ConfigureApiBehaviorOptions(opts =>
+            .ConfigureApiBehaviorOptions(opts =>
+            {
+                opts.InvalidModelStateResponseFactory = ctx =>
                 {
-                    opts.InvalidModelStateResponseFactory = ctx =>
+                    var pd = new ValidationProblemDetails(ctx.ModelState)
                     {
-                        var pd = new ValidationProblemDetails(ctx.ModelState)
-                        {
-                            Title = "One or more validation errors occurred.",
-                            Status = StatusCodes.Status400BadRequest,
-                        };
-                        return new BadRequestObjectResult(pd)
-                        {
-                            ContentTypes = { "application/problem+json" }
-                        };
+                        Title = "One or more validation errors occurred.",
+                        Status = StatusCodes.Status400BadRequest,
                     };
-                });
+                    return new BadRequestObjectResult(pd)
+                    {
+                        ContentTypes = { "application/problem+json" }
+                    };
+                };
+            });
 
             // Swagger/OpenAPI
             services.AddSwaggerGen(c =>

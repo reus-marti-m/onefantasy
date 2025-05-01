@@ -16,6 +16,7 @@ namespace OneFantasy.Api.Domain.Mappers
             // --- Options ---
             CreateMap<OptionDto, Option>()
                 .ConstructUsing(dto => new Option(ProbabilityPriceCalculator.GetPrice(dto.Probability)));
+            CreateMap<Option, OptionDtoResponse>();
 
             CreateMap<OptionPlayerDto, OptionPlayer>()
                 .ConstructUsing(dto => new OptionPlayer(

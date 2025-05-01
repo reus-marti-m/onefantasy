@@ -1,5 +1,4 @@
 ﻿using OneFantasy.Api.Models.Competitions;
-using OneFantasy.Api.Models.Participations.Minigames;
 
 namespace OneFantasy.Api.Models.Participations.MinigameOptions
 {

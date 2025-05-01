@@ -1,5 +1,4 @@
 ﻿using OneFantasy.Api.DTOs;
-using OneFantasy.Api.Models.Competitions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

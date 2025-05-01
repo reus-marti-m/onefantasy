@@ -11,12 +11,12 @@ namespace OneFantasy.Api.DTOs
         [Required, StringLength(5)]
         public string Abbreviation { get; set; }
 
-        public IEnumerable<PlayerDto> Players { get; set; } = [];
+        public IEnumerable<PlayerDtoResponse> Players { get; set; } = [];
     }
 
     public class TeamDtoResponse : TeamDto
     {
         public int Id { get; set; }
-        public new IEnumerable<OptionPlayerDtoResponse> Players { get; set; } = [];
+        public new IEnumerable<PlayerDtoResponse> Players { get; set; } = [];
     }
 }

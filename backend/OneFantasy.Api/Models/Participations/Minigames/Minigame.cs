@@ -12,7 +12,6 @@ namespace OneFantasy.Api.Models.Participations.Minigames
         public int GroupId { get; set; }
         public bool IsResolved { get; set; }
         public MinigameGroup Group { get; set; }
-
         public virtual ICollection<Option> Options { get; set; } = [];
 
     }

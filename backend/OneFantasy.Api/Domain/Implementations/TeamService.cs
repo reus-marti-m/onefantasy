@@ -36,15 +36,19 @@ namespace OneFantasy.Api.Domain.Implementations
 
         public async Task<TeamDtoResponse> UpdateAsync(int teamId, TeamDto dto)
         {
-            var team = await _db.Teams.FindAsync(teamId) ?? throw new NotFoundException(nameof(Team), teamId);
+            var team = await _db.Teams
+                .Include(t => t.Players)
+                .Include(s => s.Season)
+                .SingleOrDefaultAsync(t => t.Id == teamId) ?? throw new NotFoundException(nameof(Team), teamId);
 
             if (await _db.Teams.AnyAsync(t => t.SeasonId == team.SeasonId && t.Name == dto.Name && t.Id != teamId))
-            {
                 throw new DuplicateException(nameof(Team), dto.Name);
-            }
 
-            team.Name = dto.Name;
-            team.Abbreviation = dto.Abbreviation;
+            _mapper.Map(dto, team, opts =>
+            {
+                opts.Items["season"] = team.Season;
+            });
+
             await _db.SaveChangesAsync();
             return _mapper.Map<TeamDtoResponse>(team);
         }
