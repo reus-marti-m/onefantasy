@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using OneFantasy.Api.Models.Participations.MinigameGroups;
 using OneFantasy.Api.Models.Participations.MinigameOptions;
 using OneFantasy.Api.Models.Participations.Minigames;
+using OneFantasy.Api.Models.Participations.Users;
 
 namespace OneFantasy.Api.Data
 {
@@ -18,6 +19,7 @@ namespace OneFantasy.Api.Data
         public DbSet<Team> Teams { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Participation> Participations { get; set; }
+        public DbSet<UserParticipation> UserParticipations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
@@ -217,6 +219,9 @@ namespace OneFantasy.Api.Data
             {
                 e.HasKey(p => p.Id);
 
+                e.Property(p => p.Budget)
+                    .IsRequired();
+
                 e.Property(p => p.Date)
                     .IsRequired();
 
@@ -234,6 +239,82 @@ namespace OneFantasy.Api.Data
                     .HasValue<ParticipationExtra>("Extra")
                     .HasValue<ParticipationSpecial>("Special")
                     .HasValue<ParticipationStandard>("Standard");
+            });
+
+            mb.Entity<UserOption>(e =>
+            {
+                e.ToTable("UserOptions");
+
+                e.HasKey(uo => new { uo.UserMinigameId, uo.OptionId });
+
+                e.HasOne(uo => uo.UserMinigame)
+                    .WithMany(um => um.UserOptions)
+                    .HasForeignKey(uo => uo.UserMinigameId)
+                    .IsRequired();
+
+                e.HasOne(uo => uo.Option)
+                    .WithMany()
+                    .HasForeignKey(uo => uo.OptionId)
+                    .IsRequired();
+            });
+
+            mb.Entity<UserMinigame>(e =>
+            {
+                e.HasKey(um => um.Id);
+
+                e.Property(um => um.Points).
+                    IsRequired(false);
+
+                e.HasOne(um => um.UserMinigameGroup)
+                    .WithMany(umg => umg.UserMinigames)
+                    .HasForeignKey(um => um.UserMinigameGroupId)
+                    .IsRequired();
+
+                e.HasOne(um => um.Minigame)
+                    .WithMany()
+                    .HasForeignKey(um => um.MinigameId)
+                    .IsRequired();
+            });
+
+            mb.Entity<UserMinigameGroup>(e =>
+            {
+                e.HasKey(umg => umg.Id);
+
+                e.Property(umg => umg.Points).
+                    IsRequired(false);
+                
+                e.HasOne(umg => umg.UserParticipation)
+                    .WithMany(up => up.Groups)
+                    .HasForeignKey(umg => umg.UserParticipationId)
+                    .IsRequired();
+                
+                e.HasOne(umg => umg.MinigameGroup)
+                    .WithMany()
+                    .HasForeignKey(umg => umg.MinigameGroupId)
+                    .IsRequired();
+            });
+
+            mb.Entity<UserParticipation>(e =>
+            {
+                e.HasKey(up => up.Id);
+
+                e.Property(up => up.LastUpdate)
+                    .IsRequired();
+
+                e.Property(up => up.Points).IsRequired(false);
+
+                e.HasOne(up => up.User)
+                    .WithMany(u => u.UserParticipations)
+                    .HasForeignKey(up => up.UserId)
+                    .IsRequired();
+
+                e.HasOne(up => up.Participation)
+                    .WithMany(p => p.UserParticipations)
+                    .HasForeignKey(up => up.ParticipationId)
+                    .IsRequired();
+
+                e.HasIndex(up => new { up.UserId, up.ParticipationId })
+                    .IsUnique();
             });
         }
     }

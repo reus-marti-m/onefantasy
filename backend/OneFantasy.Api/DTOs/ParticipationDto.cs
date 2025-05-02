@@ -29,6 +29,9 @@ namespace OneFantasy.Api.DTOs
     public interface IParticipationDtoResponse
     {
         public int Id { get; set; }
+        public int Budget { get; set; }
+        public bool HasPlayed { get; set; }
+        public int? Score { get; set; }
     }
 
     public class ParticipationStandartDto : ParticipationDto
@@ -43,6 +46,9 @@ namespace OneFantasy.Api.DTOs
     public class ParticipationStandartDtoResponse : ParticipationStandartDto, IParticipationDtoResponse
     {
         public int Id { get; set; }
+        public int Budget { get; set; }
+        public bool HasPlayed { get; set; }
+        public int? Score { get; set; }
         public new MinigameGroupMultiDtoResponse MinigameGroupMulti { get; set; }
         public new MinigameGroupMatch3DtoResponse MinigameGroupMatch3 { get; set; }
     }
@@ -59,6 +65,9 @@ namespace OneFantasy.Api.DTOs
     public class ParticipationExtraDtoResponse : ParticipationExtraDto, IParticipationDtoResponse
     {
         public int Id { get; set; }
+        public int Budget { get; set; }
+        public bool HasPlayed { get; set; }
+        public int? Score { get; set; }
         public new MinigameGroupMatch2ADtoResponse MinigameGroupMatch2A { get; set; }
         public new MinigameGroupMatch2BDtoResponse MinigameGroupMatch2B { get; set; }
     }
@@ -75,6 +84,9 @@ namespace OneFantasy.Api.DTOs
     public class ParticipationSpecialDtoResponse : ParticipationSpecialDto, IParticipationDtoResponse
     {
         public int Id { get; set; }
+        public int Budget { get; set; }
+        public bool HasPlayed { get; set; }
+        public int? Score { get; set; }
         public new MinigameGroupMatch2ADtoResponse MinigameGroupMatch2A { get; set; }
 
         public new MinigameGroupMatch2BDtoResponse MinigameGroupMatch2B { get; set; }
@@ -88,6 +100,7 @@ namespace OneFantasy.Api.DTOs
     public interface IMinigameGroupDtoResponse
     {
         public int Id { get; set; }
+        public int? Score { get; set; }
     }
 
     public class MinigameGroupMultiDto
@@ -105,6 +118,8 @@ namespace OneFantasy.Api.DTOs
     public class MinigameGroupMultiDtoResponse : MinigameGroupMultiDto, IMinigameGroupDtoResponse
     {
         public int Id { get; set; }
+
+        public int? Score { get; set; }
 
         public new MinigameResultDtoResponse Match1 { get; set; }
 
@@ -133,6 +148,8 @@ namespace OneFantasy.Api.DTOs
     {
         public int Id { get; set; }
 
+        public int? Score { get; set; }
+
         public new MinigameScoresDtoResponse MinigameScores { get; set; }
 
         public new MinigamePlayersDtoResponse MinigamePlayers { get; set; }
@@ -159,6 +176,7 @@ namespace OneFantasy.Api.DTOs
     public class MinigameGroupMatch3DtoResponse : MinigameGroupMatch3Dto, IMinigameGroupDtoResponse
     {
         public int Id { get; set; }
+        public int? Score { get; set; }
         public new MinigameScoresDtoResponse MinigameScores { get; set; }
         public new MinigamePlayersDtoResponse MinigamePlayers1 { get; set; }
         public new MinigamePlayersDtoResponse MinigamePlayers2 { get; set; }
@@ -182,6 +200,7 @@ namespace OneFantasy.Api.DTOs
     public class MinigameGroupMatch2BDtoResponse : MinigameGroupMatch2BDto, IMinigameGroupDtoResponse
     {
         public int Id { get; set; }
+        public int? Score { get; set; }
         public new MinigameMatchDtoResponse MinigameMatch { get; set; }
         public new MinigamePlayersDtoResponse MinigamePlayers { get; set; }
     }
@@ -195,6 +214,7 @@ namespace OneFantasy.Api.DTOs
     {
         public int Id { get; set; }
         public bool IsResolved { get; set; }
+        public int? Score { get; set; }
     }
 
     public class MinigameResultDto
@@ -213,6 +233,7 @@ namespace OneFantasy.Api.DTOs
     {
         public int Id { get; set; }
         public bool IsResolved { get; set; }
+        public int? Score { get; set; }
         public new OptionTeamDtoResponse HomeVictory { get; set; }
         public new OptionTeamDtoResponse VisitingVictory { get; set; }
         public new OptionDtoResponse Draw { get; set; }
@@ -231,6 +252,7 @@ namespace OneFantasy.Api.DTOs
     {
         public int Id { get; set; }
         public bool IsResolved { get; set; }
+        public int? Score { get; set; }
         public new List<OptionIntervalDtoResponse> Options { get; set; }
     }
 
@@ -244,6 +266,7 @@ namespace OneFantasy.Api.DTOs
     {
         public int Id { get; set; }
         public bool IsResolved { get; set; }
+        public int? Score { get; set; }
         public new List<OptionScoreDtoResponse> Options { get; set; }
     }
 
@@ -260,6 +283,7 @@ namespace OneFantasy.Api.DTOs
     {
         public int Id { get; set; }
         public bool IsResolved { get; set; }
+        public int? Score { get; set; }
         public new List<OptionPlayerDtoResponse> Options { get; set; }
     }
 
@@ -283,6 +307,7 @@ namespace OneFantasy.Api.DTOs
 
         [JsonIgnore]
         public new decimal Probability { get; set; }
+        public bool? IsPlayed { get; set; }
     }
 
     public interface IOptionDtoResponse
@@ -290,6 +315,7 @@ namespace OneFantasy.Api.DTOs
         public int Id { get; set; }
         public int Price { get; set; }
         public bool HasOccurred { get; set; }
+        public bool? IsPlayed { get; set; }
     }
 
     public class OptionTeamDto : OptionDto
@@ -303,6 +329,7 @@ namespace OneFantasy.Api.DTOs
         public int Id { get; set; }
         public int Price { get; set; }
         public bool HasOccurred { get; set; }
+        public bool? IsPlayed { get; set; }
 
         [JsonIgnore]
         public new decimal Probability { get; set; }
@@ -324,6 +351,7 @@ namespace OneFantasy.Api.DTOs
         public int Id { get; set; }
         public int Price { get; set; }
         public bool HasOccurred { get; set; }
+        public bool? IsPlayed { get; set; }
 
         [JsonIgnore]
         public new decimal Probability { get; set; }
@@ -340,6 +368,7 @@ namespace OneFantasy.Api.DTOs
         public int Id { get; set; }
         public int Price { get; set; }
         public bool HasOccurred { get; set; }
+        public bool? IsPlayed { get; set; }
 
         [JsonIgnore]
         public new decimal Probability { get; set; }
@@ -356,6 +385,7 @@ namespace OneFantasy.Api.DTOs
         public int Id { get; set; }
         public int Price { get; set; }
         public bool HasOccurred { get; set; }
+        public bool? IsPlayed { get; set; }
 
         [JsonIgnore]
         public new decimal Probability { get; set; }
