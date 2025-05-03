@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AutoMapper;
 using OneFantasy.Api.DTOs;
 using OneFantasy.Api.Models.Authentication;
@@ -63,11 +64,15 @@ namespace OneFantasy.Api.Domain.Mappers
                     var part = ctx.Items["participation"] as Participation;
                     dest.Participation = part;
                     dest.ParticipationId = part.Id;
+
+                    dest.LastUpdate = DateTime.UtcNow;
+                    dest.UsedBudget = (int)ctx.Items["usedBudget"];
                 });
 
             CreateMap<UserParticipation, UserParticipationResponseDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.LastUpdate, opt => opt.MapFrom(src => src.LastUpdate))
+                .ForMember(dest => dest.UsedBudget, opt => opt.MapFrom(src => src.UsedBudget))
                 .ForMember(dest => dest.Groups, opt => opt.MapFrom(src => src.Groups));
         }
 

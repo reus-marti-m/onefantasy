@@ -23,6 +23,7 @@ namespace OneFantasy.Api.Models.Participations.Users
         public int ParticipationId { get; set; }
         public Participation Participation { get; set; }
         public DateTime LastUpdate { get; set; }
+        public int UsedBudget { get; set; }
         public int? Points { get; set; }
         public ICollection<UserMinigameGroup> Groups { get; set; }
     }

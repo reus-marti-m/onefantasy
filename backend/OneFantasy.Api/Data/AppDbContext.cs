@@ -301,6 +301,9 @@ namespace OneFantasy.Api.Data
                 e.Property(up => up.LastUpdate)
                     .IsRequired();
 
+                e.Property(up => up.UsedBudget)
+                    .IsRequired();
+
                 e.Property(up => up.Points).IsRequired(false);
 
                 e.HasOne(up => up.User)

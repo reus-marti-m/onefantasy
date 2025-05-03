@@ -24,6 +24,7 @@ namespace OneFantasy.Api.DTOs
     {
         public int Id { get; set; }
         public DateTime LastUpdate { get; set; }
+        public int UsedBudget { get; set; }
         public new List<UserParticipationGroupResponseDto> Groups { get; set; }
     }
 

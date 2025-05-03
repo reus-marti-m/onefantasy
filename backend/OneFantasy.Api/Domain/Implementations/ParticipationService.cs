@@ -88,13 +88,14 @@ namespace OneFantasy.Api.Domain.Implementations
             int seasonId, int participationId, string userId, CreateUserParticipationDto dto)
         {
             // Validations
-            (ApplicationUser user, Participation participation) = await PlayValidations(seasonId, participationId, userId, dto);
+            (ApplicationUser user, Participation participation, int usedBudget) = await PlayValidations(seasonId, participationId, userId, dto);
 
             // Validations ok
             var entity = _mapper.Map<UserParticipation>(dto, opts =>
             {
                 opts.Items["user"] = user;
                 opts.Items["participation"] = participation;
+                opts.Items["usedBudget"] = usedBudget;
             });
             _db.UserParticipations.Add(entity);
             await _db.SaveChangesAsync();
@@ -199,19 +200,13 @@ namespace OneFantasy.Api.Domain.Implementations
             switch (participation)
             {
                 case ParticipationStandard _:
-                    basePerMinigame = 8;
-                    groupBonus = 3;
-                    totalBonus = 6;
+                    basePerMinigame = 8; groupBonus = 3; totalBonus = 6;
                     break;
                 case ParticipationExtra _:
-                    basePerMinigame = 8;
-                    groupBonus = 2;
-                    totalBonus = 4;
+                    basePerMinigame = 8; groupBonus = 2; totalBonus = 4;
                     break;
                 case ParticipationSpecial _:
-                    basePerMinigame = 16;
-                    groupBonus = 4;
-                    totalBonus = 8;
+                    basePerMinigame = 16; groupBonus = 4; totalBonus = 8;
                     break;
                 default:
                     throw new NotSupportedException();
@@ -232,59 +227,50 @@ namespace OneFantasy.Api.Domain.Implementations
             // Calculate scores for each user
             foreach (var up in userPlays)
             {
-                bool allGroupsCorrect = true;
                 int participationPoints = 0;
+                bool allGroupsFullyCorrect = true;
 
                 foreach (var grp in up.Groups)
                 {
-                    bool groupAllCorrect = true;
-                    int groupPoints = 0;
-                    bool hasMinigameResolved = false;
+                    // Resolved minigames
+                    var resolvedMgs = grp.UserMinigames
+                        .Where(um => um.Minigame.IsResolved)
+                        .ToList();
 
-                    foreach (var um in grp.UserMinigames)
+                    if (resolvedMgs.Count == 0)
                     {
-                        if (!um.Minigame.IsResolved)
-                        {
-                            groupAllCorrect = false;
-                            continue;
-                        }
-
-                        hasMinigameResolved = true;
-                        bool correct = um.UserOptions.Any(uo => uo.Option.HasOccurred);
-                        um.Points = correct ? basePerMinigame : 0;
-
-                        if (correct)
-                            groupPoints += basePerMinigame;
-                        else
-                            groupAllCorrect = false;
-                    }
-
-                    // Bonus per group
-                    if (!hasMinigameResolved)
+                        grp.Points = 0;
+                        allGroupsFullyCorrect = false;
                         continue;
+                    }
 
-                    if (groupAllCorrect)
-                    {
+                    // Successes
+                    int correctCount = resolvedMgs
+                        .Count(um => um.UserOptions.Any(uo => uo.Option.HasOccurred));
+
+                    // Base points
+                    int groupPoints = correctCount * basePerMinigame;
+
+                    // Group bonus points
+                    bool groupFullyCorrect = correctCount == resolvedMgs.Count;
+                    if (groupFullyCorrect)
                         groupPoints += groupBonus;
-                    }
                     else
-                    {
-                        allGroupsCorrect = false;
-                    }
+                        allGroupsFullyCorrect = false;
 
                     grp.Points = groupPoints;
                     participationPoints += groupPoints;
                 }
 
-                // Bonus per participation
-                if (allGroupsCorrect)
+                // Participation bonus points
+                if (allGroupsFullyCorrect)
                     participationPoints += totalBonus;
 
                 up.Points = participationPoints;
             }
         }
 
-        private async Task<(ApplicationUser u, Participation p)> PlayValidations(int seasonId, int participationId, string userId, CreateUserParticipationDto dto)
+        private async Task<(ApplicationUser u, Participation p, int usedBudget)> PlayValidations(int seasonId, int participationId, string userId, CreateUserParticipationDto dto)
         {
             if (!await _db.Seasons.AnyAsync(s => s.Id == seasonId))
                 throw new NotFoundException(nameof(Season), seasonId);
@@ -329,21 +315,8 @@ namespace OneFantasy.Api.Domain.Implementations
                         throw new DuplicatedSelectedOptions(um.MinigameId);
 
                     var selectedOptions = um.SelectedOptionIds.Count;
-                    switch (templateMg)
-                    {
-                        case MinigameResult _:
-                        case MinigameMatch _:
-                        case MinigameScores _:
-                            if (selectedOptions != 1)
-                                throw new InvalidSelectedOptionNum(um.MinigameId, selectedOptions);
-                            break;
-                        case MinigamePlayers _:
-                            if (selectedOptions == 0 || selectedOptions > 2)
-                                throw new InvalidSelectedOptionNum(um.MinigameId, selectedOptions);
-                            break;
-                        default:
-                            throw new NotSupportedException();
-                    }
+                    if (selectedOptions == 0 || selectedOptions > 2)
+                        throw new InvalidSelectedOptionNum(um.MinigameId, selectedOptions);
 
                     var optMap = templateMg.Options.ToDictionary(o => o.Id);
                     foreach (var optId in um.SelectedOptionIds)
@@ -359,7 +332,7 @@ namespace OneFantasy.Api.Domain.Implementations
             if (totalCost > participation.Budget)
                 throw new ParticipationBudgetExceededException(participation.Budget, totalCost);
 
-            return (user, participation);
+            return (user, participation, totalCost);
         }
 
         private async Task<Participation> PreParticipationValidations(int seasonId, int participationId)
@@ -431,13 +404,16 @@ namespace OneFantasy.Api.Domain.Implementations
         {
             return p switch
             {
-                ParticipationStandard std => _mapper.Map<ParticipationStandartDtoResponse>(std, opts => {
+                ParticipationStandard std => _mapper.Map<ParticipationStandartDtoResponse>(std, opts =>
+                {
                     opts.Items["userParticipation"] = userParticipation;
                 }),
-                ParticipationSpecial sp => _mapper.Map<ParticipationSpecialDtoResponse>(sp, opts => {
+                ParticipationSpecial sp => _mapper.Map<ParticipationSpecialDtoResponse>(sp, opts =>
+                {
                     opts.Items["userParticipation"] = userParticipation;
                 }),
-                ParticipationExtra ex => _mapper.Map<ParticipationExtraDtoResponse>(ex, opts => {
+                ParticipationExtra ex => _mapper.Map<ParticipationExtraDtoResponse>(ex, opts =>
+                {
                     opts.Items["userParticipation"] = userParticipation;
                 }),
                 _ => id.HasValue ? throw new NotFoundException(nameof(Participation), id.Value) : null

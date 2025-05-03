@@ -28,10 +28,18 @@ namespace OneFantasy.Api.DTOs
 
     public interface IParticipationDtoResponse
     {
+        public ParticipationType Type { get; set; }
         public int Id { get; set; }
         public int Budget { get; set; }
         public bool HasPlayed { get; set; }
         public int? Score { get; set; }
+    }
+
+    public enum ParticipationType
+    {
+        Standart,
+        Extra,
+        Special
     }
 
     public class ParticipationStandartDto : ParticipationDto
@@ -45,6 +53,7 @@ namespace OneFantasy.Api.DTOs
 
     public class ParticipationStandartDtoResponse : ParticipationStandartDto, IParticipationDtoResponse
     {
+        public ParticipationType Type { get; set; } = ParticipationType.Standart;
         public int Id { get; set; }
         public int Budget { get; set; }
         public bool HasPlayed { get; set; }
@@ -64,6 +73,7 @@ namespace OneFantasy.Api.DTOs
 
     public class ParticipationExtraDtoResponse : ParticipationExtraDto, IParticipationDtoResponse
     {
+        public ParticipationType Type { get; set; } = ParticipationType.Extra;
         public int Id { get; set; }
         public int Budget { get; set; }
         public bool HasPlayed { get; set; }
@@ -83,6 +93,7 @@ namespace OneFantasy.Api.DTOs
 
     public class ParticipationSpecialDtoResponse : ParticipationSpecialDto, IParticipationDtoResponse
     {
+        public ParticipationType Type { get; set; } = ParticipationType.Special;
         public int Id { get; set; }
         public int Budget { get; set; }
         public bool HasPlayed { get; set; }

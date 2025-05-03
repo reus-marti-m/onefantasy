@@ -57,10 +57,10 @@ namespace OneFantasy.Api.Controllers
         }
 
         [HttpPost("{participationId:int}/play")]
-        [Authorize(Policy = "RequireAuthenticatedUser")]
+        [Authorize(Policy = "RequireUser")]
         public async Task<IActionResult> Play(int seasonId, int participationId, [FromBody] CreateUserParticipationDto dto)
         {
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             var result = await _service.CreateUserParticipationAsync(seasonId, participationId, userId, dto);
 
@@ -80,11 +80,11 @@ namespace OneFantasy.Api.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetAll(int seasonId) => Ok(
-            await _service.GetBySeasonAsync(
+            (await _service.GetBySeasonAsync(
                 seasonId, 
                 User.FindFirst(ClaimTypes.NameIdentifier)?.Value, 
                 User.IsInRole("Admin")
-            )
+            )).Select(x => (object)x)
         );
 
         [HttpGet("{participationId:int}")]
