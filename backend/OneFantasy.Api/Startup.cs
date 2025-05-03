@@ -17,6 +17,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json.Serialization;
 
 namespace OneFantasy.Api
 {
@@ -60,6 +61,7 @@ namespace OneFantasy.Api
                     IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
                 };
             });
+
             //.AddGoogle(googleOpts =>
             //{
             //    var g = Configuration.GetSection("Authentication:Google");
@@ -74,14 +76,15 @@ namespace OneFantasy.Api
             //});
 
             // Authorization policies per role
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("RequireUser", p => p.RequireRole("User", "Admin"));
-                options.AddPolicy("RequireAdmin", p => p.RequireRole("Admin"));
-                options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-            });
+            services.AddAuthorizationBuilder()
+                .AddPolicy("RequireUser", p => p.RequireRole("User"))
+                .AddPolicy("RequireAdmin", p => p.RequireRole("Admin"))
+                .SetFallbackPolicy
+                (
+                    new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .Build()
+                );
 
             // Register domain services
             services.AddDomainServices();
@@ -93,8 +96,13 @@ namespace OneFantasy.Api
             services.AddControllers(opts =>
             {
 #if DEBUG
-                opts.Filters.Add(new Microsoft.AspNetCore.Mvc.Authorization.AllowAnonymousFilter());
+                //opts.Filters.Add(new Microsoft.AspNetCore.Mvc.Authorization.AllowAnonymousFilter());
 #endif
+            })
+            .AddJsonOptions(o =>
+            {
+                o.JsonSerializerOptions.DefaultIgnoreCondition
+                    = JsonIgnoreCondition.WhenWritingNull;
             })
             .ConfigureApiBehaviorOptions(opts =>
             {
@@ -179,7 +187,7 @@ namespace OneFantasy.Api
                 var controllerBuilder = endpoints.MapControllers();
                 if (env.IsDevelopment())
                 {
-                    controllerBuilder.WithMetadata(new AllowAnonymousAttribute());
+                    //controllerBuilder.WithMetadata(new AllowAnonymousAttribute());
                 }
             });
 

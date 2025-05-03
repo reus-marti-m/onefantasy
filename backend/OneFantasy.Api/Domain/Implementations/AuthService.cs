@@ -47,7 +47,7 @@ namespace OneFantasy.Api.Domain.Implementations
             if (await _users.FindByEmailAsync(dto.Email) != null)
                 throw new DuplicateUserException(dto.Email);
 
-            var user = new ApplicationUser { UserName = dto.Email, Email = dto.Email };
+            var user = new ApplicationUser(dto.Email);
             var res = await _users.CreateAsync(user, dto.Password);
             if (!res.Succeeded)
                 throw new Exception(string.Join("; ", res.Errors.Select(e => e.Description)));
@@ -90,7 +90,7 @@ namespace OneFantasy.Api.Domain.Implementations
             if (await _users.FindByEmailAsync(dto.Email) != null)
                 throw new DuplicateUserException(dto.Email);
 
-            var admin = new ApplicationUser { UserName = dto.Email, Email = dto.Email };
+            var admin = new ApplicationUser(dto.Email);
             var res = await _users.CreateAsync(admin, dto.Password);
             if (!res.Succeeded)
                 throw new Exception(string.Join("; ", res.Errors.Select(e => e.Description)));

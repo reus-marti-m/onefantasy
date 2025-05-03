@@ -5,7 +5,7 @@ namespace OneFantasy.Api.Domain.Exceptions
     public abstract class UnauthorizedExceptions : ApiException
     {
         public UnauthorizedExceptions(string message) : 
-            base("Invalid Credentials", message, StatusCodes.Status401Unauthorized) 
+            base("Unauthorized", message, StatusCodes.Status401Unauthorized) 
         { }
     }
 

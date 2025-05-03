@@ -11,6 +11,10 @@ using AutoMapper;
 using OneFantasy.Api.Models.Participations;
 using OneFantasy.Api.Models.Participations.Minigames;
 using System;
+using OneFantasy.Api.Models.Participations.Users;
+using Microsoft.AspNetCore.Identity;
+using OneFantasy.Api.Models.Authentication;
+using OneFantasy.Api.Models.Participations.MinigameGroups;
 
 namespace OneFantasy.Api.Domain.Implementations
 {
@@ -18,10 +22,13 @@ namespace OneFantasy.Api.Domain.Implementations
     {
         private readonly AppDbContext _db;
         private readonly IMapper _mapper;
-        public ParticipationService(AppDbContext db, IMapper mapper)
+        private readonly UserManager<ApplicationUser> _users;
+
+        public ParticipationService(AppDbContext db, IMapper mapper, UserManager<ApplicationUser> users)
         {
             _db = db;
             _mapper = mapper;
+            _users = users;
         }
 
         public async Task<ParticipationStandartDtoResponse> CreateStandardAsync(int seasonId, ParticipationStandartDto dto)
@@ -77,68 +84,258 @@ namespace OneFantasy.Api.Domain.Implementations
             return _mapper.Map<ParticipationExtraDtoResponse>(entity);
         }
 
+        public async Task<UserParticipationResponseDto> CreateUserParticipationAsync(
+            int seasonId, int participationId, string userId, CreateUserParticipationDto dto)
+        {
+            // Validations
+            (ApplicationUser user, Participation participation, int usedBudget) = await PlayValidations(seasonId, participationId, userId, dto);
+
+            // Validations ok
+            var entity = _mapper.Map<UserParticipation>(dto, opts =>
+            {
+                opts.Items["user"] = user;
+                opts.Items["participation"] = participation;
+                opts.Items["usedBudget"] = usedBudget;
+            });
+            _db.UserParticipations.Add(entity);
+            await _db.SaveChangesAsync();
+            return _mapper.Map<UserParticipationResponseDto>(entity);
+        }
+
         public async Task<IEnumerable<IMinigameDtoResponse>> ResolveMinigamesAsync(int seasonId, int participationId, List<ParticipationResultDto> dtos)
         {
             // Pre validations
-            await PreParticipationValidations(seasonId, participationId);
+            var participation = await PreParticipationValidations(seasonId, participationId);
 
             // Validations, process and map
             var responseDtos = new List<IMinigameDtoResponse>();
             foreach (var dto in dtos)
-                responseDtos.Add
-                (
-                    ProcessValidateApplyAndMap
-                    (
-                        await _db.Set<Minigame>()
-                            .Include(m => m.Options)
-                            .Include(m => m.Group)
-                            .FirstOrDefaultAsync
-                            (
-                                m =>
-                                    m.Id == dto.MinigameId &&
-                                    m.Group.ParticipationId == participationId
-                            ) ?? throw new NotFoundException(nameof(Minigame), dto.MinigameId),
-                        dto
-                    )
-                );
+            {
+                var minigame = await _db.Set<Minigame>()
+                    .Include(m => m.Options)
+                    .Include(m => m.Group)
+                    .FirstOrDefaultAsync(m =>
+                        m.Id == dto.MinigameId &&
+                        m.Group.ParticipationId == participationId)
+                    ?? throw new NotFoundException(nameof(Minigame), dto.MinigameId);
 
-            // Validations ok
+                responseDtos.Add(ProcessValidateApplyAndMap(minigame, dto));
+            }
+
+            // Calculate scores for all users who have played.
+            await ComputeUserScoresAsync(participation);
+
+            // Validations and process ok
             await _db.SaveChangesAsync();
             return responseDtos;
         }
 
-        public async Task<IEnumerable<IParticipationDtoResponse>> GetBySeasonAsync(int seasonId)
+        public async Task<IEnumerable<IParticipationDtoResponse>> GetBySeasonAsync(int seasonId, string userId, bool isAdmin)
         {
             if (!await _db.Seasons.AnyAsync(s => s.Id == seasonId))
                 throw new NotFoundException(nameof(Season), seasonId);
 
-            var participations = await LoadFullParticipationsQuery().ToListAsync();
-            var temp = participations
-                .Select(p => MapParticipation(p))
-                .Where(dto => dto is not null)
+            // Get participations
+            var participations = await LoadFullParticipationsQuery()
+                .Where(p => p.SeasonId == seasonId)
+                .ToListAsync();
+
+            // Load user info participation
+            Dictionary<int, UserParticipation> userPlays = [];
+            if (!isAdmin && !string.IsNullOrEmpty(userId))
+            {
+                userPlays = await _db.UserParticipations
+                    .Include(up => up.Groups)
+                        .ThenInclude(g => g.UserMinigames)
+                            .ThenInclude(um => um.UserOptions)
+                    .Where(up => up.Participation.SeasonId == seasonId
+                              && up.UserId == userId)
+                    .ToDictionaryAsync(up => up.ParticipationId);
+            }
+
+            // Add extra info to participations
+            var result = participations
+                .Select(p =>
+                {
+                    userPlays.TryGetValue(p.Id, out var up);
+                    return MapParticipation(p, up);
+                })
                 .ToList();
 
-            return temp;
+            return result;
         }
 
-        public async Task<IParticipationDtoResponse> GetByIdAsync(int seasonId, int participationId)
+        public async Task<IParticipationDtoResponse> GetByIdAsync(int seasonId, int participationId, string userId, bool isAdmin)
         {
             // Validations
             await PreParticipationValidations(seasonId, participationId);
+
+            // Load user info participation
+            UserParticipation up = null;
+            if (!isAdmin && !string.IsNullOrEmpty(userId))
+            {
+                up = await _db.UserParticipations
+                    .Include(up => up.Groups)
+                        .ThenInclude(g => g.UserMinigames)
+                            .ThenInclude(um => um.UserOptions)
+                    .Where(up => up.Participation.SeasonId == seasonId
+                              && up.UserId == userId && up.ParticipationId == participationId)
+                    .FirstOrDefaultAsync();
+            }
 
             // Validations ok
             return MapParticipation
             (
                 await LoadFullParticipationsQuery()
                     .FirstOrDefaultAsync(p => p.Id == participationId),
+                up,
                 participationId
             );
         }
 
-
         #region "Helpers"
+        private async Task ComputeUserScoresAsync(Participation participation)
+        {
+            int basePerMinigame, groupBonus, totalBonus;
+            switch (participation)
+            {
+                case ParticipationStandard _:
+                    basePerMinigame = 8; groupBonus = 3; totalBonus = 6;
+                    break;
+                case ParticipationExtra _:
+                    basePerMinigame = 8; groupBonus = 2; totalBonus = 4;
+                    break;
+                case ParticipationSpecial _:
+                    basePerMinigame = 16; groupBonus = 4; totalBonus = 8;
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
 
-        private async Task PreParticipationValidations(int seasonId, int participationId)
+            // Get all user participations
+            var userPlays = await _db.UserParticipations
+                .Where(up => up.ParticipationId == participation.Id)
+                .Include(up => up.Groups)
+                    .ThenInclude(g => g.UserMinigames)
+                        .ThenInclude(um => um.UserOptions)
+                            .ThenInclude(uo => uo.Option)
+                .Include(up => up.Groups)
+                    .ThenInclude(g => g.UserMinigames)
+                        .ThenInclude(um => um.Minigame)
+                .ToListAsync();
+
+            // Calculate scores for each user
+            foreach (var up in userPlays)
+            {
+                int participationPoints = 0;
+                bool allGroupsFullyCorrect = true;
+
+                foreach (var grp in up.Groups)
+                {
+                    // Resolved minigames
+                    var resolvedMgs = grp.UserMinigames
+                        .Where(um => um.Minigame.IsResolved)
+                        .ToList();
+
+                    if (resolvedMgs.Count == 0)
+                    {
+                        grp.Points = 0;
+                        allGroupsFullyCorrect = false;
+                        continue;
+                    }
+
+                    // Successes
+                    int correctCount = resolvedMgs
+                        .Count(um => um.UserOptions.Any(uo => uo.Option.HasOccurred));
+
+                    // Base points
+                    int groupPoints = correctCount * basePerMinigame;
+
+                    // Group bonus points
+                    bool groupFullyCorrect = correctCount == resolvedMgs.Count;
+                    if (groupFullyCorrect)
+                        groupPoints += groupBonus;
+                    else
+                        allGroupsFullyCorrect = false;
+
+                    grp.Points = groupPoints;
+                    participationPoints += groupPoints;
+                }
+
+                // Participation bonus points
+                if (allGroupsFullyCorrect)
+                    participationPoints += totalBonus;
+
+                up.Points = participationPoints;
+            }
+        }
+
+        private async Task<(ApplicationUser u, Participation p, int usedBudget)> PlayValidations(int seasonId, int participationId, string userId, CreateUserParticipationDto dto)
+        {
+            if (!await _db.Seasons.AnyAsync(s => s.Id == seasonId))
+                throw new NotFoundException(nameof(Season), seasonId);
+
+            var participation = await _db.Participations
+                .Include(p => p.Groups)
+                    .ThenInclude(g => g.Minigames)
+                        .ThenInclude(m => m.Options)
+                .FirstOrDefaultAsync(p => p.Id == participationId && p.SeasonId == seasonId)
+                ?? throw new NotFoundException(nameof(Participation), participationId);
+
+            var user = await _users.FindByIdAsync(userId)
+                       ?? throw new InvalidCredentialsException();
+
+            if (await _db.UserParticipations
+                    .AnyAsync(up => up.ParticipationId == participationId && up.UserId == userId))
+                throw new AlreadyPlayedException(participationId, userId);
+
+            var count = participation.Groups.Count;
+            if (dto.Groups.Count != count)
+                throw new ParticipationGroupsCountException(count);
+
+            var groupMap = participation.Groups.ToDictionary(g => g.Id);
+
+            int totalCost = 0;
+            foreach (var ug in dto.Groups)
+            {
+                if (!groupMap.TryGetValue(ug.GroupId, out var templateGroup))
+                    throw new NotFoundException(nameof(MinigameGroup), ug.GroupId);
+
+                if (ug.Minigames.Count != templateGroup.Minigames.Count)
+                    throw new ParticipationMinigamesCountException(ug.GroupId, ug.Minigames.Count);
+
+                var mgMap = templateGroup.Minigames.ToDictionary(m => m.Id);
+
+                foreach (var um in ug.Minigames)
+                {
+                    if (!mgMap.TryGetValue(um.MinigameId, out var templateMg))
+                        throw new NotFoundException(nameof(Minigame), um.MinigameId);
+
+                    if (um.SelectedOptionIds.Count != um.SelectedOptionIds.Distinct().Count())
+                        throw new DuplicatedSelectedOptions(um.MinigameId);
+
+                    var selectedOptions = um.SelectedOptionIds.Count;
+                    if (selectedOptions == 0 || selectedOptions > 2)
+                        throw new InvalidSelectedOptionNum(um.MinigameId, selectedOptions);
+
+                    var optMap = templateMg.Options.ToDictionary(o => o.Id);
+                    foreach (var optId in um.SelectedOptionIds)
+                    {
+                        if (!optMap.TryGetValue(optId, out var opt))
+                            throw new OptionNotInMinigameException([optId], um.MinigameId);
+
+                        totalCost += opt.Price;
+                    }
+                }
+            }
+
+            if (totalCost > participation.Budget)
+                throw new ParticipationBudgetExceededException(participation.Budget, totalCost);
+
+            return (user, participation, totalCost);
+        }
+
+        private async Task<Participation> PreParticipationValidations(int seasonId, int participationId)
         {
             if (!await _db.Seasons.AnyAsync(s => s.Id == seasonId))
                 throw new NotFoundException(nameof(Season), seasonId);
@@ -149,6 +346,8 @@ namespace OneFantasy.Api.Domain.Implementations
 
             if (participation.SeasonId != seasonId)
                 throw new ParticipationNotInSeasonException(participationId, seasonId);
+
+            return participation;
         }
 
         private IMinigameDtoResponse ProcessValidateApplyAndMap(Minigame minigame, ParticipationResultDto dto)
@@ -201,13 +400,22 @@ namespace OneFantasy.Api.Domain.Implementations
                 .ThenInclude(g => g.Minigames)
                     .ThenInclude(m => m.Options);
 
-        private IParticipationDtoResponse MapParticipation(Participation p, int? id = null)
+        private IParticipationDtoResponse MapParticipation(Participation p, UserParticipation userParticipation, int? id = null)
         {
             return p switch
             {
-                ParticipationStandard std => _mapper.Map<ParticipationStandartDtoResponse>(std),
-                ParticipationSpecial sp => _mapper.Map<ParticipationSpecialDtoResponse>(sp),
-                ParticipationExtra ex => _mapper.Map<ParticipationExtraDtoResponse>(ex),
+                ParticipationStandard std => _mapper.Map<ParticipationStandartDtoResponse>(std, opts =>
+                {
+                    opts.Items["userParticipation"] = userParticipation;
+                }),
+                ParticipationSpecial sp => _mapper.Map<ParticipationSpecialDtoResponse>(sp, opts =>
+                {
+                    opts.Items["userParticipation"] = userParticipation;
+                }),
+                ParticipationExtra ex => _mapper.Map<ParticipationExtraDtoResponse>(ex, opts =>
+                {
+                    opts.Items["userParticipation"] = userParticipation;
+                }),
                 _ => id.HasValue ? throw new NotFoundException(nameof(Participation), id.Value) : null
             };
         }
