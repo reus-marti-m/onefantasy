@@ -1,0 +1,21 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 5rem;
+  
+    mat-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 1rem;
+    }
+  
+    .full-width {
+      width: 100%;
+    }
+  
+    .error-text {
+      color: red;
+      margin: 0.5rem 0;
+    }
+  }
+  
