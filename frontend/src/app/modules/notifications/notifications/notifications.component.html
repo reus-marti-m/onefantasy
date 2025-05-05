@@ -1,0 +1,13 @@
+<h2 class="header">Notificacions</h2>
+<mat-nav-list>
+    <mat-list-item *ngFor="let n of notifications; let i = index">
+        <mat-icon matListIcon>{{ n.icon }}</mat-icon>
+        <div matLine>{{ n.text }}</div>
+        <button mat-icon-button (click)="remove(i)">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-list-item>
+</mat-nav-list>
+<div class="actions">
+    <button mat-raised-button (click)="clearAll()">Borrar tot</button>
+</div>

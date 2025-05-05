@@ -1,0 +1,17 @@
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+  
+    .actions {
+      display: grid;
+      gap: 1rem;
+      margin-top: 2rem;
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+  
