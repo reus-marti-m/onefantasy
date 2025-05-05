@@ -14,6 +14,10 @@
     flex-direction: column;
     height: 100vh;
 
+    mat-toolbar { 
+        flex: none; 
+    }
+
     .shell-header {
         padding: 1rem;
         border-bottom: 1px solid #ccc;
@@ -37,10 +41,11 @@
     .shell-body {
         display: flex;
         flex: 1;
+        overflow: hidden;
 
         .shell-aside {
             position: relative;
-            width: 300px;
+            width: 400px;
             border-right: 1px solid #ddd;
             display: flex;
             flex-direction: column;
@@ -75,6 +80,7 @@
             .tab-content {
                 overflow-y: auto;
                 flex: 1;
+                overflow-y: auto;
 
                 .tab-panel {
                     padding: 1rem;

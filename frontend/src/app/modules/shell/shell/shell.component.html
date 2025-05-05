@@ -92,27 +92,26 @@
                         aria-label="Filtrar per data">
                         <mat-icon>calendar_today</mat-icon>
                     </button>
-    
+
                     <button *ngIf="currentTab !== 'participations'" mat-fab color="primary" [disabled]="!tokenPresent()"
-                        (click)="openFullScreen('createLeague')" aria-label="Crear lliga">
+                        (click)="openFullScreen('create-league')" aria-label="Crear lliga">
                         <mat-icon>add</mat-icon>
                     </button>
-    
-                    <button mat-fab color="accent" [disabled]="!tokenPresent()" (click)="openFullScreen('preferences')" aria-label="Preferències">
+
+                    <button mat-fab color="accent" [disabled]="!tokenPresent()" (click)="openFullScreen('preferences')"
+                        aria-label="Preferències">
                         <mat-icon>settings</mat-icon>
                     </button>
-    
+
                     <input matInput [matDatepicker]="picker" hidden />
                     <mat-datepicker #picker></mat-datepicker>
                 </div>
             </aside>
 
             <main *ngIf="!isMobile || showDetail" class="shell-main" [class.overlay]="isMobile && showDetail">
-                <app-participation-detail *ngIf="lastSelectedType === 'participation'" [id]="selectedParticipationId">
-                </app-participation-detail>
-                <app-league-detail *ngIf="lastSelectedType === 'league'" [id]="selectedLeagueId">
-                </app-league-detail>
-                <button class="close-btn" *ngIf="isMobile" (click)="closeDetail()">
+                <router-outlet></router-outlet>
+
+                <button class="close-btn" *ngIf="isMobile && showDetail" (click)="closeDetail()">
                     ← Tornar
                 </button>
             </main>
@@ -120,9 +119,6 @@
     </mat-sidenav-content>
 </mat-sidenav-container>
 
-<app-profile *ngIf="fullScreen==='profile'" class="fullscreen-panel"></app-profile>
-<app-rules *ngIf="fullScreen==='rules'" class="fullscreen-panel"></app-rules>
-<app-help *ngIf="fullScreen==='help'" class="fullscreen-panel"></app-help>
-<app-settings *ngIf="fullScreen==='settings'" class="fullscreen-panel"></app-settings>
-<app-create-league *ngIf="fullScreen === 'createLeague'" class="fullscreen-panel"></app-create-league>
-<app-preferences *ngIf="fullScreen === 'preferences'" class="fullscreen-panel"></app-preferences>
+<div *ngIf="modalActive" class="fullscreen-panel">
+    <router-outlet name="modal"></router-outlet>
+</div>

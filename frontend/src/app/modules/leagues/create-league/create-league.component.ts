@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ShellComponent } from '../../shell/shell/shell.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-league',
@@ -11,10 +11,16 @@ import { ShellComponent } from '../../shell/shell/shell.component';
 })
 export class CreateLeagueComponent {
 
-  constructor(private shell: ShellComponent) { }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
 
   close() {
-    this.shell.fullScreen = null;
+    this.router.navigate(
+      [{ outlets: { modal: null } }],
+      { relativeTo: this.route.parent }
+    );
   }
 
 }

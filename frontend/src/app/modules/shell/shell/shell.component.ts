@@ -9,22 +9,21 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
-import { ProfileComponent } from '../../profile/profile/profile.component';
 import { RulesComponent } from '../../rules/rules/rules.component';
 import { HelpComponent } from '../../help/help/help.component';
 import { SettingsComponent } from '../../settings/settings/settings.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { NotificationsComponent } from '../../notifications/notifications/notifications.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { CreateLeagueComponent } from '../../leagues/create-league/create-league.component';
-import { PreferencesComponent } from '../../preferences/preferences/preferences.component';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
   imports: [
+    RouterModule,
     CommonModule,
     ParticipationsListComponent,
     PublicListComponent,
@@ -35,16 +34,10 @@ import { PreferencesComponent } from '../../preferences/preferences/preferences.
     MatIconModule,
     MatSidenavModule,
     MatListModule,
-    ProfileComponent,
-    RulesComponent,
-    HelpComponent,
-    SettingsComponent,
     MatButtonModule,
     NotificationsComponent,
     MatDatepickerModule,
-    MatNativeDateModule,
-    CreateLeagueComponent,
-    PreferencesComponent
+    MatNativeDateModule
   ],
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss']
@@ -57,8 +50,9 @@ export class ShellComponent {
   selectedLeagueId?: number;
   lastSelectedType: 'participation' | 'league' | null = null;
   fullScreen: 'profile' | 'rules' | 'help' | 'settings' | 'createLeague' | 'preferences' | null = null;
+  modalActive = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private route: ActivatedRoute) {
     this.checkScreen();
   }
 
@@ -70,6 +64,21 @@ export class ShellComponent {
 
   ngOnInit() {
     this.checkScreen();
+
+    this.router.events
+      .pipe(filter(e => e instanceof NavigationEnd))
+      .subscribe((e: NavigationEnd) => {
+
+        // check if we have opened a modal window
+        const hasModal = this.route.children.some(r => r.outlet === 'modal');
+        this.modalActive = hasModal;
+
+        // Check if we are on mobile and have opened a league or participation
+        if (this.isMobile) {
+          const cleanUrl = e.urlAfterRedirects.split(';')[0];
+          this.showDetail = /^\/app\/(participations|public-leagues|private-leagues)\/\d+$/.test(cleanUrl);
+        }
+      });
   }
 
   onSelectItem(id: number) {
@@ -84,7 +93,14 @@ export class ShellComponent {
   }
 
   closeDetail() {
+    const base = this.currentTab === 'participations'
+      ? ['app','participations']
+      : this.currentTab === 'public'
+        ? ['app','public-leagues']
+        : ['app','private-leagues'];
+  
     this.showDetail = false;
+    this.router.navigate(base);
   }
 
   tokenPresent() {
@@ -101,8 +117,11 @@ export class ShellComponent {
     this.navigateToWelcome();
   }
 
-  openFullScreen(panel: 'profile' | 'rules' | 'help' | 'settings' | 'createLeague' | 'preferences') {
-    this.fullScreen = panel;
+  openFullScreen(panel: 'profile' | 'rules' | 'help' | 'settings' | 'create-league' | 'preferences') {
+    this.router.navigate(
+      [{ outlets: { modal: panel } }],
+      { relativeTo: this.route }
+    );
   }
 
 }

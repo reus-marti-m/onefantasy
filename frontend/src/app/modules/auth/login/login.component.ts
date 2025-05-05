@@ -50,7 +50,7 @@ export class LoginComponent {
     this.auth.login(email, password).subscribe({
       next: ({ token }) => {
         localStorage.setItem('token', token);
-        this.router.navigateByUrl('/participations');
+        this.router.navigateByUrl('/app/participations');
       },
       error: err => {
         this.loading = false;

@@ -1,6 +1,6 @@
 import { Component, Host, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ShellComponent } from '../../shell/shell/shell.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-public-leagues-list',
@@ -11,10 +11,10 @@ import { ShellComponent } from '../../shell/shell/shell.component';
 })
 export class PublicListComponent {
   
-  constructor(@Host() @SkipSelf() private shell: ShellComponent) {}
+  constructor(private router: Router, private route: ActivatedRoute) { }
 
   onSelect(id: number) {
-    this.shell.onSelectItem(id);
+    this.router.navigate(['/app', 'public-leagues', id]);
   }
   
 }

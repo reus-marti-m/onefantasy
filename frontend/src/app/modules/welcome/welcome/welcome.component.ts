@@ -29,7 +29,7 @@ export class WelcomeComponent {
     const isGuest = localStorage.getItem('guest') === 'true';
 
     if (token || isGuest) {
-      this.router.navigateByUrl('/participations');
+      this.router.navigateByUrl('/app/participations');
     }
   }
 
@@ -41,6 +41,6 @@ export class WelcomeComponent {
 
   enterAsGuest() {
     localStorage.setItem('guest', 'true');
-    this.router.navigateByUrl('/participations');
+    this.router.navigateByUrl('/app/participations');
   }
 }
