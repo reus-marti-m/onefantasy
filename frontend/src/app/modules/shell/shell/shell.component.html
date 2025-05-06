@@ -48,7 +48,7 @@
         <app-notifications></app-notifications>
     </mat-sidenav>
 
-    <mat-sidenav-content>
+    <mat-sidenav-content class="shell-content">
         <mat-toolbar color="primary" *ngIf="!(isMobile && showDetail)">
             <button mat-icon-button (click)="drawer.toggle()">
                 <mat-icon>menu</mat-icon>
@@ -86,7 +86,7 @@
                         <app-private-leagues-list></app-private-leagues-list>
                     </div>
                 </section>
-                <div class="fab-container">
+                <div class="fab-container" *ngIf="!modalActive && !(isMobile && showDetail)">
 
                     <button *ngIf="currentTab === 'participations'" mat-fab color="primary" (click)="picker.open()"
                         aria-label="Filtrar per data">
@@ -109,11 +109,10 @@
             </aside>
 
             <main *ngIf="!isMobile || showDetail" class="shell-main" [class.overlay]="isMobile && showDetail">
-                <router-outlet></router-outlet>
-
                 <button class="close-btn" *ngIf="isMobile && showDetail" (click)="closeDetail()">
                     ← Tornar
                 </button>
+                <router-outlet></router-outlet>
             </main>
         </div>
     </mat-sidenav-content>
