@@ -56,13 +56,13 @@ namespace OneFantasy.Api.Domain.Implementations
             return comp is null ? throw new NotFoundException(nameof(Competition), id) : _mapper.Map<CompetitionDtoResponse>(comp);
         }
 
-        public async Task<IEnumerable<CompetitionDtoResponse>> GetAllAsync()
+        public async Task<List<CompetitionDtoResponse>> GetAllAsync()
         {
             var comps = await _db.Competitions
                 .Include(c => c.Seasons)
                 .ToListAsync();
 
-            return comps.Select(_mapper.Map<CompetitionDtoResponse>);
+            return [.. comps.Select(_mapper.Map<CompetitionDtoResponse>)];
         }
 
     }

@@ -106,6 +106,7 @@ export class ShellComponent {
   }
 
   openFullScreen(panel: 'profile' | 'rules' | 'help' | 'settings' | 'create-league' | 'preferences') {
+    console.log("openFullScreen");
     this.drawer.close();
     this.router.navigate(
       [{ outlets: { modal: panel } }],

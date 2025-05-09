@@ -11,4 +11,9 @@ namespace OneFantasy.Api.DTOs
         public string Password { get; set; }
 
     }
+
+    public class LoginResponseDto
+    {
+        public string Token { get; set; }
+    }
 }

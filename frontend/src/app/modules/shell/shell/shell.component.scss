@@ -4,6 +4,14 @@ body {
     margin: 0;
 }
 
+// .fullscreen-panel {
+//   display: none !important;
+//   &.active {
+//     display: block !important;
+//     /* tu estilo de “modal” en pantalla completa */
+//   }
+// }
+
 :host ::ng-deep .fullscreen-panel {
     position: fixed !important;
     top: 0;

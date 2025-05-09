@@ -102,7 +102,7 @@ namespace OneFantasy.Api.Domain.Implementations
             return _mapper.Map<UserParticipationResponseDto>(entity);
         }
 
-        public async Task<IEnumerable<IMinigameDtoResponse>> ResolveMinigamesAsync(int seasonId, int participationId, List<ParticipationResultDto> dtos)
+        public async Task<List<IMinigameDtoResponse>> ResolveMinigamesAsync(int seasonId, int participationId, List<ParticipationResultDto> dtos)
         {
             // Pre validations
             var participation = await PreParticipationValidations(seasonId, participationId);
@@ -130,7 +130,7 @@ namespace OneFantasy.Api.Domain.Implementations
             return responseDtos;
         }
 
-        public async Task<IEnumerable<IParticipationDtoResponse>> GetBySeasonAsync(int seasonId, string userId, bool isAdmin)
+        public async Task<List<IParticipationDtoResponse>> GetBySeasonAsync(int seasonId, string userId, bool isAdmin)
         {
             if (!await _db.Seasons.AnyAsync(s => s.Id == seasonId))
                 throw new NotFoundException(nameof(Season), seasonId);

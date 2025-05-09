@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { WelcomeComponent } from './modules/welcome/welcome/welcome.component';
-import { AuthGuard } from './core/auth.guard';
+import { AuthGuard } from './core/auth/auth.guard';
 import { ShellComponent } from './modules/shell/shell/shell.component';
 import { DetailComponent as ParticipationDetailComponent } from './modules/participations/detail/detail.component';
 import { LeagueDetailComponent } from './modules/leagues/detail/detail.component';

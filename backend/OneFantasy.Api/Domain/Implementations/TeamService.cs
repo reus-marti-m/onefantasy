@@ -53,7 +53,7 @@ namespace OneFantasy.Api.Domain.Implementations
             return _mapper.Map<TeamDtoResponse>(team);
         }
 
-        public async Task<IEnumerable<TeamDtoResponse>> GetBySeasonAsync(int seasonId)
+        public async Task<List<TeamDtoResponse>> GetBySeasonAsync(int seasonId)
         {
             if (!await _db.Seasons.AnyAsync(s => s.Id == seasonId))
                 throw new NotFoundException(nameof(Season), seasonId);
@@ -63,7 +63,7 @@ namespace OneFantasy.Api.Domain.Implementations
                 .Include(t => t.Players)
                 .ToListAsync();
 
-            return teams.Select(_mapper.Map<TeamDtoResponse>);
+            return [.. teams.Select(_mapper.Map<TeamDtoResponse>)];
         }
 
         public async Task<TeamDtoResponse> GetByIdAsync(int teamId)

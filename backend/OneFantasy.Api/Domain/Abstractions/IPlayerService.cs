@@ -8,7 +8,7 @@ namespace OneFantasy.Api.Domain.Abstractions
     {
         Task<PlayerDtoResponse> CreateAsync(int teamId, PlayerDto dto);
         Task<PlayerDtoResponse> UpdateAsync(int playerId, PlayerDto dto);
-        Task<IEnumerable<PlayerDtoResponse>> GetByTeamAsync(int teamId);
+        Task<List<PlayerDtoResponse>> GetByTeamAsync(int teamId);
         Task<PlayerDtoResponse> GetByIdAsync(int playerId);
     }
 }
