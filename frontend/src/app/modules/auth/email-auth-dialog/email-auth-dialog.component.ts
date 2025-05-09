@@ -62,7 +62,7 @@ export class EmailAuthDialogComponent {
           localStorage.setItem('token', res.token);
         }
         this.dialogRef.close(true);
-        this.router.navigateByUrl('/app/participations');
+        this.router.navigateByUrl('/app');
       },
       error: err => {
         this.loading = false;

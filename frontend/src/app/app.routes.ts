@@ -19,25 +19,8 @@ export const routes: Routes = [
     component: ShellComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', redirectTo: 'participations', pathMatch: 'full' },
-      {
-        path: 'participations',
-        children: [
-          { path: ':id', component: ParticipationDetailComponent }
-        ]
-      },
-      {
-        path: 'public-leagues',
-        children: [
-          { path: ':id', component: LeagueDetailComponent }
-        ]
-      },
-      {
-        path: 'private-leagues',
-        children: [
-          { path: ':id', component: LeagueDetailComponent }
-        ]
-      },
+      { path: 'participations/:id', component: ParticipationDetailComponent },
+      { path: 'leagues/:id',         component: LeagueDetailComponent },
       { path: 'profile', component: ProfileComponent, outlet: 'modal' },
       { path: 'rules', component: RulesComponent, outlet: 'modal' },
       { path: 'help', component: HelpComponent, outlet: 'modal' },

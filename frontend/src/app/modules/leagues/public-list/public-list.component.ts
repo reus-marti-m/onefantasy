@@ -1,6 +1,6 @@
-import { Component, Host, SkipSelf } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-public-leagues-list',
@@ -11,10 +11,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class PublicListComponent {
   
-  constructor(private router: Router, private route: ActivatedRoute) { }
+  constructor(private router: Router) { }
 
   onSelect(id: number) {
-    this.router.navigate(['/app', 'public-leagues', id]);
+    this.router.navigate(['/app', 'leagues', id]);
   }
   
 }

@@ -11,8 +11,7 @@ import { Router } from '@angular/router';
   imports: [
     CommonModule,
     MatButtonModule,
-    MatDialogModule,
-    EmailAuthDialogComponent
+    MatDialogModule
   ],
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.scss']
@@ -29,7 +28,7 @@ export class WelcomeComponent {
     const isGuest = localStorage.getItem('guest') === 'true';
 
     if (token || isGuest) {
-      this.router.navigateByUrl('/app/participations');
+      this.router.navigateByUrl('/app');
     }
   }
 
@@ -41,6 +40,6 @@ export class WelcomeComponent {
 
   enterAsGuest() {
     localStorage.setItem('guest', 'true');
-    this.router.navigateByUrl('/app/participations');
+    this.router.navigateByUrl('/app');
   }
 }

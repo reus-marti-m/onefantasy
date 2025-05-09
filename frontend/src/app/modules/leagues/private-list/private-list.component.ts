@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-private-leagues-list',
@@ -11,10 +11,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class PrivateListComponent {
 
-  constructor(private router: Router, private route: ActivatedRoute) { }
+  constructor(private router: Router) { }
 
   onSelect(id: number) {
-    this.router.navigate(['/app', 'private-leagues', id]);
+    this.router.navigate(['/app', 'leagues', id]);
   }
 
 }
