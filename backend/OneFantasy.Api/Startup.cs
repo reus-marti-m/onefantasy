@@ -28,6 +28,22 @@ namespace OneFantasy.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var allowedOrigins = Configuration
+                .GetSection("Cors:AllowedOrigins")
+                .Get<string[]>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("FrontendPolicy", policy =>
+                {
+                    policy
+                        .WithOrigins(allowedOrigins ?? [])
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             // DbContext configuration
             services.AddDbContext<AppDbContext>(
                 options => options.UseSqlite(
@@ -178,9 +194,12 @@ namespace OneFantasy.Api
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseCors("FrontendPolicy");
+
             // Authentication & Authorization
             app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {
