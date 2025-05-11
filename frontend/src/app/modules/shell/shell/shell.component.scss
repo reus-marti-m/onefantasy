@@ -31,6 +31,89 @@ body {
     overflow: hidden;
 }
 
+.user-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    overflow: visible;
+}
+
+.user-avatar {
+    display: inline-block;
+    font-size: 40px !important;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    vertical-align: middle;
+    margin-right: 0.75rem;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.user-score {
+    font-size: 0.875rem;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.shell-sidenav mat-list-item {
+    height: auto;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.toolbar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #c6d7f6;
+}
+
+.shell-sidenav mat-list-item .mat-list-item-content {
+    display: flex;
+    align-items: center;
+}
+
+.shell-sidenav mat-list-item span {
+    font-size: 1rem;
+    font-weight: 400;
+    text-transform: none;
+}
+
+.shell-sidenav mat-list-item.activated span {
+    font-weight: 600;
+    border-left: 4px solid currentColor;
+    padding-left: 1rem;
+}
+
+.toolbar-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.25rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+.mat-badge-content {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    min-width: 0;
+    font-size: 0.5rem;
+}
+
 .shell-container {
     display: flex;
     flex-direction: column;
@@ -55,6 +138,7 @@ body {
 
             .tabs {
                 display: flex;
+                background-color: #c6d7f6;
                 flex: none;
                 z-index: 10;
 
@@ -64,10 +148,12 @@ body {
                     border: none;
                     background: none;
                     cursor: pointer;
+                    font-weight: bold;
+                    color: #49454F;
 
                     &.active {
-                        font-weight: bold;
-                        border-bottom: 2px solid #3f51b5;
+                        color: #00458f;
+                        border-bottom: 2px solid #00458f;
                     }
                 }
             }
@@ -76,10 +162,6 @@ body {
                 flex: 1 1 auto;
                 min-height: 0;
                 overflow-y: auto;
-
-                .tab-panel {
-                    padding: 1rem;
-                }
             }
 
             .fab-container {
@@ -123,4 +205,62 @@ body {
             padding: 1rem;
         }
     }
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item {
+    height: auto !important;
+    padding: 0.75rem 1rem !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item .mat-list-item-content {
+    display: flex !important;
+    align-items: center !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item mat-icon {
+    margin-right: 0.75rem !important;
+    font-size: 24px !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item span {
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    text-transform: none !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item.user-header {
+    flex-direction: row !important;
+    align-items: center !important;
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item.user-header mat-icon {
+    font-size: 40px !important;
+    width: 40px;
+    height: 40px;
+    line-height: 40px !important;
+    margin: 0 0 0.5rem 0 !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item.user-header .mat-list-item-content {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item.user-header .user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item.user-header .user-name {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.25rem;
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item.user-header .user-score {
+    font-size: 0.875rem !important;
+    color: rgba(0, 0, 0, 0.6) !important;
 }

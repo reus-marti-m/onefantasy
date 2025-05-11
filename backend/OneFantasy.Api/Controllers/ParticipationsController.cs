@@ -22,8 +22,8 @@ namespace OneFantasy.Api.Controllers
 
         [HttpPost("standard")]
         [Authorize(Policy = "RequireAdmin")]
-        [ProducesResponseType(typeof(ParticipationStandartDtoResponse), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateStandard(int seasonId, [FromBody] ParticipationStandartDto body)
+        [ProducesResponseType(typeof(ParticipationStandardDtoResponse), StatusCodes.Status201Created)]
+        public async Task<IActionResult> CreateStandard(int seasonId, [FromBody] ParticipationStandardDto body)
         {
             var dto = await _service.CreateStandardAsync(seasonId, body);
             return CreatedAtAction
@@ -36,7 +36,7 @@ namespace OneFantasy.Api.Controllers
 
         [HttpPost("special")]
         [Authorize(Policy = "RequireAdmin")]
-        [ProducesResponseType(typeof(ParticipationSpecialDtoResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ParticipationSpecialDtoResponse), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateSpecial(int seasonId, [FromBody] ParticipationSpecialDto body)
         {
             var dto = await _service.CreateSpecialAsync(seasonId, body);
@@ -50,7 +50,7 @@ namespace OneFantasy.Api.Controllers
 
         [HttpPost("extra")]
         [Authorize(Policy = "RequireAdmin")]
-        [ProducesResponseType(typeof(ParticipationExtraDtoResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ParticipationExtraDtoResponse), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateExtra(int seasonId, [FromBody] ParticipationExtraDto body)
         {
             var dto = await _service.CreateExtraAsync(seasonId, body);

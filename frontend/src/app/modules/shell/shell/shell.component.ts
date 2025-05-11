@@ -56,13 +56,15 @@ export class ShellComponent {
     this.isMobile = window.innerWidth < 768;
   }
 
+  navigateHome() {
+    this.router.navigate(['/']); 
+  }
+
   ngOnInit() {
     this.checkScreen();
 
-    // Check on first load
     this.updateViewFlags();
 
-    // Check into router events
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe(() => {

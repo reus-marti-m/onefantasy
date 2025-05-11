@@ -1,11 +1,14 @@
 <mat-sidenav-container class="shell-container">
+
     <mat-sidenav #drawer mode="over" class="shell-sidenav">
         <mat-nav-list>
-
             <ng-container *ngIf="tokenPresent(); else loginBtn">
-                <mat-list-item (click)="openFullScreen('profile')">
-                    <mat-icon>person</mat-icon>
-                    <span>Perfil</span>
+                <mat-list-item class="user-header" (click)="openFullScreen('profile')">
+                    <mat-icon inline>account_circle</mat-icon>
+                    <div class="user-details">
+                        <div class="user-name">Marc Reus Martí</div>
+                        <div class="user-score">62% d'encert</div>
+                    </div>
                 </mat-list-item>
             </ng-container>
             <ng-template #loginBtn>
@@ -14,27 +17,20 @@
                     <span>Iniciar sessió</span>
                 </mat-list-item>
             </ng-template>
-
             <mat-divider></mat-divider>
-
-
             <mat-list-item (click)="openFullScreen('rules')">
                 <mat-icon>rule</mat-icon>
                 <span>Regles</span>
             </mat-list-item>
-
             <mat-list-item (click)="openFullScreen('help')">
                 <mat-icon>help_outline</mat-icon>
                 <span>Ajuda</span>
             </mat-list-item>
-
             <mat-list-item (click)="openFullScreen('settings')">
                 <mat-icon>settings</mat-icon>
                 <span>Configuració</span>
             </mat-list-item>
-
             <mat-divider></mat-divider>
-
             <ng-container *ngIf="tokenPresent()">
                 <mat-list-item (click)="logout()">
                     <mat-icon>logout</mat-icon>
@@ -49,13 +45,17 @@
     </mat-sidenav>
 
     <mat-sidenav-content class="shell-content">
-        <mat-toolbar color="primary" *ngIf="!(isMobile && showDetail)">
+        <mat-toolbar class="toolbar" *ngIf="!(isMobile && showDetail)">
             <button mat-icon-button (click)="drawer.toggle()">
-                <mat-icon>menu</mat-icon>
+                <mat-icon class="toolbar-icons">menu</mat-icon>
             </button>
-            <span>OneFantasy</span>
-            <button mat-icon-button (click)="notifDrawer.toggle()">
-                <mat-icon>notifications</mat-icon>
+            <span class="toolbar-title" role="button" tabindex="0" (click)="navigateHome()">
+                OneFantasy
+            </span>
+            <span class="toolbar-spacer"></span>
+            <button mat-icon-button (click)="notifDrawer.toggle()" matBadge="•" matBadgeColor="warn"
+                matBadgePosition="above after" matBadgeOverlap="false">
+                <mat-icon class="toolbar-icons">notifications</mat-icon>
             </button>
         </mat-toolbar>
 
@@ -98,9 +98,9 @@
                         <mat-icon>add</mat-icon>
                     </button>
 
-                    <button mat-fab color="accent" [disabled]="!tokenPresent()" (click)="openFullScreen('preferences')"
+                    <button mat-fab color="primary" [disabled]="!tokenPresent()" (click)="openFullScreen('preferences')"
                         aria-label="Preferències">
-                        <mat-icon>settings</mat-icon>
+                        <mat-icon>tune</mat-icon>
                     </button>
 
                     <input matInput [matDatepicker]="picker" hidden />
@@ -115,8 +115,10 @@
                 <router-outlet></router-outlet>
             </main>
         </div>
+
     </mat-sidenav-content>
 </mat-sidenav-container>
+
 
 <div *ngIf="modalActive" class="fullscreen-panel">
     <router-outlet name="modal"></router-outlet>

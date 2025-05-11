@@ -23,7 +23,6 @@ import { AuthDto, Service } from '../../../core/api';
   ],
   providers: [
     Service,
-    // { provide: API_BASE_URL, useValue: environment.apiUrl }
   ],
   templateUrl: './email-auth-dialog.component.html',
   styleUrls: ['./email-auth-dialog.component.scss']

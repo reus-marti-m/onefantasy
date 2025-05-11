@@ -7,8 +7,9 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "gen:api": "nswag run nswag.json && npm run patch:array-ops",
-    "patch:array-ops": "node scripts/patch-arrays-only-array-ops.js"
+    "gen:api": "nswag run nswag.json && npm run patch:array-ops && npm run patch:polymorphism",
+    "patch:array-ops": "node scripts/patch-arrays-only-array-ops.js",
+    "patch:polymorphism": "node scripts/patch-polymorphism.js"
   },
   "private": true,
   "dependencies": {

@@ -1,5 +1,45 @@
-<ul>
-  <li *ngFor="let i of [].constructor(100); let index = index" (click)="onSelect(index + 1)">
-    Participació {{ index + 1 }}
-  </li>
-</ul>
+<div class="participations-container">
+
+  <section *ngIf="playable.length">
+    <div class="jugables">Jugables</div>
+
+    <div class="participation-card" *ngFor="let p of playable" (click)="onSelect(p.id)">
+      <div class="content">
+        <div class="line1">
+          <span class="competition">{{ p.competition }}&nbsp;</span>
+          <mat-icon class="star-icon" [ngClass]="getStarClass(p)">
+            star
+          </mat-icon>
+          <span class="matchday">&nbsp;J21-1</span>
+          <span class="date">{{ getRightText(p) }}</span>
+        </div>
+        <div class="line2">
+          <mat-icon class="left-icon" [ngClass]="getLeftClass(p)">{{ getLeftIcon(p) }}</mat-icon>
+          <span class="status-text">&nbsp;{{ getStatusText(p) }} · 2 lligues</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section *ngIf="started.length">
+    <div class="iniciades">Iniciades</div>
+
+    <div class="participation-card" *ngFor="let p of started" (click)="onSelect(p.id)">
+      <div class="content">
+        <div class="line1">
+          <span class="competition">{{ p.competition }}&nbsp;</span>
+          <mat-icon class="star-icon" [ngClass]="getStarClass(p)">
+            star
+          </mat-icon>
+          <span class="matchday">&nbsp;J21-1</span>
+          <span class="date">{{ getRightText(p) }}</span>
+        </div>
+        <div class="line2">
+          <mat-icon class="left-icon" [ngClass]="getLeftClass(p)">{{ getLeftIcon(p) }}</mat-icon>
+          <span class="status-text">&nbsp;{{ getStatusText(p) }} · 2 lligues</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

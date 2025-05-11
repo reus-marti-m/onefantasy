@@ -69,7 +69,7 @@ namespace OneFantasy.Api.Domain.Mappers
             CreateMap<MinigameMatchDto, MinigameMatch>()
                 .ConstructUsing(dto => new MinigameMatch(
                     dto.Options.Select(FromDto).ToList(),
-                    dto.Type
+                    dto.MiniGameMatchType
                 ))
                 .ForMember(dest => dest.Options, opt => opt.Ignore());
             CreateMap<MinigameMatch, MinigameMatchDtoResponse>()
@@ -176,6 +176,7 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(d => d.Date, o => o.MapFrom(src => src.Date))
                 .ForMember(d => d.MinigameGroupMatch2A, o => o.MapFrom(src => src.MinigameGroupMatch2A))
                 .ForMember(d => d.MinigameGroupMatch2B, o => o.MapFrom(src => src.MinigameGroupMatch2B))
+                .ForMember(d => d.Competition, o => o.MapFrom(src => src.Season.Competition.Name))
                 .ForMember(dest => dest.Budget, opt => opt.MapFrom(src => src.Budget))
                 .ForMember(dest => dest.HasPlayed, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) && items["userParticipation"] != null))
                 .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.Points : null));
@@ -189,19 +190,21 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(d => d.Date, o => o.MapFrom(src => src.Date))
                 .ForMember(d => d.MinigameGroupMatch2A, o => o.MapFrom(src => src.MinigameGroupMatch2A))
                 .ForMember(d => d.MinigameGroupMatch2B, o => o.MapFrom(src => src.MinigameGroupMatch2B))
+                .ForMember(d => d.Competition, o => o.MapFrom(src => src.Season.Competition.Name))
                 .ForMember(dest => dest.Budget, opt => opt.MapFrom(src => src.Budget))
                 .ForMember(dest => dest.HasPlayed, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) && items["userParticipation"] != null))
                 .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.Points : null));
 
-            CreateMap<ParticipationStandartDto, ParticipationStandard>()
+            CreateMap<ParticipationStandardDto, ParticipationStandard>()
                 .ForCtorParam("date", opt => opt.MapFrom(src => src.Date))
                 .ForCtorParam("season", opt => opt.MapFrom((src, ctx) => ctx.Items["season"]))
                 .ForCtorParam("minigameGroupMulti", opt => opt.MapFrom(src => src.MinigameGroupMulti))
                 .ForCtorParam("minigameGroupMatch3", opt => opt.MapFrom(src => src.MinigameGroupMatch3));
-            CreateMap<ParticipationStandard, ParticipationStandartDtoResponse>()
+            CreateMap<ParticipationStandard, ParticipationStandardDtoResponse>()
                 .ForMember(d => d.Date, o => o.MapFrom(src => src.Date))
                 .ForMember(d => d.MinigameGroupMulti, o => o.MapFrom(src => src.MinigameGroupMulti))
                 .ForMember(d => d.MinigameGroupMatch3, o => o.MapFrom(src => src.MinigameGroupMatch3))
+                .ForMember(d => d.Competition, o => o.MapFrom(src => src.Season.Competition.Name))
                 .ForMember(dest => dest.Budget, opt => opt.MapFrom(src => src.Budget))
                 .ForMember(dest => dest.HasPlayed, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) && items["userParticipation"] != null))
                 .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.Points : null));

@@ -31,10 +31,10 @@ namespace OneFantasy.Api.Domain.Implementations
             _users = users;
         }
 
-        public async Task<ParticipationStandartDtoResponse> CreateStandardAsync(int seasonId, ParticipationStandartDto dto)
+        public async Task<ParticipationStandardDtoResponse> CreateStandardAsync(int seasonId, ParticipationStandardDto dto)
         {
             // Validations
-            var season = await StandartValidations(seasonId, dto);
+            var season = await StandardValidations(seasonId, dto);
 
             // Validations ok
             var entity = _mapper.Map<ParticipationStandard>(dto, opts =>
@@ -43,7 +43,7 @@ namespace OneFantasy.Api.Domain.Implementations
             });
             _db.Participations.Add(entity);
             await _db.SaveChangesAsync();
-            return _mapper.Map<ParticipationStandartDtoResponse>(entity);
+            return _mapper.Map<ParticipationStandardDtoResponse>(entity);
         }
 
         public async Task<ParticipationSpecialDtoResponse> CreateSpecialAsync(int seasonId, ParticipationSpecialDto dto)
@@ -398,13 +398,15 @@ namespace OneFantasy.Api.Domain.Implementations
         private IQueryable<Participation> LoadFullParticipationsQuery() => _db.Participations
             .Include(p => p.Groups)
                 .ThenInclude(g => g.Minigames)
-                    .ThenInclude(m => m.Options);
+                    .ThenInclude(m => m.Options)
+            .Include(p => p.Season)
+                .ThenInclude(s => s.Competition);
 
         private IParticipationDtoResponse MapParticipation(Participation p, UserParticipation userParticipation, int? id = null)
         {
             return p switch
             {
-                ParticipationStandard std => _mapper.Map<ParticipationStandartDtoResponse>(std, opts =>
+                ParticipationStandard std => _mapper.Map<ParticipationStandardDtoResponse>(std, opts =>
                 {
                     opts.Items["userParticipation"] = userParticipation;
                 }),
@@ -420,7 +422,7 @@ namespace OneFantasy.Api.Domain.Implementations
             };
         }
 
-        private async Task<Season> StandartValidations(int seasonId, ParticipationStandartDto dto)
+        private async Task<Season> StandardValidations(int seasonId, ParticipationStandardDto dto)
         {
             // Gets
             var season = await LoadSeasonWithTeamsAsync(seasonId);

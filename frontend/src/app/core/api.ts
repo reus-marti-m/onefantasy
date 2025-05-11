@@ -13,6 +13,40 @@ import { Observable, throwError as _observableThrow, of as _observableOf } from 
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 
+export type ParticipationDtoResponse =
+  | ParticipationStandardDtoResponse
+  | ParticipationExtraDtoResponse
+  | ParticipationSpecialDtoResponse;
+
+export namespace ParticipationDtoResponse {
+  export function fromJS(item: any): ParticipationDtoResponse {
+    switch(item.type) {
+      case 0: return ParticipationStandardDtoResponse.fromJS(item);
+      case 1: return ParticipationExtraDtoResponse.fromJS(item);
+      case 2: return ParticipationSpecialDtoResponse.fromJS(item);
+      default: throw new Error('Unknown participation type ' + item.type);
+    }
+  }
+}
+export type MinigameDtoResponse =
+  | MinigameResultDtoResponse
+  | MinigameMatchDtoResponse
+  | MinigameScoresDtoResponse
+  | MinigamePlayersDtoResponse;
+
+export namespace MinigameDtoResponse {
+  export function fromJS(item: any): MinigameDtoResponse {
+    switch(item.type) {
+      case 1: return MinigameResultDtoResponse.fromJS(item);
+      case 2: return MinigameMatchDtoResponse.fromJS(item);
+      case 3: return MinigameScoresDtoResponse.fromJS(item);
+      case 4: return MinigamePlayersDtoResponse.fromJS(item);
+      default: throw new Error('Unknown minigame type ' + item.type);
+    }
+  }
+}
+
+
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IService {
@@ -57,15 +91,15 @@ export interface IService {
      * @param body (optional) 
      * @return Created
      */
-    standard(seasonId: number, body: ParticipationStandartDto | undefined): Observable<ParticipationStandartDtoResponse>;
+    standard(seasonId: number, body: ParticipationStandardDto | undefined): Observable<ParticipationStandardDtoResponse>;
     /**
      * @param body (optional) 
-     * @return OK
+     * @return Created
      */
     special(seasonId: number, body: ParticipationSpecialDto | undefined): Observable<ParticipationSpecialDtoResponse>;
     /**
      * @param body (optional) 
-     * @return OK
+     * @return Created
      */
     extra(seasonId: number, body: ParticipationExtraDto | undefined): Observable<ParticipationExtraDtoResponse>;
     /**
@@ -77,15 +111,15 @@ export interface IService {
      * @param body (optional) 
      * @return OK
      */
-    resolve(seasonId: number, participationId: number, body: ParticipationResultDto[] | undefined): Observable<MinigameResultDtoResponse[]>;
+    resolve(seasonId: number, participationId: number, body: ParticipationResultDto[] | undefined):Observable<MinigameDtoResponse[]>;
     /**
      * @return OK
      */
-    participationsAll(seasonId: number): Observable<ParticipationStandartDtoResponse[]>;
+    participationsAll(seasonId: number):Observable<ParticipationDtoResponse[]>;
     /**
      * @return OK
      */
-    participations(seasonId: number, participationId: number): Observable<ParticipationStandartDtoResponse>;
+    participations(seasonId: number, participationId: number):Observable<ParticipationDtoResponse>;
     /**
      * @param body (optional) 
      * @return Created
@@ -599,7 +633,7 @@ export class Service implements IService {
      * @param body (optional) 
      * @return Created
      */
-    standard(seasonId: number, body: ParticipationStandartDto | undefined): Observable<ParticipationStandartDtoResponse> {
+    standard(seasonId: number, body: ParticipationStandardDto | undefined): Observable<ParticipationStandardDtoResponse> {
         let url_ = this.baseUrl + "/api/seasons/{seasonId}/participations/standard";
         if (seasonId === undefined || seasonId === null)
             throw new Error("The parameter 'seasonId' must be defined.");
@@ -625,14 +659,14 @@ export class Service implements IService {
                 try {
                     return this.processStandard(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ParticipationStandartDtoResponse>;
+                    return _observableThrow(e) as any as Observable<ParticipationStandardDtoResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ParticipationStandartDtoResponse>;
+                return _observableThrow(response_) as any as Observable<ParticipationStandardDtoResponse>;
         }));
     }
 
-    protected processStandard(response: HttpResponseBase): Observable<ParticipationStandartDtoResponse> {
+    protected processStandard(response: HttpResponseBase): Observable<ParticipationStandardDtoResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -643,7 +677,7 @@ export class Service implements IService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result201: any = null;
             let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result201 = ParticipationStandartDtoResponse.fromJS(resultData201);
+            result201 = ParticipationStandardDtoResponse.fromJS(resultData201);
             return _observableOf(result201);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -651,12 +685,12 @@ export class Service implements IService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<ParticipationStandartDtoResponse>(null as any);
+        return _observableOf<ParticipationStandardDtoResponse>(null as any);
     }
 
     /**
      * @param body (optional) 
-     * @return OK
+     * @return Created
      */
     special(seasonId: number, body: ParticipationSpecialDto | undefined): Observable<ParticipationSpecialDtoResponse> {
         let url_ = this.baseUrl + "/api/seasons/{seasonId}/participations/special";
@@ -698,12 +732,12 @@ export class Service implements IService {
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
+        if (status === 201) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ParticipationSpecialDtoResponse.fromJS(resultData200);
-            return _observableOf(result200);
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result201 = ParticipationSpecialDtoResponse.fromJS(resultData201);
+            return _observableOf(result201);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -715,7 +749,7 @@ export class Service implements IService {
 
     /**
      * @param body (optional) 
-     * @return OK
+     * @return Created
      */
     extra(seasonId: number, body: ParticipationExtraDto | undefined): Observable<ParticipationExtraDtoResponse> {
         let url_ = this.baseUrl + "/api/seasons/{seasonId}/participations/extra";
@@ -757,12 +791,12 @@ export class Service implements IService {
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
+        if (status === 201) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ParticipationExtraDtoResponse.fromJS(resultData200);
-            return _observableOf(result200);
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result201 = ParticipationExtraDtoResponse.fromJS(resultData201);
+            return _observableOf(result201);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -838,7 +872,7 @@ export class Service implements IService {
      * @param body (optional) 
      * @return OK
      */
-    resolve(seasonId: number, participationId: number, body: ParticipationResultDto[] | undefined): Observable<MinigameResultDtoResponse[]> {
+    resolve(seasonId: number, participationId: number, body: ParticipationResultDto[] | undefined):Observable<MinigameDtoResponse[]> {
         let url_ = this.baseUrl + "/api/seasons/{seasonId}/participations/{participationId}/resolve";
         if (seasonId === undefined || seasonId === null)
             throw new Error("The parameter 'seasonId' must be defined.");
@@ -874,7 +908,7 @@ export class Service implements IService {
         }));
     }
 
-    protected processResolve(response: HttpResponseBase): Observable<MinigameResultDtoResponse[]> {
+    protected processResolve(response: HttpResponseBase):Observable<MinigameDtoResponse[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -888,7 +922,7 @@ export class Service implements IService {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(MinigameResultDtoResponse.fromJS(item));
+                    result200!.push(MinigameDtoResponse.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -906,7 +940,7 @@ export class Service implements IService {
     /**
      * @return OK
      */
-    participationsAll(seasonId: number): Observable<ParticipationStandartDtoResponse[]> {
+    participationsAll(seasonId: number):Observable<ParticipationDtoResponse[]> {
         let url_ = this.baseUrl + "/api/seasons/{seasonId}/participations";
         if (seasonId === undefined || seasonId === null)
             throw new Error("The parameter 'seasonId' must be defined.");
@@ -928,14 +962,14 @@ export class Service implements IService {
                 try {
                     return this.processParticipationsAll(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ParticipationStandartDtoResponse[]>;
+                    return _observableThrow(e) as any as Observable<ParticipationStandardDtoResponse[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ParticipationStandartDtoResponse[]>;
+                return _observableThrow(response_) as any as Observable<ParticipationStandardDtoResponse[]>;
         }));
     }
 
-    protected processParticipationsAll(response: HttpResponseBase): Observable<ParticipationStandartDtoResponse[]> {
+    protected processParticipationsAll(response: HttpResponseBase):Observable<ParticipationDtoResponse[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -949,7 +983,7 @@ export class Service implements IService {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(ParticipationStandartDtoResponse.fromJS(item));
+                    result200!.push(ParticipationDtoResponse.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -967,7 +1001,7 @@ export class Service implements IService {
     /**
      * @return OK
      */
-    participations(seasonId: number, participationId: number): Observable<ParticipationStandartDtoResponse> {
+    participations(seasonId: number, participationId: number):Observable<ParticipationDtoResponse> {
         let url_ = this.baseUrl + "/api/seasons/{seasonId}/participations/{participationId}";
         if (seasonId === undefined || seasonId === null)
             throw new Error("The parameter 'seasonId' must be defined.");
@@ -992,14 +1026,14 @@ export class Service implements IService {
                 try {
                     return this.processParticipations(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ParticipationStandartDtoResponse>;
+                    return _observableThrow(e) as any as Observable<ParticipationStandardDtoResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ParticipationStandartDtoResponse>;
+                return _observableThrow(response_) as any as Observable<ParticipationStandardDtoResponse>;
         }));
     }
 
-    protected processParticipations(response: HttpResponseBase): Observable<ParticipationStandartDtoResponse> {
+    protected processParticipations(response: HttpResponseBase):Observable<ParticipationDtoResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1010,7 +1044,7 @@ export class Service implements IService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ParticipationStandartDtoResponse.fromJS(resultData200);
+            result200 = ParticipationDtoResponse.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1018,7 +1052,7 @@ export class Service implements IService {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<ParticipationStandartDtoResponse>(null as any);
+        return _observableOf<ParticipationStandardDtoResponse>(null as any);
     }
 
     /**
@@ -1939,6 +1973,7 @@ export interface ICreateUserParticipationDto {
 }
 
 export class IMinigameDtoResponse implements IIMinigameDtoResponse {
+    type?: MiniGameType;
     id?: number;
     isResolved?: boolean;
     score?: number | undefined;
@@ -1954,6 +1989,7 @@ export class IMinigameDtoResponse implements IIMinigameDtoResponse {
 
     init(_data?: any) {
         if (_data) {
+            this.type = _data["type"];
             this.id = _data["id"];
             this.isResolved = _data["isResolved"];
             this.score = _data["score"];
@@ -1969,6 +2005,7 @@ export class IMinigameDtoResponse implements IIMinigameDtoResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["type"] = this.type;
         data["id"] = this.id;
         data["isResolved"] = this.isResolved;
         data["score"] = this.score;
@@ -1977,6 +2014,7 @@ export class IMinigameDtoResponse implements IIMinigameDtoResponse {
 }
 
 export interface IIMinigameDtoResponse {
+    type?: MiniGameType;
     id?: number;
     isResolved?: boolean;
     score?: number | undefined;
@@ -1988,6 +2026,7 @@ export class IParticipationDtoResponse implements IIParticipationDtoResponse {
     budget?: number;
     hasPlayed?: boolean;
     score?: number | undefined;
+    competition?: string | undefined;
 
     constructor(data?: IIParticipationDtoResponse) {
         if (data) {
@@ -2005,6 +2044,7 @@ export class IParticipationDtoResponse implements IIParticipationDtoResponse {
             this.budget = _data["budget"];
             this.hasPlayed = _data["hasPlayed"];
             this.score = _data["score"];
+            this.competition = _data["competition"];
         }
     }
 
@@ -2022,6 +2062,7 @@ export class IParticipationDtoResponse implements IIParticipationDtoResponse {
         data["budget"] = this.budget;
         data["hasPlayed"] = this.hasPlayed;
         data["score"] = this.score;
+        data["competition"] = this.competition;
         return data;
     }
 }
@@ -2032,6 +2073,7 @@ export interface IIParticipationDtoResponse {
     budget?: number;
     hasPlayed?: boolean;
     score?: number | undefined;
+    competition?: string | undefined;
 }
 
 export class LoginResponseDto implements ILoginResponseDto {
@@ -2068,6 +2110,13 @@ export class LoginResponseDto implements ILoginResponseDto {
 
 export interface ILoginResponseDto {
     token?: string | undefined;
+}
+
+export enum MiniGameType {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
 }
 
 export class MinigameGroupMatch2ADto implements IMinigameGroupMatch2ADto {
@@ -2524,7 +2573,7 @@ export interface IMinigameGroupMultiDtoResponse {
 
 export class MinigameMatchDto implements IMinigameMatchDto {
     options!: OptionIntervalDto[];
-    type!: MinigameMatchType;
+    miniGameMatchType!: MinigameMatchType;
 
     constructor(data?: IMinigameMatchDto) {
         if (data) {
@@ -2545,7 +2594,7 @@ export class MinigameMatchDto implements IMinigameMatchDto {
                 for (let item of _data["options"])
                     this.options!.push(OptionIntervalDto.fromJS(item));
             }
-            this.type = _data["type"];
+            this.miniGameMatchType = _data["miniGameMatchType"];
         }
     }
 
@@ -2563,19 +2612,20 @@ export class MinigameMatchDto implements IMinigameMatchDto {
             for (let item of this.options)
                 data["options"].push(item ? item.toJSON() : <any>undefined);
         }
-        data["type"] = this.type;
+        data["miniGameMatchType"] = this.miniGameMatchType;
         return data;
     }
 }
 
 export interface IMinigameMatchDto {
     options: OptionIntervalDto[];
-    type: MinigameMatchType;
+    miniGameMatchType: MinigameMatchType;
 }
 
 export class MinigameMatchDtoResponse implements IMinigameMatchDtoResponse {
     options!: OptionIntervalDtoResponse[] | undefined;
-    type!: MinigameMatchType;
+    miniGameMatchType!: MinigameMatchType;
+    type?: MiniGameType;
     id?: number;
     isResolved?: boolean;
     score?: number | undefined;
@@ -2596,6 +2646,7 @@ export class MinigameMatchDtoResponse implements IMinigameMatchDtoResponse {
                 for (let item of _data["options"])
                     this.options!.push(OptionIntervalDtoResponse.fromJS(item));
             }
+            this.miniGameMatchType = _data["miniGameMatchType"];
             this.type = _data["type"];
             this.id = _data["id"];
             this.isResolved = _data["isResolved"];
@@ -2617,6 +2668,7 @@ export class MinigameMatchDtoResponse implements IMinigameMatchDtoResponse {
             for (let item of this.options)
                 data["options"].push(item ? item.toJSON() : <any>undefined);
         }
+        data["miniGameMatchType"] = this.miniGameMatchType;
         data["type"] = this.type;
         data["id"] = this.id;
         data["isResolved"] = this.isResolved;
@@ -2627,7 +2679,8 @@ export class MinigameMatchDtoResponse implements IMinigameMatchDtoResponse {
 
 export interface IMinigameMatchDtoResponse {
     options: OptionIntervalDtoResponse[] | undefined;
-    type: MinigameMatchType;
+    miniGameMatchType: MinigameMatchType;
+    type?: MiniGameType;
     id?: number;
     isResolved?: boolean;
     score?: number | undefined;
@@ -2692,7 +2745,7 @@ export interface IMinigamePlayersDto {
 
 export class MinigamePlayersDtoResponse implements IMinigamePlayersDtoResponse {
     options!: OptionPlayerDtoResponse[] | undefined;
-    type!: MinigamePlayersType;
+    type!: MiniGameType;
     id?: number;
     isResolved?: boolean;
     score?: number | undefined;
@@ -2744,7 +2797,7 @@ export class MinigamePlayersDtoResponse implements IMinigamePlayersDtoResponse {
 
 export interface IMinigamePlayersDtoResponse {
     options: OptionPlayerDtoResponse[] | undefined;
-    type: MinigamePlayersType;
+    type: MiniGameType;
     id?: number;
     isResolved?: boolean;
     score?: number | undefined;
@@ -2811,6 +2864,7 @@ export class MinigameResultDtoResponse implements IMinigameResultDtoResponse {
     draw!: OptionDtoResponse;
     homeVictory!: OptionTeamDtoResponse;
     visitingVictory!: OptionTeamDtoResponse;
+    type?: MiniGameType;
     id?: number;
     isResolved?: boolean;
     score?: number | undefined;
@@ -2834,6 +2888,7 @@ export class MinigameResultDtoResponse implements IMinigameResultDtoResponse {
             this.draw = _data["draw"] ? OptionDtoResponse.fromJS(_data["draw"]) : new OptionDtoResponse();
             this.homeVictory = _data["homeVictory"] ? OptionTeamDtoResponse.fromJS(_data["homeVictory"]) : new OptionTeamDtoResponse();
             this.visitingVictory = _data["visitingVictory"] ? OptionTeamDtoResponse.fromJS(_data["visitingVictory"]) : new OptionTeamDtoResponse();
+            this.type = _data["type"];
             this.id = _data["id"];
             this.isResolved = _data["isResolved"];
             this.score = _data["score"];
@@ -2852,6 +2907,7 @@ export class MinigameResultDtoResponse implements IMinigameResultDtoResponse {
         data["draw"] = this.draw ? this.draw.toJSON() : <any>undefined;
         data["homeVictory"] = this.homeVictory ? this.homeVictory.toJSON() : <any>undefined;
         data["visitingVictory"] = this.visitingVictory ? this.visitingVictory.toJSON() : <any>undefined;
+        data["type"] = this.type;
         data["id"] = this.id;
         data["isResolved"] = this.isResolved;
         data["score"] = this.score;
@@ -2863,6 +2919,7 @@ export interface IMinigameResultDtoResponse {
     draw: OptionDtoResponse;
     homeVictory: OptionTeamDtoResponse;
     visitingVictory: OptionTeamDtoResponse;
+    type?: MiniGameType;
     id?: number;
     isResolved?: boolean;
     score?: number | undefined;
@@ -2917,6 +2974,7 @@ export interface IMinigameScoresDto {
 
 export class MinigameScoresDtoResponse implements IMinigameScoresDtoResponse {
     options!: OptionScoreDtoResponse[] | undefined;
+    type?: MiniGameType;
     id?: number;
     isResolved?: boolean;
     score?: number | undefined;
@@ -2937,6 +2995,7 @@ export class MinigameScoresDtoResponse implements IMinigameScoresDtoResponse {
                 for (let item of _data["options"])
                     this.options!.push(OptionScoreDtoResponse.fromJS(item));
             }
+            this.type = _data["type"];
             this.id = _data["id"];
             this.isResolved = _data["isResolved"];
             this.score = _data["score"];
@@ -2957,6 +3016,7 @@ export class MinigameScoresDtoResponse implements IMinigameScoresDtoResponse {
             for (let item of this.options)
                 data["options"].push(item ? item.toJSON() : <any>undefined);
         }
+        data["type"] = this.type;
         data["id"] = this.id;
         data["isResolved"] = this.isResolved;
         data["score"] = this.score;
@@ -2966,6 +3026,7 @@ export class MinigameScoresDtoResponse implements IMinigameScoresDtoResponse {
 
 export interface IMinigameScoresDtoResponse {
     options: OptionScoreDtoResponse[] | undefined;
+    type?: MiniGameType;
     id?: number;
     isResolved?: boolean;
     score?: number | undefined;
@@ -3496,6 +3557,7 @@ export class ParticipationExtraDtoResponse implements IParticipationExtraDtoResp
     budget?: number;
     hasPlayed?: boolean;
     score?: number | undefined;
+    competition?: string | undefined;
 
     constructor(data?: IParticipationExtraDtoResponse) {
         if (data) {
@@ -3520,6 +3582,7 @@ export class ParticipationExtraDtoResponse implements IParticipationExtraDtoResp
             this.budget = _data["budget"];
             this.hasPlayed = _data["hasPlayed"];
             this.score = _data["score"];
+            this.competition = _data["competition"];
         }
     }
 
@@ -3540,6 +3603,7 @@ export class ParticipationExtraDtoResponse implements IParticipationExtraDtoResp
         data["budget"] = this.budget;
         data["hasPlayed"] = this.hasPlayed;
         data["score"] = this.score;
+        data["competition"] = this.competition;
         return data;
     }
 }
@@ -3553,6 +3617,7 @@ export interface IParticipationExtraDtoResponse {
     budget?: number;
     hasPlayed?: boolean;
     score?: number | undefined;
+    competition?: string | undefined;
 }
 
 export class ParticipationResultDto implements IParticipationResultDto {
@@ -3663,6 +3728,7 @@ export class ParticipationSpecialDtoResponse implements IParticipationSpecialDto
     budget?: number;
     hasPlayed?: boolean;
     score?: number | undefined;
+    competition?: string | undefined;
 
     constructor(data?: IParticipationSpecialDtoResponse) {
         if (data) {
@@ -3687,6 +3753,7 @@ export class ParticipationSpecialDtoResponse implements IParticipationSpecialDto
             this.budget = _data["budget"];
             this.hasPlayed = _data["hasPlayed"];
             this.score = _data["score"];
+            this.competition = _data["competition"];
         }
     }
 
@@ -3707,6 +3774,7 @@ export class ParticipationSpecialDtoResponse implements IParticipationSpecialDto
         data["budget"] = this.budget;
         data["hasPlayed"] = this.hasPlayed;
         data["score"] = this.score;
+        data["competition"] = this.competition;
         return data;
     }
 }
@@ -3720,14 +3788,15 @@ export interface IParticipationSpecialDtoResponse {
     budget?: number;
     hasPlayed?: boolean;
     score?: number | undefined;
+    competition?: string | undefined;
 }
 
-export class ParticipationStandartDto implements IParticipationStandartDto {
+export class ParticipationStandardDto implements IParticipationStandardDto {
     date!: Date;
     minigameGroupMulti!: MinigameGroupMultiDto;
     minigameGroupMatch3!: MinigameGroupMatch3Dto;
 
-    constructor(data?: IParticipationStandartDto) {
+    constructor(data?: IParticipationStandardDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3748,9 +3817,9 @@ export class ParticipationStandartDto implements IParticipationStandartDto {
         }
     }
 
-    static fromJS(data: any): ParticipationStandartDto {
+    static fromJS(data: any): ParticipationStandardDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ParticipationStandartDto();
+        let result = new ParticipationStandardDto();
         result.init(data);
         return result;
     }
@@ -3764,13 +3833,13 @@ export class ParticipationStandartDto implements IParticipationStandartDto {
     }
 }
 
-export interface IParticipationStandartDto {
+export interface IParticipationStandardDto {
     date: Date;
     minigameGroupMulti: MinigameGroupMultiDto;
     minigameGroupMatch3: MinigameGroupMatch3Dto;
 }
 
-export class ParticipationStandartDtoResponse implements IParticipationStandartDtoResponse {
+export class ParticipationStandardDtoResponse implements IParticipationStandardDtoResponse {
     date!: Date;
     minigameGroupMulti!: MinigameGroupMultiDtoResponse;
     minigameGroupMatch3!: MinigameGroupMatch3DtoResponse;
@@ -3779,8 +3848,9 @@ export class ParticipationStandartDtoResponse implements IParticipationStandartD
     budget?: number;
     hasPlayed?: boolean;
     score?: number | undefined;
+    competition?: string | undefined;
 
-    constructor(data?: IParticipationStandartDtoResponse) {
+    constructor(data?: IParticipationStandardDtoResponse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3803,12 +3873,13 @@ export class ParticipationStandartDtoResponse implements IParticipationStandartD
             this.budget = _data["budget"];
             this.hasPlayed = _data["hasPlayed"];
             this.score = _data["score"];
+            this.competition = _data["competition"];
         }
     }
 
-    static fromJS(data: any): ParticipationStandartDtoResponse {
+    static fromJS(data: any): ParticipationStandardDtoResponse {
         data = typeof data === 'object' ? data : {};
-        let result = new ParticipationStandartDtoResponse();
+        let result = new ParticipationStandardDtoResponse();
         result.init(data);
         return result;
     }
@@ -3823,11 +3894,12 @@ export class ParticipationStandartDtoResponse implements IParticipationStandartD
         data["budget"] = this.budget;
         data["hasPlayed"] = this.hasPlayed;
         data["score"] = this.score;
+        data["competition"] = this.competition;
         return data;
     }
 }
 
-export interface IParticipationStandartDtoResponse {
+export interface IParticipationStandardDtoResponse {
     date: Date;
     minigameGroupMulti: MinigameGroupMultiDtoResponse;
     minigameGroupMatch3: MinigameGroupMatch3DtoResponse;
@@ -3836,6 +3908,7 @@ export interface IParticipationStandartDtoResponse {
     budget?: number;
     hasPlayed?: boolean;
     score?: number | undefined;
+    competition?: string | undefined;
 }
 
 export enum ParticipationType {
