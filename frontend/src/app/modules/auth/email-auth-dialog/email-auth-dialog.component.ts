@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, Validators, FormGroup, FormControl, NonNullableFormBuilder } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MatDialogActions } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule }     from '@angular/material/input';
-import { MatButtonModule }    from '@angular/material/button';
-import { AuthService }        from '../../../core/auth.service';
-import { Router }             from '@angular/router';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
+import { AuthDto, Service } from '../../../core/api';
 
 @Component({
   selector: 'app-email-auth-dialog',
@@ -21,24 +21,33 @@ import { Router }             from '@angular/router';
     MatButtonModule,
     MatDialogActions
   ],
+  providers: [
+    Service,
+    // { provide: API_BASE_URL, useValue: environment.apiUrl }
+  ],
   templateUrl: './email-auth-dialog.component.html',
   styleUrls: ['./email-auth-dialog.component.scss']
 })
 export class EmailAuthDialogComponent {
-  isLogin = true;
-  loading = false;
+
+  form: FormGroup<{
+    email:    FormControl<string>;
+    password: FormControl<string>;
+  }>;
+
+  isLogin  = true;
+  loading  = false;
   errorMsg = '';
-  form!: FormGroup;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: NonNullableFormBuilder,
     private dialogRef: MatDialogRef<EmailAuthDialogComponent>,
-    private auth: AuthService,
+    private service: Service,
     private router: Router
   ) {
     this.form = this.fb.group({
-      email:    ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      email:    this.fb.control('', [Validators.required, Validators.email]),
+      password: this.fb.control('', Validators.required)
     });
   }
 
@@ -48,18 +57,24 @@ export class EmailAuthDialogComponent {
   }
 
   submit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      return;
+    }
+
     this.loading = true;
-    const { email, password } = this.form.value;
+    this.errorMsg = '';
+
+    const fv = this.form.value;
+    const dto = AuthDto.fromJS({ email: fv.email, password: fv.password });
 
     const obs = this.isLogin
-      ? this.auth.login(email, password)
-      : this.auth.register(email, password);
+      ? this.service.login(dto)
+      : this.service.register(dto);
 
     obs.subscribe({
-      next: (res: any) => {
-        if (this.isLogin && res.token) {
-          localStorage.setItem('token', res.token);
+      next: res => {
+        if (this.isLogin && (res as any).token) {
+          localStorage.setItem('token', (res as any).token);
         }
         this.dialogRef.close(true);
         this.router.navigateByUrl('/app');

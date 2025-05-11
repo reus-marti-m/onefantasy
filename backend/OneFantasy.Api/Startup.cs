@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json.Serialization;
+using OneFantasy.Api.Domain.Filters;
 
 namespace OneFantasy.Api
 {
@@ -145,6 +146,9 @@ namespace OneFantasy.Api
                     Version = "v1",
                     Description = "API to manage competitions and participations"
                 });
+
+                // Manual polymorphic response mapping
+                c.OperationFilter<PolymorphicResponseOperationFilter>();
 
                 // Define Bearer JWT scheme for Swagger UI
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

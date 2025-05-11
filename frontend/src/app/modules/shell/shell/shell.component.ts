@@ -59,37 +59,29 @@ export class ShellComponent {
   ngOnInit() {
     this.checkScreen();
 
+    // Check on first load
+    this.updateViewFlags();
+
+    // Check into router events
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
-      .subscribe((e: NavigationEnd) => {
-
-        // check if we have opened a modal window
-        const hasModal = this.route.children.some(r => r.outlet === 'modal');
-        this.modalActive = hasModal;
-
-        // Check if we are on mobile and have opened a league or participation
-        if (this.isMobile) {
-          const cleanUrl = e.urlAfterRedirects.split(';')[0];
-          this.showDetail = /^\/app\/(participations|leagues)\/\d+$/.test(cleanUrl);
-        }
+      .subscribe(() => {
+        this.updateViewFlags();
       });
   }
 
-  onSelectItem(id: number) {
-    if (this.currentTab === 'participations') {
-      this.selectedParticipationId = id;
-      this.lastSelectedType = 'participation';
-    } else {
-      this.selectedLeagueId = id;
-      this.lastSelectedType = 'league';
+  private updateViewFlags() {
+    this.modalActive = this.route.children.some(r => r.outlet === 'modal');
+    if (this.isMobile) {
+      const cleanUrl = (this.router.url || '').split(';')[0];
+      this.showDetail = /^\/app\/(participations|leagues)\/\d+$/.test(cleanUrl);
     }
-    if (this.isMobile) this.showDetail = true;
   }
 
   closeDetail() {
-  this.showDetail = false;
-  this.router.navigate(['/app']);
-}
+    this.showDetail = false;
+    this.router.navigate(['/app']);
+  }
 
   tokenPresent() {
     return !!localStorage.getItem('token');

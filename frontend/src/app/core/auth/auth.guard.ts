@@ -15,12 +15,10 @@ export class AuthGuard implements CanActivate {
 
     // Si tenim un JWT vàlid o l’usuari és convidat, permet passar
     if (token) {
-      console.log("token:" + token)
       return true;
     }
 
     if (isGuest) {
-      console.log("isGuest")
       return true;
     }
 

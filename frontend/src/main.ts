@@ -4,7 +4,9 @@ import { provideRouter } from '@angular/router';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { AuthInterceptor } from './app/core/auth.interceptor';
+import { AuthInterceptor } from './app/core/auth/auth.interceptor';
+import { API_BASE_URL } from './app/core/api';
+import { environment } from './environments/environment';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -13,6 +15,8 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(
       withInterceptorsFromDi()
     ),
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: API_BASE_URL, useValue: environment.apiUrl }
   ]
-}).catch(err => console.error(err));
+})
+.catch(err => console.error(err));

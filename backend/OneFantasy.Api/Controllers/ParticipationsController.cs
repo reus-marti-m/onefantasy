@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OneFantasy.Api.Domain.Abstractions;
 using OneFantasy.Api.DTOs;
@@ -11,6 +12,8 @@ namespace OneFantasy.Api.Controllers
 {
     [ApiController]
     [Route("api/seasons/{seasonId:int}/participations")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
     public class ParticipationsController : ControllerBase
     {
         private readonly IParticipationService _service;
@@ -19,6 +22,7 @@ namespace OneFantasy.Api.Controllers
 
         [HttpPost("standard")]
         [Authorize(Policy = "RequireAdmin")]
+        [ProducesResponseType(typeof(ParticipationStandartDtoResponse), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateStandard(int seasonId, [FromBody] ParticipationStandartDto body)
         {
             var dto = await _service.CreateStandardAsync(seasonId, body);
@@ -32,6 +36,7 @@ namespace OneFantasy.Api.Controllers
 
         [HttpPost("special")]
         [Authorize(Policy = "RequireAdmin")]
+        [ProducesResponseType(typeof(ParticipationSpecialDtoResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateSpecial(int seasonId, [FromBody] ParticipationSpecialDto body)
         {
             var dto = await _service.CreateSpecialAsync(seasonId, body);
@@ -45,6 +50,7 @@ namespace OneFantasy.Api.Controllers
 
         [HttpPost("extra")]
         [Authorize(Policy = "RequireAdmin")]
+        [ProducesResponseType(typeof(ParticipationExtraDtoResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateExtra(int seasonId, [FromBody] ParticipationExtraDto body)
         {
             var dto = await _service.CreateExtraAsync(seasonId, body);
@@ -58,9 +64,10 @@ namespace OneFantasy.Api.Controllers
 
         [HttpPost("{participationId:int}/play")]
         [Authorize(Policy = "RequireUser")]
+        [ProducesResponseType(typeof(UserParticipationResponseDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> Play(int seasonId, int participationId, [FromBody] CreateUserParticipationDto dto)
         {
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var result = await _service.CreateUserParticipationAsync(seasonId, participationId, userId, dto);
 
@@ -73,12 +80,14 @@ namespace OneFantasy.Api.Controllers
 
         [HttpPost("{participationId:int}/resolve")]
         [Authorize(Policy = "RequireAdmin")]
+        [ProducesResponseType(typeof(List<IMinigameDtoResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ResolveMinigame(int seasonId, int participationId, [FromBody] List<ParticipationResultDto> dtos) => Ok
         (
             await _service.ResolveMinigamesAsync(seasonId, participationId, dtos)
         );
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<IParticipationDtoResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(int seasonId) => Ok(
             (await _service.GetBySeasonAsync(
                 seasonId, 
@@ -88,6 +97,7 @@ namespace OneFantasy.Api.Controllers
         );
 
         [HttpGet("{participationId:int}")]
+        [ProducesResponseType(typeof(IParticipationDtoResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(int seasonId, int participationId) => Ok(
             await _service.GetByIdAsync(
                 seasonId, 
