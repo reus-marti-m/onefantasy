@@ -1,0 +1,28 @@
+<div class="chip-selector">
+    <div class="header">
+        <span class="title">{{ title }}</span>
+        <button mat-icon-button (click)="openDialog()" [disabled]="disabled">
+            <mat-icon>edit</mat-icon>
+        </button>
+    </div>
+
+    <div class="chips">
+        <div class="chip" *ngFor="let val of selected" [ngClass]="{
+      'result-success': disabled && val === actualResult,
+      'result-error':   disabled && val !== actualResult
+    }">
+            <button mat-stroked-button [disabled]="disabled" class="fake-button">
+                <div class="texts">
+                    <div class="label">{{ getLabel(val) }}</div>
+                    <div class="info" *ngIf="getInfo(val)">{{ getInfo(val) }}</div>
+                </div>
+            </button>
+
+            <button *ngIf="!disabled" mat-icon-button class="remove-icon" (click)="removeChip(val)">
+                <mat-icon>cancel</mat-icon>
+            </button>
+        </div>
+    </div>
+
+
+</div>

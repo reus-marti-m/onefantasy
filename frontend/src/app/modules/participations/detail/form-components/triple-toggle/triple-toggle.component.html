@@ -1,0 +1,14 @@
+<mat-button-toggle-group multiple [hideMultipleSelectionIndicator]="true" [disabled]="disabled" [value]="selected"
+    (change)="onSelectionChange($event)" class="triple-group">
+    <mat-button-toggle *ngFor="let opt of options" [value]="opt.value" [ngClass]="{
+      'result-success': disabled
+                        && opt.value === actualResult
+                        && selected.includes(opt.value),
+      'result-error':   disabled
+                        && opt.value === actualResult
+                        && !selected.includes(opt.value)
+    }" class="triple-toggle">
+        <div class="label">{{ opt.label }}</div>
+        <div class="info" *ngIf="opt.info">{{ opt.info }}</div>
+    </mat-button-toggle>
+</mat-button-toggle-group>

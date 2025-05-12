@@ -45,16 +45,22 @@ export class ListComponent implements OnInit {
     return new Date(p.date).getTime() >= Date.now();
   }
 
+  isLive(p: ParticipationDtoResponse): boolean {
+    const participationDate = new Date(p.date).getTime();
+    const nowPlus24Hours = Date.now() + 24 * 60 * 60 * 1000;
+    return participationDate <= nowPlus24Hours;
+  }
+
   getLeftIcon(p: ParticipationDtoResponse): string {
     if (this.isPlayable(p)) return p.hasPlayed ? 'check' : 'warning';
     if (!p.hasPlayed) return 'close';
-    return p.score != null ? 'check_circle' : 'fiber_manual_record';
+    return this.isLive(p) ? 'fiber_manual_record' : 'check_circle';
   }
 
   getLeftClass(p: ParticipationDtoResponse): string {
     if (this.isPlayable(p)) return p.hasPlayed ? 'status-played' : 'status-pending';
     if (!p.hasPlayed) return 'status-not-sent';
-    return p.score != null ? 'status-sent' : 'status-live blink';
+    return this.isLive(p) ? 'status-live blink' : 'status-sent';
   }
 
   getStatusText(p: ParticipationDtoResponse): string {
@@ -99,11 +105,11 @@ export class ListComponent implements OnInit {
 
   getStarClass(p: ParticipationDtoResponse): string {
     switch (p.type) {
-      case 1:  
+      case 1:
         return 'star-extra';
-      case 2:  
+      case 2:
         return 'star-platinum';
-      default: 
+      default:
         return 'star-standard';
     }
   }

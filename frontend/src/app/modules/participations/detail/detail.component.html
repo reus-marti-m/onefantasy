@@ -1,3 +1,26 @@
 <h2>Detall de la participació</h2>
 <p *ngIf="id === null">Cap element seleccionat</p>
 <p *ngIf="id !== null">Has seleccionat la participació amb ID {{ id }}</p>
+
+<app-triple-toggle
+  [options]="options"
+  [disabled]="participationStarted"
+  [(selected)]="userSelection"
+  [actualResult]="actualResult">
+</app-triple-toggle>
+
+
+
+<app-chip-selector
+  title="Golejador"
+  [options]="playerOptions"
+  [(selected)]="selectedPlayers"
+  [disabled]="participationStarted"
+  [actualResult]="actualResult2">
+</app-chip-selector>
+
+<p>Selecció jugadors: {{ selectedPlayers | json }}</p>
+
+<button mat-button (click)="participationStarted = !participationStarted">
+  Toggle deshabilitat (ara {{ participationStarted }})
+</button>

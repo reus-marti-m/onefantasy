@@ -1,0 +1,72 @@
+.chip-selector {
+    .header {
+        display: flex;
+        align-items: center;
+
+        .title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+    }
+
+    .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 999px;
+        background-color: #dae2f9;
+        border: 1px solid #74777f;
+
+        &.result-success {
+            background-color: rgba(0, 200, 81, 0.4) !important;
+            color: rgba(16, 16, 16, 0.3);
+        }
+
+        &.result-error {
+            background-color: rgba(255, 68, 68, 0.4) !important;
+            color: rgba(16, 16, 16, 0.3);
+        }
+    }
+
+    .fake-button {
+        padding: 0;
+        border: none;
+        background: none;
+        pointer-events: none;
+    }
+
+    .texts {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .label {
+        font-size: 14px;
+        line-height: 1.2;
+    }
+
+    .info {
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .remove-icon {
+        pointer-events: auto;
+    }
+
+}
+
+:host ::ng-deep button.fake-button:not([disabled]) .texts,
+:host ::ng-deep button.fake-button:not([disabled]) .texts .label,
+:host ::ng-deep button.fake-button:not([disabled]) .texts .info {
+  color: #3E4759 !important;
+}
