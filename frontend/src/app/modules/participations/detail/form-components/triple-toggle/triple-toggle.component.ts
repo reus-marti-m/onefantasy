@@ -1,13 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
-
-export interface ToggleOption {
-  label: string;
-  value: any;
-  info?: string;
-  result?: 'success' | 'error';
-}
+import { ToggleOption } from '../../detail.component';
 
 @Component({
   selector: 'app-triple-toggle',

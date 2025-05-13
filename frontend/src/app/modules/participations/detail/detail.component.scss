@@ -1,0 +1,70 @@
+.star-standard {
+    color: #FFD700;
+}
+
+.star-extra {
+    color: #C0C0C0;
+}
+
+.star-platinum {
+    color: #00BFFF;
+}
+
+.participation-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+
+    .back-button {
+        margin-right: 1rem;
+        font-size: 0.875rem;
+    }
+}
+
+.competition {
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+.star-icon {
+    margin: 0 0.5rem;
+}
+
+.right-text {
+    margin-left: auto !important;
+}
+
+.points {
+    margin-left: 0.5rem;
+    font-weight: 400;
+}
+
+.subtext {
+    margin: 0 0 1rem;
+    font-size: 0.875rem;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.group-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+
+    .group-points {
+        margin-left: 0.5rem;
+        font-weight: 400;
+        color: rgba(0, 0, 0, 0.4);
+    }
+}
+
+.group-subtitle {
+    margin: 0.25rem 0 0.75rem;
+    font-size: 0.875rem;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.group-item {
+    margin-bottom: 1rem;
+}

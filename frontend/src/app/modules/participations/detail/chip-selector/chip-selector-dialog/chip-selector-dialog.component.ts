@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
-import { ToggleOption } from '../chip-selector.component';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ToggleOption } from '../../detail.component';
 
 interface DialogData {
   options: ToggleOption[];

@@ -1,26 +1,48 @@
-<h2>Detall de la participació</h2>
-<p *ngIf="id === null">Cap element seleccionat</p>
-<p *ngIf="id !== null">Has seleccionat la participació amb ID {{ id }}</p>
+<ng-container *ngIf="participation">
+  <div class="participation-header">
 
-<app-triple-toggle
-  [options]="options"
-  [disabled]="participationStarted"
-  [(selected)]="userSelection"
-  [actualResult]="actualResult">
-</app-triple-toggle>
+    <!-- Títol, estrella i data/resta -->
+    <span class="competition">{{ participation.competition }}</span>
+    <mat-icon class="star-icon" [ngClass]="getStarClass(participation)">
+      star
+    </mat-icon>
+    <span class="right-text subtext">{{ getRightText(participation) }}</span>
+  </div>
 
+  <!-- Textos d’ajuda sota la capçalera -->
+  <p class="subtext">
+    Primera participació dels quarts de final.
+    <br>Modalitat estàndart: fins a {{ getMaxPoints(participation) }} punts.
+    <br>Tens dues lligues que inclouen aquesta participació.
+  </p>
 
+  <ng-container *ngFor="let g of groups">
+    <!-- Títol de grup amb punts -->
+    <h3 class="group-title">
+      {{ g.title }}
+      <span class="group-points">
+        <ng-container *ngIf="participationStarted;">
+          · {{ g.score ?? 0 }}/{{ getGroupMaxPoints() }} punts
+        </ng-container>
+      </span>
+    </h3>
 
-<app-chip-selector
-  title="Golejador"
-  [options]="playerOptions"
-  [(selected)]="selectedPlayers"
-  [disabled]="participationStarted"
-  [actualResult]="actualResult2">
-</app-chip-selector>
+    <!-- Subtítol explicatiu segons tipus de minijocs -->
+    <p class="group-subtitle">
+      {{ g.items[0].kind === 'triple'
+      ? 'Endevina el resultat dels partits'
+      : 'Endevina els aspectes del partit' }}
+    </p>
 
-<p>Selecció jugadors: {{ selectedPlayers | json }}</p>
+    <!-- Ítems del grup -->
+    <div *ngFor="let item of g.items" class="group-item">
+      <app-triple-toggle *ngIf="item.kind==='triple'" [options]="item.model.options" [disabled]="item.model.disabled"
+        [(selected)]="item.model.selected" [actualResult]="item.model.actualResult">
+      </app-triple-toggle>
 
-<button mat-button (click)="participationStarted = !participationStarted">
-  Toggle deshabilitat (ara {{ participationStarted }})
-</button>
+      <app-chip-selector *ngIf="item.kind==='chip'" [title]="item.model.title" [options]="item.model.options"
+        [(selected)]="item.model.selected" [disabled]="item.model.disabled" [actualResult]="item.model.actualResult">
+      </app-chip-selector>
+    </div>
+  </ng-container>
+</ng-container>

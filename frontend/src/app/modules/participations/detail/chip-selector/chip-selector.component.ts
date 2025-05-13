@@ -4,12 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ChipSelectorDialogComponent } from './chip-selector-dialog/chip-selector-dialog.component';
-
-export interface ToggleOption {
-  label: string;
-  value: any;
-  info?: string;
-}
+import { ToggleOption } from '../detail.component';
 
 @Component({
   selector: 'app-chip-selector',
@@ -27,7 +22,7 @@ export class ChipSelectorComponent {
 
   @Input() title = 'Goleajdor';
   @Input() options: ToggleOption[] = [];
-  @Input() selected: any[] = [];
+  @Input() selected: string[] = [];
   @Input() disabled = false;
   @Output() selectedChange = new EventEmitter<any[]>();
   @Input() actualResult!: any;
@@ -40,11 +35,11 @@ export class ChipSelectorComponent {
     const ref = this.dialog.open(ChipSelectorDialogComponent, {
       data: {
         options: this.options,
-        selected: [...this.selected],
+        selected: this.selected,
         title: this.title
       }
     });
-    ref.afterClosed().subscribe((res: any[] | undefined) => {
+    ref.afterClosed().subscribe((res: string[] | undefined) => {
       if (res) {
         this.selected = res;
         this.selectedChange.emit(this.selected);

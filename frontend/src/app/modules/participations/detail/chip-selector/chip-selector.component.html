@@ -8,8 +8,8 @@
 
     <div class="chips">
         <div class="chip" *ngFor="let val of selected" [ngClass]="{
-      'result-success': disabled && val === actualResult,
-      'result-error':   disabled && val !== actualResult
+      'result-success': disabled && actualResult.includes(val),
+      'result-error':   disabled && !actualResult.includes(val)
     }">
             <button mat-stroked-button [disabled]="disabled" class="fake-button">
                 <div class="texts">
