@@ -15,6 +15,7 @@ import { ToggleOption } from '../../detail.component';
 })
 export class TripleToggleComponent {
 
+  @Input() title: string | null = null;
   @Input() options: ToggleOption[] = [];
   @Input() disabled = false;
   @Input() selected: any[] = [];

@@ -1,11 +1,24 @@
 <h2 mat-dialog-title>{{ data.title || 'Selecciona fins a 2' }}</h2>
+<div class="dialog-description">
+  Tria una o dues opcions <br>(només compta un encert).
+</div>
+
 <mat-dialog-content>
-    <mat-checkbox *ngFor="let opt of data.options" [checked]="tempSelected.includes(opt.value)"
-        (change)="onToggle(opt.value)" [disabled]="!tempSelected.includes(opt.value) && tempSelected.length >= 2">
-        {{ opt.label }} <small *ngIf="opt.info">{{ opt.info }}</small>
-    </mat-checkbox>
+  <mat-checkbox
+    *ngFor="let opt of data.options"
+    class="full-checkbox"
+    [checked]="tempSelected.includes(opt.value)"
+    (change)="onToggle(opt.value)"
+    [disabled]="
+      !tempSelected.includes(opt.value)
+      && tempSelected.length >= 2
+    "
+  >
+    {{ opt.label }} ({{ opt.info }})
+  </mat-checkbox>
 </mat-dialog-content>
+
 <mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()">Cancel·lar</button>
-    <button mat-button color="primary" (click)="onSave()">Desar</button>
+  <button mat-button (click)="onCancel()">Cancel·lar</button>
+  <button mat-button color="primary" (click)="onSave()">Desar</button>
 </mat-dialog-actions>

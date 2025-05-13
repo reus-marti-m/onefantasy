@@ -64,7 +64,7 @@
 
                 <nav class="tabs">
                     <button (click)="currentTab='participations'" [class.active]="currentTab==='participations'">
-                        Participacions
+                        Reptes diaris
                     </button>
                     <button (click)="currentTab='public'" [class.active]="currentTab==='public'">
                         Lligues públiques
@@ -110,8 +110,8 @@
             </aside>
 
             <main *ngIf="!isMobile || showDetail" class="shell-main" [class.overlay]="isMobile && showDetail">
-                <button class="close-btn" *ngIf="isMobile && showDetail" (click)="closeDetail()">
-                    ← Tornar
+                <button class="close-btn" mat-icon-button *ngIf="isMobile && showDetail" (click)="closeDetail()">
+                    <mat-icon>arrow_back</mat-icon>
                 </button>
                 <router-outlet></router-outlet>
             </main>

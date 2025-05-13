@@ -20,16 +20,16 @@ import { ToggleOption } from '../detail.component';
 })
 export class ChipSelectorComponent {
 
-  @Input() title = 'Goleajdor';
+  @Input() title = '';
   @Input() options: ToggleOption[] = [];
   @Input() selected: string[] = [];
   @Input() disabled = false;
   @Output() selectedChange = new EventEmitter<any[]>();
-  @Input() actualResult!: any;
+  @Input() actualResult: string[] = [];
+  @Input() hasResult: boolean | undefined = false;
 
   constructor(private dialog: MatDialog) { }
 
-  /** Obre la modal */
   openDialog() {
     if (this.disabled) return;
     const ref = this.dialog.open(ChipSelectorDialogComponent, {
@@ -59,6 +59,14 @@ export class ChipSelectorComponent {
 
   getInfo(val: any): string | undefined {
     return this.options.find(o => o.value === val)?.info;
+  }
+
+  getResultInfo(): string {
+    if (this.actualResult.length === 0) {
+      return "No ha ocorregut cap opció.";
+    } else {
+      return this.actualResult.join(", ");
+    }
   }
 
 }

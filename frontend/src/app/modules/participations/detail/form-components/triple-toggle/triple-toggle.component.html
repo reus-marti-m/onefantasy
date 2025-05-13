@@ -1,3 +1,6 @@
+<div *ngIf="title !== null" class="header">
+    <span class="title">{{ title }}</span>
+</div>
 <mat-button-toggle-group multiple [hideMultipleSelectionIndicator]="true" [disabled]="disabled" [value]="selected"
     (change)="onSelectionChange($event)" class="triple-group">
     <mat-button-toggle *ngFor="let opt of options" [value]="opt.value" [ngClass]="{

@@ -10,7 +10,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import {
-  MinigameMatchDtoResponse, MinigamePlayersDtoResponse, MinigameResultDtoResponse, MinigameScoresDtoResponse, ParticipationDtoResponse,
+  MinigameMatchDtoResponse, MinigameMatchType, MinigamePlayersDtoResponse, MinigameResultDtoResponse, MinigameScoresDtoResponse, ParticipationDtoResponse,
   ParticipationExtraDtoResponse, ParticipationSpecialDtoResponse, ParticipationStandardDtoResponse, Service
 } from '../../../core/api';
 
@@ -22,6 +22,7 @@ export interface ToggleOption {
 }
 
 export interface TripleToggleModel {
+  title: string | null;
   options: ToggleOption[];
   selected: string[];
   actualResult: string;
@@ -34,6 +35,7 @@ export interface ChipSelectorModel {
   selected: string[];
   actualResult: string[];
   disabled: boolean;
+  hasResult: boolean | undefined;
 }
 
 export type MinijocItem =
@@ -213,6 +215,7 @@ export class DetailComponent implements OnInit, OnDestroy {
           : '';
 
     return {
+      title: null,
       options: opts,
       selected,
       actualResult: actual,
@@ -253,7 +256,21 @@ export class DetailComponent implements OnInit, OnDestroy {
       .map((opt, i) => opt.hasOccurred ? opts[i].value : null)
       .find(v => v != null) || '';
 
+    let title;
+    switch (mg.miniGameMatchType) {
+      case MinigameMatchType._1:
+        title = "Targetes grogues"
+        break;
+      case MinigameMatchType._2:
+        title = "Gols"
+        break;
+      default:
+        title = "Número de Corners"
+        break;
+    }
+    
     return {
+      title: title,
       options: opts,
       selected,
       actualResult: actual,
@@ -286,7 +303,8 @@ export class DetailComponent implements OnInit, OnDestroy {
       options: opts,
       selected,
       actualResult: actual,
-      disabled: this.participationStarted
+      disabled: this.participationStarted,
+      hasResult: mg.isResolved
     };
   }
 
@@ -296,7 +314,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       let info = this.makeInfo(opt.price ?? 100, first, mg.isResolved, opt.hasOccurred, opt.isPlayed)
       first = info[1];
       return {
-        label: `${opt.playerId} (XXX)`,
+        label: `${opt.playerId}`,
         value: `player_${opt.id ?? ''}`,
         info: info[0]
       }
@@ -315,7 +333,8 @@ export class DetailComponent implements OnInit, OnDestroy {
       options: opts,
       selected,
       actualResult: actual,
-      disabled: this.participationStarted
+      disabled: this.participationStarted,
+      hasResult: mg.isResolved
     };
   }
 
@@ -349,6 +368,17 @@ export class DetailComponent implements OnInit, OnDestroy {
     }
 
     return ['-', true];
+  }
+
+  getParticipationTypeName(p: ParticipationDtoResponse): string {
+    switch (p.type) {
+      case 1:
+        return 'extra';
+      case 2:
+        return 'especial';
+      default:
+        return 'estàndart';
+    }
   }
 
   // TODO: Comunes amb component de llista, haurien d'estar en un arxiu comú
