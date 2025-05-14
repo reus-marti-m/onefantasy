@@ -1,44 +1,134 @@
-<ng-container *ngIf="participation">
-  <div class="participation-header">
+<div class="detail-container">
 
-    <span class="competition">{{ participation.competition }}</span>
-    <mat-icon class="star-icon" [ngClass]="getStarClass(participation)">
-      star
-    </mat-icon>
-    <span class="right-text subtext">{{ getRightText(participation) }}</span>
+  <div class="scroll-content">
+    <ng-container *ngIf="participation">
+      <div class="participation-header">
+
+        <span class="competition">{{ participation.competition }}&nbsp;</span>
+        <mat-icon class="star-icon" [ngClass]="getStarClass(participation)">
+          star
+        </mat-icon>
+        <span class="right-text subtext">{{ getRightText(participation) }}</span>
+      </div>
+
+      <p class="subtext">
+        Primera participació dels quarts de final.
+        <br>Modalitat {{getParticipationTypeName(participation)}}: fins a {{ getMaxPoints(participation) }} punts.
+        <br>Tens dues lligues que inclouen aquesta participació.
+      </p>
+
+      <ng-container *ngFor="let g of groups; let gi = index">
+        <h3 class="group-title">
+          {{ g.title }}&nbsp;
+          <span class="group-points">
+            <ng-container *ngIf="participationStarted;">
+              · {{ g.score ?? 0 }}/{{ getGroupMaxPoints() }} punts
+            </ng-container>
+          </span>
+        </h3>
+
+        <p class="group-subtitle">
+          {{ g.items[0].kind === 'triple' && participation.type === 0
+          ? 'Endevina el resultat dels partits'
+          : 'Endevina els aspectes del partit' }}
+        </p>
+
+        <!-- Ítems del grup -->
+        <div *ngFor="let item of g.items; let ii = index" class="group-item"
+          [ngClass]="{ 'invalid-item': errors.missingSelection[gi][ii] }">
+          <app-triple-toggle *ngIf="item.kind==='triple'" (selectedChange)="onUserChange()" [title]="item.model.title"
+            [options]="item.model.options" [disabled]="item.model.disabled" [(selected)]="item.model.selected"
+            [actualResult]="item.model.actualResult">
+          </app-triple-toggle>
+
+          <app-chip-selector *ngIf="item.kind==='chip'" (selectedChange)="onUserChange()" [title]="item.model.title"
+            [options]="item.model.options" [(selected)]="item.model.selected" [hasResult]="item.model.hasResult"
+            [disabled]="item.model.disabled" [actualResult]="item.model.actualResult">
+          </app-chip-selector>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <div class="actions">
+      <div *ngIf="errors.budgetExceeded && hasNegativeSpentBudget()" class="error-text">
+        S'ha superat el pressupost
+      </div>
+      <div *ngIf="hasMissingSelection() && notAllMinigamesResolved()" class="error-text">
+        És obligatori triar una o dues opcions de cada minijoc
+      </div>
+      <span matTooltip="No hi ha canvis per desar" [matTooltipDisabled]="hasChanges">
+        <button mat-flat-button color="primary" (click)="saveParticipation()" [disabled]="!hasChanges"
+          matTooltip="No hi ha canvis per desar" matTooltipDisabled="hasChanges">
+          Desar participació
+        </button>
+      </span>
+    </div>
   </div>
 
-  <p class="subtext">
-    Primera participació dels quarts de final.
-    <br>Modalitat {{getParticipationTypeName(participation)}}: fins a {{ getMaxPoints(participation) }} punts.
-    <br>Tens dues lligues que inclouen aquesta participació.
-  </p>
+  <div class="status-bar" *ngIf="participation">
+    <ng-container *ngIf="!participationStarted">
+      <div class="status-item">
+        <div class="status-value" [class.negative]="hasNegativeSpentBudget()">{{ getSpentBudget() }}/{{ getBudget() }} M
+        </div>
+        <div class="status-label">Pressupost</div>
+      </div>
 
-  <ng-container *ngFor="let g of groups">
-    <h3 class="group-title">
-      {{ g.title }}
-      <span class="group-points">
-        <ng-container *ngIf="participationStarted;">
-          · {{ g.score ?? 0 }}/{{ getGroupMaxPoints() }} punts
-        </ng-container>
-      </span>
-    </h3>
+      <div class="status-item">
+        <div class="status-value">
+          <ng-container *ngIf="hasChanges; else savedOrNot">
+            <!-- fontSet="material-icons-two-tone" -->
+            <mat-icon class="icon-warning">warning</mat-icon>
+          </ng-container>
+          <ng-template #savedOrNot>
+            <ng-container *ngIf="hasSaved; else notSent">
+              <mat-icon class="icon-check">check_box</mat-icon>
+            </ng-container>
+          </ng-template>
+          <ng-template #notSent>
+            <mat-icon class="icon-close">close</mat-icon>
+          </ng-template>
+        </div>
+        <div class="status-label">
+          <ng-container *ngIf="hasChanges; else labelSavedOrNot">
+            Canvis no desats
+          </ng-container>
+          <ng-template #labelSavedOrNot>
+            <ng-container *ngIf="hasSaved; else labelNotSent">
+              {{ formatDate(savedAt || participation.date) }}
+            </ng-container>
+          </ng-template>
+          <ng-template #labelNotSent>
+            No enviada
+          </ng-template>
+        </div>
+      </div>
 
-    <p class="group-subtitle">
-      {{ g.items[0].kind === 'triple' && participation.type === 0
-      ? 'Endevina el resultat dels partits'
-      : 'Endevina els aspectes del partit' }}
-    </p>
+      <div class="status-item">
+        <div class="status-value">{{ getSelectedCount() }}/{{ getTotalMinigames() }}</div>
+        <div class="status-label">Prediccions</div>
+      </div>
+    </ng-container>
 
-    <!-- Ítems del grup -->
-    <div *ngFor="let item of g.items" class="group-item">
-      <app-triple-toggle *ngIf="item.kind==='triple'" [title]="item.model.title" [options]="item.model.options" [disabled]="item.model.disabled"
-        [(selected)]="item.model.selected" [actualResult]="item.model.actualResult">
-      </app-triple-toggle>
+    <ng-container *ngIf="participationStarted">
+      <ng-container *ngIf="!participation.hasPlayed">
+        <div class="status-item">
+          <div class="status-value">
+            <mat-icon class="icon-close">close</mat-icon>
+          </div>
+          <div class="status-label">No enviada</div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="participation.hasPlayed">
+        <div class="status-item">
+          <div class="status-value">{{ participation.score || 0 }}/{{ getMaxPoints(participation) }}</div>
+          <div class="status-label">Punts</div>
+        </div>
+        <div class="status-item">
+          <div class="status-value">{{ getResolvedCount() }}/{{ getTotalMinigames() }}</div>
+          <div class="status-label">Prediccions</div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
 
-      <app-chip-selector *ngIf="item.kind==='chip'" [title]="item.model.title" [options]="item.model.options"
-        [(selected)]="item.model.selected" [hasResult]="item.model.hasResult" [disabled]="item.model.disabled" [actualResult]="item.model.actualResult">
-      </app-chip-selector>
-    </div>
-  </ng-container>
-</ng-container>
+</div>

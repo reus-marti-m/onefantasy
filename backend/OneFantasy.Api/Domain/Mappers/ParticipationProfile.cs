@@ -83,13 +83,15 @@ namespace OneFantasy.Api.Domain.Mappers
                         ProbabilityPriceCalculator.GetPrice(o.Probability),
                         o.PlayerId
                     )).ToList(),
-                    dto.Type
+                    dto.PlayersType
                 ))
                 .ForMember(dest => dest.Options, opt => opt.Ignore());
             CreateMap<MinigamePlayers, MinigamePlayersDtoResponse>()
                 .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.PlayerOptions))
                 .ForMember(dest => dest.IsResolved, opt => opt.MapFrom(src => src.IsResolved))
-                .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => MinigameScore(ctx, src)));
+                .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => MinigameScore(ctx, src)))
+                .ForMember(dest => dest.PlayersType, opt => opt.MapFrom(src => src.Type))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => MiniGameType.Players));
 
             CreateMap<MinigameScoresDto, MinigameScores>()
                 .ConstructUsing(dto => new MinigameScores(

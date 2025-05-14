@@ -52,7 +52,7 @@ export class ListComponent implements OnInit {
   }
 
   getLeftIcon(p: ParticipationDtoResponse): string {
-    if (this.isPlayable(p)) return p.hasPlayed ? 'check' : 'warning';
+    if (this.isPlayable(p)) return p.hasPlayed ? 'check_box' : 'warning';
     if (!p.hasPlayed) return 'close';
     return this.isLive(p) ? 'fiber_manual_record' : 'check_circle';
   }

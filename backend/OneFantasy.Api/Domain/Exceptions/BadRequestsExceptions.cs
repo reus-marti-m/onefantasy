@@ -59,13 +59,6 @@ namespace OneFantasy.Api.Domain.Exceptions
         { }
     }
 
-    public class AlreadyPlayedException : BadRequestsExceptions
-    {
-        public AlreadyPlayedException(int participationId, string userId) :
-            base($"Participation {participationId} has already been played by user {userId}.")
-        { }
-    }
-
     public class ParticipationGroupsCountException : BadRequestsExceptions
     {
         public ParticipationGroupsCountException(int count) :

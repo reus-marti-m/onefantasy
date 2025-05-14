@@ -303,13 +303,14 @@ namespace OneFantasy.Api.DTOs
         public List<OptionPlayerDto> Options { get; set; }
 
         [Required]
-        public MinigamePlayersType Type { get; set; }
+        public MinigamePlayersType PlayersType { get; set; }
     }
 
     public class MinigamePlayersDtoResponse : MinigamePlayersDto, IMinigameDtoResponse
     {
-		public MiniGameType Type { get; set; } = MiniGameType.Players;
-		public int Id { get; set; }
+		public new MinigamePlayersType PlayersType { get; set; }
+        public MiniGameType Type { get; set; } = MiniGameType.Players;
+        public int Id { get; set; }
         public bool IsResolved { get; set; }
         public int? Score { get; set; }
         public new List<OptionPlayerDtoResponse> Options { get; set; }

@@ -104,7 +104,7 @@ export interface IService {
     extra(seasonId: number, body: ParticipationExtraDto | undefined): Observable<ParticipationExtraDtoResponse>;
     /**
      * @param body (optional) 
-     * @return OK
+     * @return Created
      */
     play(seasonId: number, participationId: number, body: CreateUserParticipationDto | undefined): Observable<UserParticipationResponseDto>;
     /**
@@ -808,7 +808,7 @@ export class Service implements IService {
 
     /**
      * @param body (optional) 
-     * @return OK
+     * @return Created
      */
     play(seasonId: number, participationId: number, body: CreateUserParticipationDto | undefined): Observable<UserParticipationResponseDto> {
         let url_ = this.baseUrl + "/api/seasons/{seasonId}/participations/{participationId}/play";
@@ -853,12 +853,12 @@ export class Service implements IService {
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
+        if (status === 201) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = UserParticipationResponseDto.fromJS(resultData200);
-            return _observableOf(result200);
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result201 = UserParticipationResponseDto.fromJS(resultData201);
+            return _observableOf(result201);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -2694,7 +2694,7 @@ export enum MinigameMatchType {
 
 export class MinigamePlayersDto implements IMinigamePlayersDto {
     options!: OptionPlayerDto[];
-    type!: MinigamePlayersType;
+    playersType!: MinigamePlayersType;
 
     constructor(data?: IMinigamePlayersDto) {
         if (data) {
@@ -2715,7 +2715,7 @@ export class MinigamePlayersDto implements IMinigamePlayersDto {
                 for (let item of _data["options"])
                     this.options!.push(OptionPlayerDto.fromJS(item));
             }
-            this.type = _data["type"];
+            this.playersType = _data["playersType"];
         }
     }
 
@@ -2733,19 +2733,20 @@ export class MinigamePlayersDto implements IMinigamePlayersDto {
             for (let item of this.options)
                 data["options"].push(item ? item.toJSON() : <any>undefined);
         }
-        data["type"] = this.type;
+        data["playersType"] = this.playersType;
         return data;
     }
 }
 
 export interface IMinigamePlayersDto {
     options: OptionPlayerDto[];
-    type: MinigamePlayersType;
+    playersType: MinigamePlayersType;
 }
 
 export class MinigamePlayersDtoResponse implements IMinigamePlayersDtoResponse {
     options!: OptionPlayerDtoResponse[] | undefined;
-    type!: MiniGameType;
+    playersType?: MinigamePlayersType;
+    type?: MiniGameType;
     id?: number;
     isResolved?: boolean;
     score?: number | undefined;
@@ -2766,6 +2767,7 @@ export class MinigamePlayersDtoResponse implements IMinigamePlayersDtoResponse {
                 for (let item of _data["options"])
                     this.options!.push(OptionPlayerDtoResponse.fromJS(item));
             }
+            this.playersType = _data["playersType"];
             this.type = _data["type"];
             this.id = _data["id"];
             this.isResolved = _data["isResolved"];
@@ -2787,6 +2789,7 @@ export class MinigamePlayersDtoResponse implements IMinigamePlayersDtoResponse {
             for (let item of this.options)
                 data["options"].push(item ? item.toJSON() : <any>undefined);
         }
+        data["playersType"] = this.playersType;
         data["type"] = this.type;
         data["id"] = this.id;
         data["isResolved"] = this.isResolved;
@@ -2797,7 +2800,8 @@ export class MinigamePlayersDtoResponse implements IMinigamePlayersDtoResponse {
 
 export interface IMinigamePlayersDtoResponse {
     options: OptionPlayerDtoResponse[] | undefined;
-    type: MiniGameType;
+    playersType?: MinigamePlayersType;
+    type?: MiniGameType;
     id?: number;
     isResolved?: boolean;
     score?: number | undefined;

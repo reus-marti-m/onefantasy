@@ -90,16 +90,37 @@ namespace OneFantasy.Api.Domain.Implementations
             // Validations
             (ApplicationUser user, Participation participation, int usedBudget) = await PlayValidations(seasonId, participationId, userId, dto);
 
+            var existing = await _db.UserParticipations
+                .Include(up => up.Groups)
+                .FirstOrDefaultAsync(up => up.ParticipationId == participationId && up.UserId == userId);
+
             // Validations ok
-            var entity = _mapper.Map<UserParticipation>(dto, opts =>
+            if (existing != null)
             {
-                opts.Items["user"] = user;
-                opts.Items["participation"] = participation;
-                opts.Items["usedBudget"] = usedBudget;
-            });
-            _db.UserParticipations.Add(entity);
-            await _db.SaveChangesAsync();
-            return _mapper.Map<UserParticipationResponseDto>(entity);
+                // Update
+                _mapper.Map(dto, existing, opts =>
+                {
+                    opts.Items["user"] = user;
+                    opts.Items["participation"] = participation;
+                    opts.Items["usedBudget"] = usedBudget;
+                });
+
+                await _db.SaveChangesAsync();
+                return _mapper.Map<UserParticipationResponseDto>(existing);
+            }
+            else
+            {
+                // Create
+                var entity = _mapper.Map<UserParticipation>(dto, opts =>
+                {
+                    opts.Items["user"] = user;
+                    opts.Items["participation"] = participation;
+                    opts.Items["usedBudget"] = usedBudget;
+                });
+                _db.UserParticipations.Add(entity);
+                await _db.SaveChangesAsync();
+                return _mapper.Map<UserParticipationResponseDto>(entity);
+            }
         }
 
         public async Task<List<IMinigameDtoResponse>> ResolveMinigamesAsync(int seasonId, int participationId, List<ParticipationResultDto> dtos)
@@ -284,10 +305,6 @@ namespace OneFantasy.Api.Domain.Implementations
 
             var user = await _users.FindByIdAsync(userId)
                        ?? throw new InvalidCredentialsException();
-
-            if (await _db.UserParticipations
-                    .AnyAsync(up => up.ParticipationId == participationId && up.UserId == userId))
-                throw new AlreadyPlayedException(participationId, userId);
 
             var count = participation.Groups.Count;
             if (dto.Groups.Count != count)

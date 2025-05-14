@@ -68,11 +68,11 @@
 }
 
 .status-pending {
-    color: orange;
+    color: #FCE100;
 }
 
 .status-played {
-    color: green;
+    color: #16C60C;
 }
 
 .status-not-sent {
@@ -80,7 +80,7 @@
 }
 
 .status-sent {
-    color: green;
+    color: #16C60C;
 }
 
 .status-live {
@@ -88,7 +88,7 @@
 }
 
 .blink {
-    animation: blink 1s infinite;
+    animation: blink 2s infinite;
 }
 
 @keyframes blink {

@@ -178,7 +178,6 @@ body {
 
         .shell-main {
             flex: 1;
-            padding: 1rem;
             overflow-y: auto;
         }
     }
@@ -202,7 +201,6 @@ body {
             height: 100%;
             background: white;
             z-index: 10;
-            padding: 1rem;
             box-sizing: border-box;
         }
     }
@@ -270,4 +268,5 @@ body {
     position: absolute;
     left: 6px;
     top: 16px;
+    z-index: 1001;
 }

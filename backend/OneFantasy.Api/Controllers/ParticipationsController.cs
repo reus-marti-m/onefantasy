@@ -64,7 +64,7 @@ namespace OneFantasy.Api.Controllers
 
         [HttpPost("{participationId:int}/play")]
         [Authorize(Policy = "RequireUser")]
-        [ProducesResponseType(typeof(UserParticipationResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserParticipationResponseDto), StatusCodes.Status201Created)]
         public async Task<IActionResult> Play(int seasonId, int participationId, [FromBody] CreateUserParticipationDto dto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

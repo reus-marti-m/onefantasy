@@ -33,10 +33,6 @@
     font-weight: 400;
 }
 
-.star-icon {
-    margin: 0 0.5rem;
-}
-
 .right-text {
     margin-left: auto !important;
 }
@@ -54,14 +50,13 @@
 
 .group-title {
     font-size: 1.5rem;
-    font-weight: 400;
-    margin-top: 2rem;
+    font-weight: 500;
+    margin-top: 4rem;
     display: flex;
     align-items: center;
     margin-bottom: 0.5rem;
 
     .group-points {
-        margin-left: 0.5rem;
         font-weight: 400;
         color: rgba(0, 0, 0, 0.4);
     }
@@ -74,5 +69,117 @@
 }
 
 .group-item {
-    margin-top: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.invalid-item {
+  border: 1px solid #f44336; 
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.error-text {
+  color: #f44336;
+  margin-bottom: 8px;
+}
+
+.actions {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.status-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: #fff;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  z-index: 1000;
+}
+
+.status-item {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  text-align: center;
+
+  &:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 12px;
+    height: 32px;
+    width: 1px;
+    background: #ddd;
+  }
+}
+
+.status-value {
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.status-label {
+  font-size: 0.75rem;
+  color: rgba(0,0,0,0.6);
+  margin-top: 2px;
+}
+
+.icon-check {
+  color: #16C60C;
+}
+
+.icon-close {
+  color: gray;
+}
+
+.icon-warning {
+  color: #FCE100;
+}
+
+// .icon-warning {
+//   // color: #FCE100;
+//   color: rgb(0, 0, 0) !important;
+//                       background: #FCE100;
+//                       background-clip: text;
+//                      -webkit-background-clip: text;
+// }
+
+.status-value mat-icon {
+  margin-right: 4px;
+}
+
+.status-item mat-icon {
+  margin-right: 4px;
+}
+
+.scroll-content {
+  height: calc(100vh - 88px); 
+  overflow-y: auto; 
+  padding: 1rem;
+}
+
+:host {
+  display: flex;
+  height: 100%;
+}
+
+.detail-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;        
+}
+
+.status-value.negative {
+  color: #f44336;
 }
