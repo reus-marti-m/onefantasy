@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TripleToggleComponent } from './form-components/triple-toggle/triple-toggle.component';
 import { CommonModule } from '@angular/common';
@@ -30,8 +30,10 @@ export interface TripleToggleModel {
   title: string | null;
   options: ToggleOption[];
   selected: string[];
-  actualResult: string;
+  actualResult: string[];
   disabled: boolean;
+  hasResult: boolean | undefined;
+  score: string | undefined;
 }
 
 export interface ChipSelectorModel {
@@ -41,6 +43,7 @@ export interface ChipSelectorModel {
   actualResult: string[];
   disabled: boolean;
   hasResult: boolean | undefined;
+  score: string | undefined;
 }
 
 export type MinijocItem =
@@ -68,7 +71,8 @@ export interface MinijocGroup {
     MatIconModule,
     MatButtonToggleModule,
     MatTooltipModule,
-    MatCardModule
+    MatCardModule,
+    RouterModule
   ],
   providers: [Service],
   styleUrls: ['./detail.component.scss']
@@ -82,6 +86,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   hasChanges = false;
   hasSaved = false;
   savedAt: Date | null = null;
+isMobile = false;
 
   minigameToggles: TripleToggleModel[] = [];
   chipModels: ChipSelectorModel[] = [];
@@ -96,10 +101,21 @@ export class DetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private service: Service,
-    private snackBar: MatSnackBar
-  ) { }
+    private snackBar: MatSnackBar,
+    private router: Router
+  ) {this.checkScreen(); }
 
+@HostListener('window:resize')
+  checkScreen() {
+    this.isMobile = window.innerWidth < 700;
+  }
+
+closeDetail() {
+    this.router.navigate(['/app']);
+  }
+  
   ngOnInit() {
+    this.checkScreen();
     this.sub = this.route.paramMap.subscribe(params => {
       const val = params.get('id');
       this.id = val !== null ? +val : null;
@@ -240,20 +256,22 @@ export class DetailComponent implements OnInit, OnDestroy {
       ...(mg.visitingVictory.isPlayed ? [opts[2].value] : [])
     ];
 
-    const actual = mg.homeVictory.hasOccurred
-      ? opts[0].value
+    const actual: string[] = mg.homeVictory.hasOccurred
+      ? [opts[0].value]
       : mg.draw.hasOccurred
-        ? opts[1].value
+        ? [opts[1].value]
         : mg.visitingVictory.hasOccurred
-          ? opts[2].value
-          : '';
+          ? [opts[2].value]
+          : [''];
 
     return {
       title: null,
       options: opts,
       selected,
       actualResult: actual,
-      disabled: this.participationStarted
+      disabled: this.participationStarted,
+      hasResult: mg.isResolved,
+      score: `${mg.score}/${this.getPerItemPoints()} punts`
     };
   }
 
@@ -287,9 +305,11 @@ export class DetailComponent implements OnInit, OnDestroy {
       .map((opt, i) => opt.isPlayed ? opts[i].value : null)
       .filter(v => v != null) as string[];
 
-    const actual = mg.options!
+    let actual = mg.options!
       .map((opt, i) => opt.hasOccurred ? opts[i].value : null)
-      .find(v => v != null) || '';
+      .filter(v => v != null) as string[];
+    if (actual.length === 0)
+      actual = [''];
 
     let title;
     switch (mg.miniGameMatchType) {
@@ -309,7 +329,9 @@ export class DetailComponent implements OnInit, OnDestroy {
       options: opts,
       selected,
       actualResult: actual,
-      disabled: this.participationStarted
+      disabled: this.participationStarted,
+      hasResult: mg.isResolved,
+      score: `${mg.score}/${this.getPerItemPoints()} punts`
     };
   }
 
@@ -340,7 +362,8 @@ export class DetailComponent implements OnInit, OnDestroy {
       selected,
       actualResult: actual,
       disabled: this.participationStarted,
-      hasResult: mg.isResolved
+      hasResult: mg.isResolved,
+      score: `${mg.score}/${this.getPerItemPoints()} punts`
     };
   }
 
@@ -390,7 +413,8 @@ export class DetailComponent implements OnInit, OnDestroy {
       selected,
       actualResult: actual,
       disabled: this.participationStarted,
-      hasResult: mg.isResolved
+      hasResult: mg.isResolved,
+      score: `${mg.score}/${this.getPerItemPoints()} punts`
     };
   }
 
@@ -407,23 +431,23 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   private makeInfo(price: number, firstWin: boolean, isResolved: boolean | undefined, hasOccurred: boolean | undefined, isPlayed: boolean | undefined): [string, boolean] {
-    if (!this.participationStarted) {
-      return [`${price} M`, true];
-    }
+    // if (!this.participationStarted) {
+    return [`${price} M`, true];
+    // }
 
-    if (!this.participation.hasPlayed || !isResolved) {
-      return ['-', true];
-    }
+    // if (!this.participation.hasPlayed || !isResolved) {
+    //   return ['-', true];
+    // }
 
-    if (isPlayed) {
-      if (hasOccurred && firstWin) {
-        return [`${this.getPerItemPoints()} punts`, false];
-      } else {
-        return ['0 punts', true];
-      }
-    }
+    // if (isPlayed) {
+    //   if (hasOccurred && firstWin) {
+    //     return [`${this.getPerItemPoints()} punts`, false];
+    //   } else {
+    //     return ['0 punts', true];
+    //   }
+    // }
 
-    return ['-', true];
+    // return ['-', true];
   }
 
   getParticipationTypeName(p: ParticipationDtoResponse): string {
@@ -439,9 +463,9 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   getBudget(): number {
     switch (this.participation.type) {
-      case 1: return 200;  
-      case 2: return 200;  
-      default: return 300; 
+      case 1: return 200;
+      case 2: return 200;
+      default: return 300;
     }
   }
 
@@ -563,7 +587,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       .flatMap(g => g.items)
       .filter(item => {
         if (item.kind === 'triple') {
-          return (item.model as TripleToggleModel).actualResult !== '';
+          return (item.model as TripleToggleModel).actualResult.length > 0;
         } else {
           return (item.model as ChipSelectorModel).actualResult.length > 0;
         }

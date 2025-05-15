@@ -1,14 +1,17 @@
 <div *ngIf="title !== null" class="header">
     <span class="title">{{ title }}</span>
 </div>
-<mat-button-toggle-group multiple [hideMultipleSelectionIndicator]="true" [disabled]="disabled" [value]="selected"
+
+<p *ngIf="hasResult && title !== null" class="resultat-final">{{score}}</p>
+
+<mat-button-toggle-group matTooltip="Resultat final: {{ getResultInfo() }}" [matTooltipDisabled]="!hasResult" multiple [hideMultipleSelectionIndicator]="true" [disabled]="disabled" [value]="selected"
     (change)="onSelectionChange($event)" class="triple-group">
     <mat-button-toggle *ngFor="let opt of options" [value]="opt.value" [ngClass]="{
       'result-success': disabled
-                        && opt.value === actualResult
+                        && opt.value === actualResult[0]
                         && selected.includes(opt.value),
       'result-error':   disabled
-                        && opt.value === actualResult
+                        && opt.value === actualResult[0]
                         && !selected.includes(opt.value)
     }" class="triple-toggle">
         <div class="label">{{ opt.label }}</div>

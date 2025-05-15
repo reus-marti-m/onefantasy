@@ -5,6 +5,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ChipSelectorDialogComponent } from './chip-selector-dialog/chip-selector-dialog.component';
 import { ToggleOption } from '../detail.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-chip-selector',
@@ -14,6 +15,7 @@ import { ToggleOption } from '../detail.component';
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
+    MatTooltipModule
   ],
   templateUrl: './chip-selector.component.html',
   styleUrl: './chip-selector.component.scss'
@@ -27,6 +29,7 @@ export class ChipSelectorComponent {
   @Output() selectedChange = new EventEmitter<any[]>();
   @Input() actualResult: string[] = [];
   @Input() hasResult: boolean | undefined = false;
+  @Input() score: string | undefined = '';
 
   constructor(private dialog: MatDialog) { }
 

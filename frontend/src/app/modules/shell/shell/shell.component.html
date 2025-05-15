@@ -110,9 +110,6 @@
             </aside>
 
             <main *ngIf="!isMobile || showDetail" class="shell-main" [class.overlay]="isMobile && showDetail">
-                <button class="close-btn" mat-icon-button *ngIf="isMobile && showDetail" (click)="closeDetail()">
-                    <mat-icon>arrow_back</mat-icon>
-                </button>
                 <router-outlet></router-outlet>
             </main>
         </div>

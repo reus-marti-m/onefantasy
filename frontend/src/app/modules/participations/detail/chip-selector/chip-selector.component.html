@@ -6,10 +6,12 @@
         </button>
     </div>
 
-    <p *ngIf="hasResult" class="resultat-final">Resultat final: {{ getResultInfo() }}</p>
-    <p *ngIf="selected.length === 0" class="minigame-subtitle">Tria una o dues opcions (només compta un encert).</p>
-    <div class="chips">
-        <div class="chip" *ngFor="let val of selected" [ngClass]="{
+    <p *ngIf="hasResult && title !== null" class="resultat-final">{{score}}</p>
+    <p *ngIf="selected.length === 0 && !disabled" class="minigame-subtitle">Tria una o dues opcions (només compta un encert).</p>
+    <p *ngIf="selected.length === 0 && disabled" class="minigame-subtitle">Sense opcions seleccionades.</p>
+    <div matTooltip="Resultat final: {{ getResultInfo() }}" [matTooltipDisabled]="!hasResult" class="chips">
+        <div class="chip"
+            *ngFor="let val of selected" [ngClass]="{
       'result-success': disabled && actualResult.includes(val),
       'result-error':   disabled && !actualResult.includes(val)
     }">

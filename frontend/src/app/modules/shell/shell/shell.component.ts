@@ -53,7 +53,7 @@ export class ShellComponent {
 
   @HostListener('window:resize')
   checkScreen() {
-    this.isMobile = window.innerWidth < 960;
+    this.isMobile = window.innerWidth < 700;
   }
 
   navigateHome() {
@@ -78,11 +78,6 @@ export class ShellComponent {
       const cleanUrl = (this.router.url || '').split(';')[0];
       this.showDetail = /^\/app\/(participations|leagues)\/\d+$/.test(cleanUrl);
     }
-  }
-
-  closeDetail() {
-    this.showDetail = false;
-    this.router.navigate(['/app']);
   }
 
   tokenPresent() {
