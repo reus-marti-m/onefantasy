@@ -10,15 +10,17 @@
     }
 
     .chips {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
     }
 
     .chip {
-        display: inline-flex;
+        box-sizing: border-box;
+        display: flex;
         align-items: center;
-        gap: 8px;
+        justify-content: space-between;
+        width: 100%;
         padding: 8px 8px 8px 16px;
         border-radius: 999px;
         background-color: #dae2f9;
@@ -42,6 +44,7 @@
         border: none;
         background: none;
         pointer-events: none;
+        width: 100%;
     }
 
     .texts {
@@ -83,3 +86,4 @@
 .resultat-final {
     margin-bottom: 0.5rem;
 }
+

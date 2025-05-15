@@ -53,7 +53,7 @@ export class ShellComponent {
 
   @HostListener('window:resize')
   checkScreen() {
-    this.isMobile = window.innerWidth < 768;
+    this.isMobile = window.innerWidth < 960;
   }
 
   navigateHome() {

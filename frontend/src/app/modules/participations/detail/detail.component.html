@@ -2,51 +2,54 @@
 
   <div class="scroll-content">
     <ng-container *ngIf="participation">
-      <div class="participation-header">
 
+      <div class="participation-header">
         <span class="competition">{{ participation.competition }}&nbsp;</span>
-        <mat-icon class="star-icon" [ngClass]="getStarClass(participation)">
-          star
-        </mat-icon>
+        <mat-icon class="star-icon" [ngClass]="getStarClass(participation)">star</mat-icon>
         <span class="right-text subtext">{{ getRightText(participation) }}</span>
       </div>
 
       <p class="subtext">
         Primera participació dels quarts de final.
-        <br>Modalitat {{getParticipationTypeName(participation)}}: fins a {{ getMaxPoints(participation) }} punts.
+        <br>Modalitat {{ getParticipationTypeName(participation) }}: fins a {{ getMaxPoints(participation) }} punts.
         <br>Tens dues lligues que inclouen aquesta participació.
       </p>
 
-      <ng-container *ngFor="let g of groups; let gi = index">
-        <h3 class="group-title">
-          {{ g.title }}&nbsp;
-          <span class="group-points">
-            <ng-container *ngIf="participationStarted;">
-              · {{ g.score ?? 0 }}/{{ getGroupMaxPoints() }} punts
-            </ng-container>
-          </span>
-        </h3>
+      <div class="groups-grid">
+        <mat-card appearance="outlined" class="group-block" *ngFor="let g of groups; let gi = index">
+          <mat-card-header>
+            <mat-card-title>
+              {{ g.title }}
+              <span class="group-points" *ngIf="participationStarted">
+                &nbsp;· {{ g.score ?? 0 }}/{{ getGroupMaxPoints() }} punts
+              </span>
+            </mat-card-title>
+            <mat-card-subtitle class="group-subtitle">
+              {{ g.items[0].kind==='triple' && participation.type===0
+              ? 'Endevina el resultat dels partits'
+              : 'Endevina els aspectes del partit' }}
+            </mat-card-subtitle>
+          </mat-card-header>
 
-        <p class="group-subtitle">
-          {{ g.items[0].kind === 'triple' && participation.type === 0
-          ? 'Endevina el resultat dels partits'
-          : 'Endevina els aspectes del partit' }}
-        </p>
+          <mat-card-content>
+            <div *ngFor="let item of g.items; let ii = index" class="group-item"
+              [ngClass]="{ 'invalid-item': errors.missingSelection[gi][ii] }">
 
-        <!-- Ítems del grup -->
-        <div *ngFor="let item of g.items; let ii = index" class="group-item"
-          [ngClass]="{ 'invalid-item': errors.missingSelection[gi][ii] }">
-          <app-triple-toggle *ngIf="item.kind==='triple'" (selectedChange)="onUserChange()" [title]="item.model.title"
-            [options]="item.model.options" [disabled]="item.model.disabled" [(selected)]="item.model.selected"
-            [actualResult]="item.model.actualResult">
-          </app-triple-toggle>
+              <app-triple-toggle *ngIf="item.kind==='triple'" (selectedChange)="onUserChange()"
+                [title]="item.model.title" [options]="item.model.options" [disabled]="item.model.disabled"
+                [(selected)]="item.model.selected" [actualResult]="item.model.actualResult">
+              </app-triple-toggle>
 
-          <app-chip-selector *ngIf="item.kind==='chip'" (selectedChange)="onUserChange()" [title]="item.model.title"
-            [options]="item.model.options" [(selected)]="item.model.selected" [hasResult]="item.model.hasResult"
-            [disabled]="item.model.disabled" [actualResult]="item.model.actualResult">
-          </app-chip-selector>
-        </div>
-      </ng-container>
+              <app-chip-selector *ngIf="item.kind==='chip'" (selectedChange)="onUserChange()" [title]="item.model.title"
+                [options]="item.model.options" [(selected)]="item.model.selected" [hasResult]="item.model.hasResult"
+                [disabled]="item.model.disabled" [actualResult]="item.model.actualResult">
+              </app-chip-selector>
+
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
     </ng-container>
 
     <div class="actions">
@@ -68,7 +71,8 @@
   <div class="status-bar" *ngIf="participation">
     <ng-container *ngIf="!participationStarted">
       <div class="status-item">
-        <div class="status-value" [class.negative]="hasNegativeSpentBudget()">{{ getSpentBudget() }}/{{ getBudget() }} M
+        <div class="status-value" [class.negative]="hasNegativeSpentBudget()">
+          {{ getSpentBudget() }}/{{ getBudget() }} M
         </div>
         <div class="status-label">Pressupost</div>
       </div>
@@ -76,7 +80,6 @@
       <div class="status-item">
         <div class="status-value">
           <ng-container *ngIf="hasChanges; else savedOrNot">
-            <!-- fontSet="material-icons-two-tone" -->
             <mat-icon class="icon-warning">warning</mat-icon>
           </ng-container>
           <ng-template #savedOrNot>
@@ -112,15 +115,15 @@
     <ng-container *ngIf="participationStarted">
       <ng-container *ngIf="!participation.hasPlayed">
         <div class="status-item">
-          <div class="status-value">
-            <mat-icon class="icon-close">close</mat-icon>
-          </div>
+          <div class="status-value"><mat-icon class="icon-close">close</mat-icon></div>
           <div class="status-label">No enviada</div>
         </div>
       </ng-container>
       <ng-container *ngIf="participation.hasPlayed">
         <div class="status-item">
-          <div class="status-value">{{ participation.score || 0 }}/{{ getMaxPoints(participation) }}</div>
+          <div class="status-value">
+            {{ participation.score || 0 }}/{{ getMaxPoints(participation) }}
+          </div>
           <div class="status-label">Punts</div>
         </div>
         <div class="status-item">

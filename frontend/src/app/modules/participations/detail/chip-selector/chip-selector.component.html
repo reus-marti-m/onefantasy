@@ -7,6 +7,7 @@
     </div>
 
     <p *ngIf="hasResult" class="resultat-final">Resultat final: {{ getResultInfo() }}</p>
+    <p *ngIf="selected.length === 0" class="minigame-subtitle">Tria una o dues opcions (només compta un encert).</p>
     <div class="chips">
         <div class="chip" *ngFor="let val of selected" [ngClass]="{
       'result-success': disabled && actualResult.includes(val),
@@ -23,7 +24,6 @@
                 <mat-icon>close</mat-icon>
             </button>
         </div>
-        <p *ngIf="selected.length === 0" class="minigame-subtitle">Tria una o dues opcions (només compta un encert).</p>
     </div>
 
 

@@ -16,6 +16,7 @@ import {
 } from '../../../core/api';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCardModule } from '@angular/material/card';
 
 export interface ToggleOption {
   label: string;
@@ -66,7 +67,8 @@ export interface MinijocGroup {
     MatButtonModule,
     MatIconModule,
     MatButtonToggleModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatCardModule
   ],
   providers: [Service],
   styleUrls: ['./detail.component.scss']

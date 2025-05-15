@@ -90,16 +90,16 @@
                 <div class="fab-container" *ngIf="!modalActive && !(isMobile && showDetail)">
 
                     <button *ngIf="currentTab === 'participations'" mat-fab color="primary" (click)="picker.open()"
-                        aria-label="Filtrar per data">
+                        aria-label="Filtrar per data" class="fab-button">
                         <mat-icon>calendar_today</mat-icon>
                     </button>
 
                     <button *ngIf="currentTab !== 'participations'" mat-fab color="primary" [disabled]="!tokenPresent()"
-                        (click)="openFullScreen('create-league')" aria-label="Crear lliga">
+                        (click)="openFullScreen('create-league')" aria-label="Crear lliga"  class="fab-button">
                         <mat-icon>add</mat-icon>
                     </button>
 
-                    <button mat-fab color="primary" [disabled]="!tokenPresent()" (click)="openFullScreen('preferences')"
+                    <button mat-fab color="primary" [disabled]="!tokenPresent()" (click)="openFullScreen('preferences')"  class="fab-button"
                         aria-label="Preferències">
                         <mat-icon>tune</mat-icon>
                     </button>
