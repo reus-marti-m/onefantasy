@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ChipSelectorDialogComponent } from './chip-selector-dialog/chip-selector-dialog.component';
-import { ToggleOption } from '../detail.component';
+import { ToggleOptionGroup } from '../detail.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
@@ -23,11 +23,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class ChipSelectorComponent {
 
   @Input() title = '';
-  @Input() options: ToggleOption[] = [];
+  @Input() optionGroups: ToggleOptionGroup[] = [];
   @Input() selected: string[] = [];
   @Input() disabled = false;
   @Output() selectedChange = new EventEmitter<any[]>();
-  @Input() actualResult: string[] = [];
+  @Input() actualResult: [string, string][] = [];
   @Input() hasResult: boolean | undefined = false;
   @Input() score: string | undefined = '';
 
@@ -37,7 +37,7 @@ export class ChipSelectorComponent {
     if (this.disabled) return;
     const ref = this.dialog.open(ChipSelectorDialogComponent, {
       data: {
-        options: this.options,
+        optionGroups: this.optionGroups,
         selected: this.selected,
         title: this.title
       }
@@ -50,8 +50,11 @@ export class ChipSelectorComponent {
     });
   }
 
-  getLabel(value: any) {
-    return this.options.find(o => o.value === value)?.label;
+  getLabel(value: any): string | undefined {
+    return this.optionGroups
+      .flatMap(group => group.options)
+      .find(o => o.value === value)
+      ?.label;
   }
 
   removeChip(val: any) {
@@ -61,15 +64,24 @@ export class ChipSelectorComponent {
   }
 
   getInfo(val: any): string | undefined {
-    return this.options.find(o => o.value === val)?.info;
+    return this.optionGroups
+      .flatMap(group => group.options)
+      .find(o => o.value === val)
+      ?.info;
   }
 
   getResultInfo(): string {
     if (this.actualResult.length === 0) {
       return "No ha ocorregut cap opció.";
     } else {
-      return this.actualResult.join(", ");
+      return this.actualResult
+        .map(([, second]) => second)
+        .join(", ");
     }
+  }
+
+  isActualResult(val: string): boolean {
+    return this.actualResult.some(p => p[0] === val);
   }
 
 }

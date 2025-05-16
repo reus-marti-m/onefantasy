@@ -20,10 +20,11 @@
 
       <div class="groups-grid">
         <mat-card appearance="outlined" class="group-block" *ngFor="let g of groups; let gi = index">
-          <mat-card-header>
+          <mat-card-header class="header-with-icon">
             <mat-card-title>
               {{ g.title }}
             </mat-card-title>
+            <mat-icon *ngIf="participationStarted && participation.hasPlayed" class="left-icon" [ngClass]="getLeftClass(g)">fiber_manual_record</mat-icon>
             <mat-card-subtitle *ngIf="!participationStarted" class="group-subtitle">
               {{ g.items[0].kind==='triple' && participation.type===0
               ? 'Endevina el resultat dels partits'
@@ -45,7 +46,7 @@
               </app-triple-toggle>
 
               <app-chip-selector *ngIf="item.kind==='chip'" (selectedChange)="onUserChange()" [title]="item.model.title"
-                [options]="item.model.options" [(selected)]="item.model.selected" [hasResult]="item.model.hasResult"
+                [optionGroups]="item.model.optionGroups" [(selected)]="item.model.selected" [hasResult]="item.model.hasResult"
                 [score]="item.model.score" [disabled]="item.model.disabled" [actualResult]="item.model.actualResult">
               </app-chip-selector>
 
@@ -64,9 +65,9 @@
         És obligatori triar una o dues opcions de cada minijoc
       </div>
       <span matTooltip="No hi ha canvis per desar" [matTooltipDisabled]="hasChanges">
-        <button mat-flat-button color="primary" (click)="saveParticipation()" [disabled]="!hasChanges"
+        <button *ngIf="!participationStarted" mat-flat-button color="primary" (click)="saveParticipation()" [disabled]="!hasChanges"
           matTooltip="No hi ha canvis per desar" matTooltipDisabled="hasChanges">
-          Desar participació
+          Desar repte
         </button>
       </span>
     </div>

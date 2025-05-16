@@ -22,7 +22,7 @@ export class TripleToggleComponent {
   @Input() disabled = false;
   @Input() selected: any[] = [];
   @Output() selectedChange = new EventEmitter<any[]>();
-  @Input() actualResult: string[] = [];
+  @Input() actualResult: [string, string][] = [];
   @Input() hasResult: boolean | undefined = false;
   @Input() score: string | undefined = '';
 
@@ -39,7 +39,9 @@ export class TripleToggleComponent {
     if (this.actualResult.length === 0) {
       return "No ha ocorregut cap opció.";
     } else {
-      return this.actualResult.join(", ");
+      return this.actualResult
+        .map(([, second]) => second)
+        .join(", ");
     }
   }
 

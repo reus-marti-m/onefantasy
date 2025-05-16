@@ -18,6 +18,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 
+export interface ToggleOptionGroup {
+  title: string,
+  options: ToggleOption[];
+}
+
 export interface ToggleOption {
   label: string;
   value: any;
@@ -30,7 +35,7 @@ export interface TripleToggleModel {
   title: string | null;
   options: ToggleOption[];
   selected: string[];
-  actualResult: string[];
+  actualResult: [string, string][];
   disabled: boolean;
   hasResult: boolean | undefined;
   score: string | undefined;
@@ -38,9 +43,9 @@ export interface TripleToggleModel {
 
 export interface ChipSelectorModel {
   title: string;
-  options: ToggleOption[];
+  optionGroups: ToggleOptionGroup[];
   selected: string[];
-  actualResult: string[];
+  actualResult: [string, string][];
   disabled: boolean;
   hasResult: boolean | undefined;
   score: string | undefined;
@@ -55,6 +60,7 @@ export interface MinijocGroup {
   title: string;
   items: MinijocItem[];
   score: number | undefined;
+  hasResult: boolean | undefined;
 }
 
 @Component({
@@ -85,8 +91,8 @@ export class DetailComponent implements OnInit, OnDestroy {
   participationStarted: boolean = false;
   hasChanges = false;
   hasSaved = false;
-  savedAt: Date | null = null;
-isMobile = false;
+  savedAt: Date | undefined = undefined;
+  isMobile = false;
 
   minigameToggles: TripleToggleModel[] = [];
   chipModels: ChipSelectorModel[] = [];
@@ -103,17 +109,17 @@ isMobile = false;
     private service: Service,
     private snackBar: MatSnackBar,
     private router: Router
-  ) {this.checkScreen(); }
+  ) { this.checkScreen(); }
 
-@HostListener('window:resize')
+  @HostListener('window:resize')
   checkScreen() {
     this.isMobile = window.innerWidth < 700;
   }
 
-closeDetail() {
+  closeDetail() {
     this.router.navigate(['/app']);
   }
-  
+
   ngOnInit() {
     this.checkScreen();
     this.sub = this.route.paramMap.subscribe(params => {
@@ -141,9 +147,10 @@ closeDetail() {
       .participations(this.season, this.id)
       .subscribe({
         next: (resp: ParticipationDtoResponse) => {
+          // debugger;
           this.participationStarted = new Date() > resp.date;
           this.hasSaved = resp.hasPlayed ?? false;
-          // this.savedAt = resp.date;
+          this.savedAt = resp.lastUpdate;
           console.log(JSON.stringify(resp, null, 4));
           switch (resp.type) {
             case 1:
@@ -173,17 +180,29 @@ closeDetail() {
       { kind: 'triple', model: this.buildTripleModelForResult(p.minigameGroupMulti.match2), minigameId: p.minigameGroupMulti.match2.id! },
       { kind: 'triple', model: this.buildTripleModelForResult(p.minigameGroupMulti.match3), minigameId: p.minigameGroupMulti.match3.id! },
     ];
-    this.groups.push({ title: 'Multi', items: multiItems, score: p.minigameGroupMulti.score, groupId: p.minigameGroupMulti.id! });
+    this.groups.push({ 
+      title: 'Multi', 
+      items: multiItems, 
+      score: p.minigameGroupMulti.score,
+      groupId: p.minigameGroupMulti.id! ,
+      hasResult: p.minigameGroupMulti.match1.isResolved && p.minigameGroupMulti.match2.isResolved && p.minigameGroupMulti.match3.isResolved
+    });
 
     // Match
     const g3 = p.minigameGroupMatch3;
-    const title3 = `Local${g3.homeTeamId} v Visitant${g3.visitingTeamId}`;
+    const title3 = `${g3.homeTeamName} v ${g3.visitingTeamName}`;
     const match3Items: MinijocItem[] = [
-      { kind: 'chip', model: this.buildChipsModelForScores(g3.minigameScores), minigameId: g3.minigameScores.id! },
-      { kind: 'chip', model: this.buildChipsModelForPlayers(g3.minigamePlayers1), minigameId: g3.minigamePlayers1.id! },
-      { kind: 'chip', model: this.buildChipsModelForPlayers(g3.minigamePlayers2), minigameId: g3.minigamePlayers2.id! },
+      { kind: 'chip', model: this.buildChipsModelForScores(g3.homeTeamName!, g3.visitingTeamName!, g3.minigameScores), minigameId: g3.minigameScores.id! },
+      { kind: 'chip', model: this.buildChipsModelForPlayers(g3.homeTeamName!, g3.visitingTeamName!, g3.minigamePlayers1), minigameId: g3.minigamePlayers1.id! },
+      { kind: 'chip', model: this.buildChipsModelForPlayers(g3.homeTeamName!, g3.visitingTeamName!, g3.minigamePlayers2), minigameId: g3.minigamePlayers2.id! },
     ];
-    this.groups.push({ title: title3, items: match3Items, score: g3.score, groupId: g3.id! });
+    this.groups.push({ 
+      title: title3, 
+      items: match3Items, 
+      score: g3.score, 
+      groupId: g3.id!,
+      hasResult: g3.minigameScores.isResolved && g3.minigamePlayers1.isResolved && g3.minigamePlayers2.isResolved
+    });
   }
 
   private handleExtra(p: ParticipationExtraDtoResponse) {
@@ -192,28 +211,30 @@ closeDetail() {
 
     // Match 1
     const ga = p.minigameGroupMatch2A;
-    const titleA = `Local${ga.homeTeamId} v Visitant${ga.visitingTeamId}`;
+    const titleA = `${ga.homeTeamName} v ${ga.visitingTeamName}`;
     this.groups.push({
       title: titleA,
       items: [
-        { kind: 'chip', model: this.buildChipsModelForScores(ga.minigameScores), minigameId: ga.minigameScores.id! },
-        { kind: 'chip', model: this.buildChipsModelForPlayers(ga.minigamePlayers), minigameId: ga.minigamePlayers.id! },
+        { kind: 'chip', model: this.buildChipsModelForScores(ga.homeTeamName!, ga.visitingTeamName!, ga.minigameScores), minigameId: ga.minigameScores.id! },
+        { kind: 'chip', model: this.buildChipsModelForPlayers(ga.homeTeamName!, ga.visitingTeamName!, ga.minigamePlayers), minigameId: ga.minigamePlayers.id! },
       ],
       score: ga.score,
-      groupId: ga.id!
+      groupId: ga.id!,
+      hasResult: ga.minigamePlayers.isResolved && ga.minigameScores.isResolved
     });
 
     // Match 2
     const gb = p.minigameGroupMatch2B;
-    const titleB = `Local${gb.homeTeamId} v Visitant${gb.visitingTeamId}`;
+    const titleB = `${gb.homeTeamName} v ${gb.visitingTeamName}`;
     this.groups.push({
       title: titleB,
       items: [
         { kind: 'triple', model: this.buildTripleModelForMatch(gb.minigameMatch), minigameId: gb.minigameMatch.id! },
-        { kind: 'chip', model: this.buildChipsModelForPlayers(gb.minigamePlayers), minigameId: gb.minigamePlayers.id! },
+        { kind: 'chip', model: this.buildChipsModelForPlayers(gb.homeTeamName!, gb.visitingTeamName!, gb.minigamePlayers), minigameId: gb.minigamePlayers.id! },
       ],
       score: gb.score,
-      groupId: gb.id!
+      groupId: gb.id!,
+      hasResult: gb.minigameMatch.isResolved && gb.minigamePlayers.isResolved
     });
   }
 
@@ -256,13 +277,13 @@ closeDetail() {
       ...(mg.visitingVictory.isPlayed ? [opts[2].value] : [])
     ];
 
-    const actual: string[] = mg.homeVictory.hasOccurred
-      ? [opts[0].value]
+    const actual: [string, string][] = mg.homeVictory.hasOccurred
+      ? [[opts[0].value, opts[0].label]]
       : mg.draw.hasOccurred
-        ? [opts[1].value]
+        ? [[opts[1].value, opts[1].label]]
         : mg.visitingVictory.hasOccurred
-          ? [opts[2].value]
-          : [''];
+          ? [[opts[2].value, opts[2].label]]
+          : [['', '']];
 
     return {
       title: null,
@@ -306,10 +327,10 @@ closeDetail() {
       .filter(v => v != null) as string[];
 
     let actual = mg.options!
-      .map((opt, i) => opt.hasOccurred ? opts[i].value : null)
-      .filter(v => v != null) as string[];
+      .map((opt, i) => opt.hasOccurred ? [opts[i].value, opts[i].label] : null)
+      .filter(v => v != null) as [string, string][];
     if (actual.length === 0)
-      actual = [''];
+      actual = [['', '']];
 
     let title;
     switch (mg.miniGameMatchType) {
@@ -335,58 +356,114 @@ closeDetail() {
     };
   }
 
-  private buildChipsModelForScores(mg: MinigameScoresDtoResponse): ChipSelectorModel {
+  private buildChipsModelForScores(localTeamName: string, visitingTeamName: string, mg: MinigameScoresDtoResponse): ChipSelectorModel {
     let first = true;
-    const opts: ToggleOption[] = mg.options!.map(opt => {
-      let info = this.makeInfo(opt.price ?? 100, first, mg.isResolved, opt.hasOccurred, opt.isPlayed)
-      first = info[1];
-      return {
-        label: `${opt.homeGoals} - ${opt.awayGoals}`,
-        value: `score_${opt.id ?? ''}`,
-        info: info[0],
-        cost: opt.price!
-      }
-    });
+    const groupMap = mg.options!
+      .reduce((map, opt) => {
+        const [infoText, nextFirst] = this.makeInfo(opt.price ?? 100, first, mg.isResolved, opt.hasOccurred, opt.isPlayed);
+        first = nextFirst;
 
-    const selected = mg.options!
-      .map((opt, i) => opt.isPlayed ? opts[i].value : null)
-      .filter(v => v != null) as string[];
+        const toggleOpt: ToggleOption = {
+          label: `${opt.homeGoals} - ${opt.awayGoals}`,
+          value: `score_${opt.id ?? ''}`,
+          info: infoText,
+          cost: opt.price!
+        };
 
-    const actual = mg.options!
-      .map((opt, i) => opt.hasOccurred ? opts[i].value : null)
-      .filter(v => v != null) as string[];
+        const groupKey: string =
+          opt.homeGoals > opt.awayGoals
+            ? localTeamName
+            : opt.homeGoals < opt.awayGoals
+              ? visitingTeamName
+              : 'Empat';
+
+        if (!map.has(groupKey)) {
+          map.set(groupKey, []);
+        }
+        map.get(groupKey)!.push(toggleOpt);
+
+        return map;
+      }, new Map<string, ToggleOption[]>());
+
+    const scoreOptionGroups: ToggleOptionGroup[] = [
+      localTeamName,
+      'Empat',
+      visitingTeamName
+    ]
+      .filter(key => groupMap.has(key))
+      .map(title => {
+        const options = groupMap.get(title)!;
+        options.sort((a, b) => b.cost - a.cost);
+        return { title, options };
+      });
+
+    const selectedScores: string[] = mg.options!
+      .filter(o => o.isPlayed)
+      .map(o => `score_${o.id}`);
+
+    const actualScores: [string, string][] = mg.options!
+      .filter(o => o.hasOccurred)
+      .map(o => [
+        `score_${o.id}`,
+        `${o.homeGoals} - ${o.awayGoals}`
+      ]);
 
     return {
       title: 'Resultat exacte',
-      options: opts,
-      selected,
-      actualResult: actual,
+      optionGroups: scoreOptionGroups,
+      selected: selectedScores,
+      actualResult: actualScores,
       disabled: this.participationStarted,
       hasResult: mg.isResolved,
       score: `${mg.score}/${this.getPerItemPoints()} punts`
     };
   }
 
-  private buildChipsModelForPlayers(mg: MinigamePlayersDtoResponse): ChipSelectorModel {
+  private buildChipsModelForPlayers(localTeamName: string, visitingTeamName: string, mg: MinigamePlayersDtoResponse): ChipSelectorModel {
     let first = true;
-    const opts: ToggleOption[] = mg.options!.map(opt => {
-      let info = this.makeInfo(opt.price ?? 100, first, mg.isResolved, opt.hasOccurred, opt.isPlayed)
-      first = info[1];
-      return {
-        label: `${opt.playerId}`,
-        value: `player_${opt.id ?? ''}`,
-        info: info[0],
-        cost: opt.price!
-      }
-    });
 
-    const selected = mg.options!
-      .map((opt, i) => opt.isPlayed ? opts[i].value : null)
-      .filter(v => v != null) as string[];
+    const groupMap = mg.options!
+      .reduce((map, opt) => {
+        const [infoText, nextFirst] = this.makeInfo(opt.price ?? 100, first, mg.isResolved, opt.hasOccurred, opt.isPlayed);
+        first = nextFirst;
 
-    const actual = mg.options!
-      .map((opt, i) => opt.hasOccurred ? opts[i].value : null)
-      .filter(v => v != null) as string[];
+        const toggleOpt: ToggleOption = {
+          label: opt.playerName!,
+          value: `player_${opt.id ?? ''}`,
+          info: infoText,
+          cost: opt.price!
+        };
+
+        const groupKey = opt.teamName || '';
+        if (!map.has(groupKey)) {
+          map.set(groupKey, []);
+        }
+        map.get(groupKey)!.push(toggleOpt);
+
+        return map;
+      }, new Map<string, ToggleOption[]>());
+
+    const playerOptionGroups: ToggleOptionGroup[] = [
+      localTeamName,
+      visitingTeamName
+    ]
+      .filter(key => groupMap.has(key))
+      .map(title => {
+        const options = groupMap.get(title)!;
+        options.sort((a, b) => b.cost - a.cost);
+        return { title, options };
+      });
+
+    const selectedPlayers: string[] = mg.options!
+      .filter(o => o.isPlayed)
+      .map(o => `player_${o.id}`);
+
+    const actualPlayers: [string, string][] = mg.options!
+      .filter(o => o.hasOccurred)
+      .map(o => [
+        `player_${o.id}`,
+        o.playerName!
+      ]);
 
     let title;
     switch (mg.playersType) {
@@ -409,9 +486,9 @@ closeDetail() {
 
     return {
       title: title,
-      options: opts,
-      selected,
-      actualResult: actual,
+      optionGroups: playerOptionGroups,
+      selected: selectedPlayers,
+      actualResult: actualPlayers,
       disabled: this.participationStarted,
       hasResult: mg.isResolved,
       score: `${mg.score}/${this.getPerItemPoints()} punts`
@@ -489,7 +566,13 @@ closeDetail() {
         if (sel.length < 1) {
           this.errors.missingSelection[gi][ii] = true;
         }
-        item.model.options
+
+        const optionsList: ToggleOption[] =
+          item.kind === 'triple'
+            ? item.model.options
+            : item.model.optionGroups.flatMap(group => group.options);
+
+        optionsList
           .filter(opt => sel.includes(opt.value))
           .forEach(opt => spent += opt.cost ?? 0);
       });
@@ -551,12 +634,16 @@ closeDetail() {
   getSpentBudget(): number {
     return this.groups
       .flatMap(g => g.items)
-      .flatMap(item =>
-        item.model.options
+      .flatMap(item => {
+        const optionsList: ToggleOption[] =
+          item.kind === 'triple'
+            ? item.model.options
+            : item.model.optionGroups.flatMap(group => group.options);
+        return optionsList
           .filter(opt => item.model.selected.includes(opt.value))
-          .map(opt => opt.cost)
-      )
-      .reduce((a, b) => a + b, 0);
+          .map(opt => opt.cost ?? 0);
+      })
+      .reduce((sum, cost) => sum + cost, 0);
   }
 
   hasNegativeSpentBudget(): boolean {
@@ -595,7 +682,27 @@ closeDetail() {
       .length;
   }
 
+  getLeftClass(g: MinijocGroup): string {
+    if (g.hasResult)
+      return 'status-played';
+    else {
+      return 'status-live blink';
+    }
+  }
+
+  // getLeftClass(p: ParticipationDtoResponse): string {
+  //   if (this.isPlayable(p) && p.hasPlayed) return p.hasPlayed ? 'status-played' : 'status-pending';
+  //   if (!p.hasPlayed) return 'status-not-sent';
+  //   return this.isLive(p) ? 'status-live blink' : 'status-sent';
+  // }
+
   // TODO: Comunes amb component de llista, haurien d'estar en un arxiu comú
+
+  isLive(p: ParticipationDtoResponse): boolean {
+    const participationDate = new Date(p.date).getTime();
+    const nowPlus24Hours = Date.now() + 24 * 60 * 60 * 1000;
+    return participationDate <= nowPlus24Hours;
+  }
 
   getStarClass(p: ParticipationDtoResponse): string {
     switch (p.type) {

@@ -34,6 +34,8 @@
   .scroll-content {
     height: calc(100vh - 88px) !important;
     padding: 1rem !important;
+    width: calc(100% - 32px) !important;
+    margin: 0 0 !important;
   }
 
   .groups-grid {
@@ -156,14 +158,6 @@
 //                      -webkit-background-clip: text;
 // }
 
-.status-value mat-icon {
-  margin-right: 4px;
-}
-
-.status-item mat-icon {
-  margin-right: 4px;
-}
-
 .scroll-content {
   height: calc(100vh - 120px);
   overflow-y: auto;
@@ -196,6 +190,44 @@
 }
 
 .group-block {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   background-color: #ffffff;
+  min-width: min(350px, 100%);
+}
+
+.left-icon {
+  font-size: 20px;
+  vertical-align: middle;
+  flex: 0 0 auto;
+  height: auto;
+  width: auto;
+}
+
+.status-played {
+  color: #16C60C;
+}
+
+.status-live {
+  color: red;
+}
+
+.blink {
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.header-with-icon {
+  display: flex;
+  justify-content: space-between;
 }

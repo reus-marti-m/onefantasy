@@ -15,6 +15,7 @@ using OneFantasy.Api.Models.Participations.Users;
 using Microsoft.AspNetCore.Identity;
 using OneFantasy.Api.Models.Authentication;
 using OneFantasy.Api.Models.Participations.MinigameGroups;
+using OneFantasy.Api.Models.Participations.MinigameOptions;
 
 namespace OneFantasy.Api.Domain.Implementations
 {
@@ -416,6 +417,20 @@ namespace OneFantasy.Api.Domain.Implementations
             .Include(p => p.Groups)
                 .ThenInclude(g => g.Minigames)
                     .ThenInclude(m => m.Options)
+                        .ThenInclude(opt => ((OptionPlayer)opt).Player)
+                            .ThenInclude(p => p.Team)
+            .Include(p => p.Groups)
+                .ThenInclude(g => ((MinigameGroupMatch2A)g).HomeTeam)
+            .Include(p => p.Groups)
+                .ThenInclude(g => ((MinigameGroupMatch2A)g).VisitingTeam)
+            .Include(p => p.Groups)
+                .ThenInclude(g => ((MinigameGroupMatch2B)g).HomeTeam)
+            .Include(p => p.Groups)
+                .ThenInclude(g => ((MinigameGroupMatch2B)g).VisitingTeam)
+            .Include(p => p.Groups)
+                .ThenInclude(g => ((MinigameGroupMatch3)g).HomeTeam)
+            .Include(p => p.Groups)
+                .ThenInclude(g => ((MinigameGroupMatch3)g).VisitingTeam)
             .Include(p => p.Season)
                 .ThenInclude(s => s.Competition);
 

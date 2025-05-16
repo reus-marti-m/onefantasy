@@ -2027,6 +2027,7 @@ export class IParticipationDtoResponse implements IIParticipationDtoResponse {
     hasPlayed?: boolean;
     score?: number | undefined;
     competition?: string | undefined;
+    lastUpdate?: Date | undefined;
 
     constructor(data?: IIParticipationDtoResponse) {
         if (data) {
@@ -2045,6 +2046,7 @@ export class IParticipationDtoResponse implements IIParticipationDtoResponse {
             this.hasPlayed = _data["hasPlayed"];
             this.score = _data["score"];
             this.competition = _data["competition"];
+            this.lastUpdate = _data["lastUpdate"] ? new Date(_data["lastUpdate"].toString()) : <any>undefined;
         }
     }
 
@@ -2063,6 +2065,7 @@ export class IParticipationDtoResponse implements IIParticipationDtoResponse {
         data["hasPlayed"] = this.hasPlayed;
         data["score"] = this.score;
         data["competition"] = this.competition;
+        data["lastUpdate"] = this.lastUpdate ? this.lastUpdate.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -2074,6 +2077,7 @@ export interface IIParticipationDtoResponse {
     hasPlayed?: boolean;
     score?: number | undefined;
     competition?: string | undefined;
+    lastUpdate?: Date | undefined;
 }
 
 export class LoginResponseDto implements ILoginResponseDto {
@@ -2178,6 +2182,8 @@ export class MinigameGroupMatch2ADtoResponse implements IMinigameGroupMatch2ADto
     visitingTeamId!: number;
     id?: number;
     score?: number | undefined;
+    homeTeamName?: string | undefined;
+    visitingTeamName?: string | undefined;
 
     constructor(data?: IMinigameGroupMatch2ADtoResponse) {
         if (data) {
@@ -2200,6 +2206,8 @@ export class MinigameGroupMatch2ADtoResponse implements IMinigameGroupMatch2ADto
             this.visitingTeamId = _data["visitingTeamId"];
             this.id = _data["id"];
             this.score = _data["score"];
+            this.homeTeamName = _data["homeTeamName"];
+            this.visitingTeamName = _data["visitingTeamName"];
         }
     }
 
@@ -2218,6 +2226,8 @@ export class MinigameGroupMatch2ADtoResponse implements IMinigameGroupMatch2ADto
         data["visitingTeamId"] = this.visitingTeamId;
         data["id"] = this.id;
         data["score"] = this.score;
+        data["homeTeamName"] = this.homeTeamName;
+        data["visitingTeamName"] = this.visitingTeamName;
         return data;
     }
 }
@@ -2229,6 +2239,8 @@ export interface IMinigameGroupMatch2ADtoResponse {
     visitingTeamId: number;
     id?: number;
     score?: number | undefined;
+    homeTeamName?: string | undefined;
+    visitingTeamName?: string | undefined;
 }
 
 export class MinigameGroupMatch2BDto implements IMinigameGroupMatch2BDto {
@@ -2290,6 +2302,8 @@ export class MinigameGroupMatch2BDtoResponse implements IMinigameGroupMatch2BDto
     visitingTeamId!: number;
     id?: number;
     score?: number | undefined;
+    homeTeamName?: string | undefined;
+    visitingTeamName?: string | undefined;
 
     constructor(data?: IMinigameGroupMatch2BDtoResponse) {
         if (data) {
@@ -2312,6 +2326,8 @@ export class MinigameGroupMatch2BDtoResponse implements IMinigameGroupMatch2BDto
             this.visitingTeamId = _data["visitingTeamId"];
             this.id = _data["id"];
             this.score = _data["score"];
+            this.homeTeamName = _data["homeTeamName"];
+            this.visitingTeamName = _data["visitingTeamName"];
         }
     }
 
@@ -2330,6 +2346,8 @@ export class MinigameGroupMatch2BDtoResponse implements IMinigameGroupMatch2BDto
         data["visitingTeamId"] = this.visitingTeamId;
         data["id"] = this.id;
         data["score"] = this.score;
+        data["homeTeamName"] = this.homeTeamName;
+        data["visitingTeamName"] = this.visitingTeamName;
         return data;
     }
 }
@@ -2341,6 +2359,8 @@ export interface IMinigameGroupMatch2BDtoResponse {
     visitingTeamId: number;
     id?: number;
     score?: number | undefined;
+    homeTeamName?: string | undefined;
+    visitingTeamName?: string | undefined;
 }
 
 export class MinigameGroupMatch3Dto implements IMinigameGroupMatch3Dto {
@@ -2408,6 +2428,8 @@ export class MinigameGroupMatch3DtoResponse implements IMinigameGroupMatch3DtoRe
     visitingTeamId!: number;
     id?: number;
     score?: number | undefined;
+    homeTeamName?: string | undefined;
+    visitingTeamName?: string | undefined;
 
     constructor(data?: IMinigameGroupMatch3DtoResponse) {
         if (data) {
@@ -2432,6 +2454,8 @@ export class MinigameGroupMatch3DtoResponse implements IMinigameGroupMatch3DtoRe
             this.visitingTeamId = _data["visitingTeamId"];
             this.id = _data["id"];
             this.score = _data["score"];
+            this.homeTeamName = _data["homeTeamName"];
+            this.visitingTeamName = _data["visitingTeamName"];
         }
     }
 
@@ -2451,6 +2475,8 @@ export class MinigameGroupMatch3DtoResponse implements IMinigameGroupMatch3DtoRe
         data["visitingTeamId"] = this.visitingTeamId;
         data["id"] = this.id;
         data["score"] = this.score;
+        data["homeTeamName"] = this.homeTeamName;
+        data["visitingTeamName"] = this.visitingTeamName;
         return data;
     }
 }
@@ -2463,6 +2489,8 @@ export interface IMinigameGroupMatch3DtoResponse {
     visitingTeamId: number;
     id?: number;
     score?: number | undefined;
+    homeTeamName?: string | undefined;
+    visitingTeamName?: string | undefined;
 }
 
 export class MinigameGroupMultiDto implements IMinigameGroupMultiDto {
@@ -3266,6 +3294,8 @@ export class OptionPlayerDtoResponse implements IOptionPlayerDtoResponse {
     price?: number;
     hasOccurred?: boolean;
     isPlayed?: boolean | undefined;
+    playerName?: string | undefined;
+    teamName?: string | undefined;
 
     constructor(data?: IOptionPlayerDtoResponse) {
         if (data) {
@@ -3283,6 +3313,8 @@ export class OptionPlayerDtoResponse implements IOptionPlayerDtoResponse {
             this.price = _data["price"];
             this.hasOccurred = _data["hasOccurred"];
             this.isPlayed = _data["isPlayed"];
+            this.playerName = _data["playerName"];
+            this.teamName = _data["teamName"];
         }
     }
 
@@ -3300,6 +3332,8 @@ export class OptionPlayerDtoResponse implements IOptionPlayerDtoResponse {
         data["price"] = this.price;
         data["hasOccurred"] = this.hasOccurred;
         data["isPlayed"] = this.isPlayed;
+        data["playerName"] = this.playerName;
+        data["teamName"] = this.teamName;
         return data;
     }
 }
@@ -3310,6 +3344,8 @@ export interface IOptionPlayerDtoResponse {
     price?: number;
     hasOccurred?: boolean;
     isPlayed?: boolean | undefined;
+    playerName?: string | undefined;
+    teamName?: string | undefined;
 }
 
 export class OptionScoreDto implements IOptionScoreDto {
@@ -3562,6 +3598,7 @@ export class ParticipationExtraDtoResponse implements IParticipationExtraDtoResp
     hasPlayed?: boolean;
     score?: number | undefined;
     competition?: string | undefined;
+    lastUpdate?: Date | undefined;
 
     constructor(data?: IParticipationExtraDtoResponse) {
         if (data) {
@@ -3587,6 +3624,8 @@ export class ParticipationExtraDtoResponse implements IParticipationExtraDtoResp
             this.hasPlayed = _data["hasPlayed"];
             this.score = _data["score"];
             this.competition = _data["competition"];
+            debugger;
+            this.lastUpdate = _data["lastUpdate"] ? new Date(_data["lastUpdate"].toString()) : <any>undefined;
         }
     }
 
@@ -3608,6 +3647,7 @@ export class ParticipationExtraDtoResponse implements IParticipationExtraDtoResp
         data["hasPlayed"] = this.hasPlayed;
         data["score"] = this.score;
         data["competition"] = this.competition;
+        data["lastUpdate"] = this.lastUpdate ? this.lastUpdate.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -3622,6 +3662,7 @@ export interface IParticipationExtraDtoResponse {
     hasPlayed?: boolean;
     score?: number | undefined;
     competition?: string | undefined;
+    lastUpdate?: Date | undefined;
 }
 
 export class ParticipationResultDto implements IParticipationResultDto {
@@ -3733,6 +3774,7 @@ export class ParticipationSpecialDtoResponse implements IParticipationSpecialDto
     hasPlayed?: boolean;
     score?: number | undefined;
     competition?: string | undefined;
+    lastUpdate?: Date | undefined;
 
     constructor(data?: IParticipationSpecialDtoResponse) {
         if (data) {
@@ -3758,6 +3800,7 @@ export class ParticipationSpecialDtoResponse implements IParticipationSpecialDto
             this.hasPlayed = _data["hasPlayed"];
             this.score = _data["score"];
             this.competition = _data["competition"];
+            this.lastUpdate = _data["lastUpdate"] ? new Date(_data["lastUpdate"].toString()) : <any>undefined;
         }
     }
 
@@ -3779,6 +3822,7 @@ export class ParticipationSpecialDtoResponse implements IParticipationSpecialDto
         data["hasPlayed"] = this.hasPlayed;
         data["score"] = this.score;
         data["competition"] = this.competition;
+        data["lastUpdate"] = this.lastUpdate ? this.lastUpdate.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -3793,6 +3837,7 @@ export interface IParticipationSpecialDtoResponse {
     hasPlayed?: boolean;
     score?: number | undefined;
     competition?: string | undefined;
+    lastUpdate?: Date | undefined;
 }
 
 export class ParticipationStandardDto implements IParticipationStandardDto {
@@ -3853,6 +3898,7 @@ export class ParticipationStandardDtoResponse implements IParticipationStandardD
     hasPlayed?: boolean;
     score?: number | undefined;
     competition?: string | undefined;
+    lastUpdate?: Date | undefined;
 
     constructor(data?: IParticipationStandardDtoResponse) {
         if (data) {
@@ -3878,6 +3924,7 @@ export class ParticipationStandardDtoResponse implements IParticipationStandardD
             this.hasPlayed = _data["hasPlayed"];
             this.score = _data["score"];
             this.competition = _data["competition"];
+            this.lastUpdate = _data["lastUpdate"] ? new Date(_data["lastUpdate"].toString()) : <any>undefined;
         }
     }
 
@@ -3899,6 +3946,7 @@ export class ParticipationStandardDtoResponse implements IParticipationStandardD
         data["hasPlayed"] = this.hasPlayed;
         data["score"] = this.score;
         data["competition"] = this.competition;
+        data["lastUpdate"] = this.lastUpdate ? this.lastUpdate.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -3913,6 +3961,7 @@ export interface IParticipationStandardDtoResponse {
     hasPlayed?: boolean;
     score?: number | undefined;
     competition?: string | undefined;
+    lastUpdate?: Date | undefined;
 }
 
 export enum ParticipationType {

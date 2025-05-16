@@ -1,43 +1,36 @@
 <div class="participations-container">
 
-  <section *ngIf="playable.length">
+  <section *ngIf="playableVMs.length">
     <div class="jugables">Jugables</div>
-
-    <div class="participation-card" *ngFor="let p of playable" (click)="onSelect(p.id)">
+    <div class="participation-card" *ngFor="let p of playableVMs" (click)="onSelect(p.id)">
       <div class="content">
         <div class="line1">
           <span class="competition">{{ p.competition }}&nbsp;</span>
-          <mat-icon class="star-icon" [ngClass]="getStarClass(p)">
-            star
-          </mat-icon>
+          <mat-icon class="star-icon" [ngClass]="p.starClass">star</mat-icon>
           <span class="matchday">&nbsp;J21-1</span>
-          <span class="date">{{ getRightText(p) }}</span>
+          <span class="date">{{ p.rightText }}</span>
         </div>
         <div class="line2">
-          <!-- fontSet="material-icons-two-tone" -->
-          <mat-icon class="left-icon" [ngClass]="getLeftClass(p)">{{ getLeftIcon(p) }}</mat-icon>
-          <span class="status-text">&nbsp;{{ getStatusText(p) }} · 2 lligues</span>
+          <mat-icon class="left-icon" [ngClass]="p.leftClass">{{ p.leftIcon }}</mat-icon>
+          <span class="status-text">&nbsp;{{ p.statusText }} · 2 lligues</span>
         </div>
       </div>
     </div>
   </section>
 
-  <section *ngIf="started.length">
+  <section *ngIf="startedVMs.length">
     <div class="iniciades">Iniciats</div>
-
-    <div class="participation-card" *ngFor="let p of started" (click)="onSelect(p.id)">
+    <div class="participation-card" *ngFor="let p of startedVMs" (click)="onSelect(p.id)">
       <div class="content">
         <div class="line1">
           <span class="competition">{{ p.competition }}&nbsp;</span>
-          <mat-icon class="star-icon" [ngClass]="getStarClass(p)">
-            star
-          </mat-icon>
+          <mat-icon class="star-icon" [ngClass]="p.starClass">star</mat-icon>
           <span class="matchday">&nbsp;J21-1</span>
-          <span class="date">{{ getRightText(p) }}</span>
+          <span class="date">{{ p.rightText }}</span>
         </div>
         <div class="line2">
-          <mat-icon class="left-icon" [ngClass]="getLeftClass(p)">{{ getLeftIcon(p) }}</mat-icon>
-          <span class="status-text">&nbsp;{{ getStatusText(p) }} · 2 lligues</span>
+          <mat-icon class="left-icon" [ngClass]="p.leftClass">{{ p.leftIcon }}</mat-icon>
+          <span class="status-text">&nbsp;{{ p.statusText }} · 2 lligues</span>
         </div>
       </div>
     </div>

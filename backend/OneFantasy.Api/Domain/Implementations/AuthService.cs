@@ -103,7 +103,7 @@ namespace OneFantasy.Api.Domain.Implementations
             var jwt = _config.GetSection("Jwt");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.UtcNow.AddMinutes(double.Parse(jwt["ExpireMinutes"]));
+            var expires = DateTime.Now.AddMinutes(double.Parse(jwt["ExpireMinutes"]));
 
             var token = new JwtSecurityToken(
                 issuer: jwt["Issuer"],

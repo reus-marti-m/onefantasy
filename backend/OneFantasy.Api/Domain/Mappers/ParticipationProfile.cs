@@ -32,6 +32,8 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
                 .ForMember(dest => dest.HasOccurred, opt => opt.MapFrom(src => src.HasOccurred))
+                .ForMember(dest => dest.PlayerName, opt => opt.MapFrom(src => src.Player.Name))
+                .ForMember(dest => dest.TeamName, opt => opt.MapFrom(src => src.Player.Team.Name))
                 .ForMember(dest => dest.IsPlayed, opt => opt.MapFrom((src, dest, _, ctx) => OptionIsPlayed(ctx, src)));
 
             CreateMap<OptionScoreDto, OptionScore>()
@@ -130,6 +132,8 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(d => d.MinigamePlayers, o => o.MapFrom(src => src.MinigamePlayers))
                 .ForMember(d => d.HomeTeamId, o => o.MapFrom(src => src.HomeTeamId))
                 .ForMember(d => d.VisitingTeamId, o => o.MapFrom(src => src.VisitingTeamId))
+                .ForMember(d => d.HomeTeamName, o => o.MapFrom(src => src.HomeTeam.Name))
+                .ForMember(d => d.VisitingTeamName, o => o.MapFrom(src => src.VisitingTeam.Name))
                 .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => MinigameGroupScore(ctx, src)));
 
             CreateMap<MinigameGroupMatch2BDto, MinigameGroupMatch2B>()
@@ -142,6 +146,8 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(d => d.MinigamePlayers, o => o.MapFrom(src => src.MinigamePlayers))
                 .ForMember(d => d.HomeTeamId, o => o.MapFrom(src => src.HomeTeamId))
                 .ForMember(d => d.VisitingTeamId, o => o.MapFrom(src => src.VisitingTeamId))
+                .ForMember(d => d.HomeTeamName, o => o.MapFrom(src => src.HomeTeam.Name))
+                .ForMember(d => d.VisitingTeamName, o => o.MapFrom(src => src.VisitingTeam.Name))
                 .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => MinigameGroupScore(ctx, src)));
 
             CreateMap<MinigameGroupMatch3Dto, MinigameGroupMatch3>()
@@ -156,6 +162,8 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(d => d.MinigamePlayers2, o => o.MapFrom(src => src.MinigamePlayers2))
                 .ForMember(d => d.HomeTeamId, o => o.MapFrom(src => src.HomeTeamId))
                 .ForMember(d => d.VisitingTeamId, o => o.MapFrom(src => src.VisitingTeamId))
+                .ForMember(d => d.HomeTeamName, o => o.MapFrom(src => src.HomeTeam.Name))
+                .ForMember(d => d.VisitingTeamName, o => o.MapFrom(src => src.VisitingTeam.Name))
                 .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => MinigameGroupScore(ctx, src)));
 
             CreateMap<MinigameGroupMultiDto, MinigameGroupMulti>()
@@ -181,6 +189,7 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(d => d.Competition, o => o.MapFrom(src => src.Season.Competition.Name))
                 .ForMember(dest => dest.Budget, opt => opt.MapFrom(src => src.Budget))
                 .ForMember(dest => dest.HasPlayed, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) && items["userParticipation"] != null))
+                .ForMember(dest => dest.LastUpdate, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.LastUpdate : null))
                 .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.Points : null));
 
             CreateMap<ParticipationSpecialDto, ParticipationSpecial>()
@@ -195,6 +204,7 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(d => d.Competition, o => o.MapFrom(src => src.Season.Competition.Name))
                 .ForMember(dest => dest.Budget, opt => opt.MapFrom(src => src.Budget))
                 .ForMember(dest => dest.HasPlayed, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) && items["userParticipation"] != null))
+                .ForMember(dest => dest.LastUpdate, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.LastUpdate : null))
                 .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.Points : null));
 
             CreateMap<ParticipationStandardDto, ParticipationStandard>()
@@ -209,6 +219,7 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(d => d.Competition, o => o.MapFrom(src => src.Season.Competition.Name))
                 .ForMember(dest => dest.Budget, opt => opt.MapFrom(src => src.Budget))
                 .ForMember(dest => dest.HasPlayed, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) && items["userParticipation"] != null))
+                .ForMember(dest => dest.LastUpdate, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.LastUpdate : null))
                 .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.Points : null));
         }
 
