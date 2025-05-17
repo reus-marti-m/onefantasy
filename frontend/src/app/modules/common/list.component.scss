@@ -99,11 +99,7 @@
     }
 }
 
-.jugables {
-    border-top: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.jugables, .iniciades {
+.seccions {
     padding: 6px;
     text-align: center;
     font-size: 0.8rem;
@@ -119,4 +115,8 @@
 
 section+section .participation-card:first-child {
     border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.verified-icon {
+  color: #49ADF4;
 }

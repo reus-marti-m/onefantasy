@@ -137,37 +137,8 @@ body {
             display: flex;
             flex-direction: column;
             width: 300px;
-            width: clamp(300px, 25vw, 450px);
+            width: clamp(310px, 25vw, 450px);
             overflow: hidden;
-
-            .tabs {
-                display: flex;
-                background-color: #c6d7f6;
-                flex: none;
-                z-index: 10;
-
-                button {
-                    flex: 1;
-                    padding: 0.75rem;
-                    border: none;
-                    background: none;
-                    cursor: pointer;
-                    font-weight: bold;
-                    color: #49454F;
-
-                    &.active {
-                        color: #00458f;
-                        border-bottom: 2px solid #00458f;
-                    }
-                }
-            }
-
-            .tab-content {
-                flex: 1 1 auto;
-                min-height: 0;
-                overflow-y: auto;
-                background-color: #ffffff;
-            }
 
             .fab-container {
                 position: absolute;
@@ -273,4 +244,44 @@ body {
 
 mdc-list {
     padding: 0 !important;
+}
+
+.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
+    background:#6168e7;
+  }
+
+.mat-mdc-tab-label-container {
+    background-color: #c6d7f6 !important;
+}
+
+
+:host ::ng-deep mat-tab-group.custom-tabs .mat-mdc-tab-header {
+  background-color: #c6d7f6 !important;
+  color: #49454F;
+}
+
+.shell-body,
+.shell-aside {
+  min-height: 0;           
+}
+
+:host ::ng-deep mat-tab-group.custom-tabs {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+}
+
+:host ::ng-deep mat-tab-group.custom-tabs .mat-mdc-tab-body-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  overflow: hidden !important;
+  min-height: 0 !important;
+}
+
+:host ::ng-deep mat-tab-group.custom-tabs .mat-mdc-tab-body {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  min-height: 0 !important;
 }

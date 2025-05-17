@@ -32,7 +32,7 @@ interface ParticipationVM {
     MatIconModule
   ],
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['../../common/list.component.scss']
 })
 export class ListComponent implements OnInit {
   playableVMs: ParticipationVM[] = [];

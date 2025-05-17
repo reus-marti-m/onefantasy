@@ -1,7 +1,7 @@
 <div class="participations-container">
 
   <section *ngIf="playableVMs.length">
-    <div class="jugables">Jugables</div>
+    <div class="seccions">Jugables</div>
     <div class="participation-card" *ngFor="let p of playableVMs" (click)="onSelect(p.id)">
       <div class="content">
         <div class="line1">
@@ -19,7 +19,7 @@
   </section>
 
   <section *ngIf="startedVMs.length">
-    <div class="iniciades">Iniciats</div>
+    <div class="seccions">Iniciats</div>
     <div class="participation-card" *ngFor="let p of startedVMs" (click)="onSelect(p.id)">
       <div class="content">
         <div class="line1">

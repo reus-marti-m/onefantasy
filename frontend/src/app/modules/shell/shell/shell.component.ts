@@ -1,4 +1,4 @@
-import { Component, HostListener, ViewChild } from '@angular/core';
+import { Component, HostListener, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ListComponent as ParticipationsListComponent } from '../../participations/list/list.component';
 import { PublicListComponent } from '../../leagues/public-list/public-list.component';
@@ -14,6 +14,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { filter } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-shell',
@@ -32,8 +33,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     NotificationsComponent,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatTabsModule,
   ],
+  // encapsulation: ViewEncapsulation.None,
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss']
 })
@@ -46,11 +49,20 @@ export class ShellComponent {
   lastSelectedType: 'participation' | 'league' | null = null;
   fullScreen: 'profile' | 'rules' | 'help' | 'settings' | 'createLeague' | 'preferences' | null = null;
   modalActive = false;
+  selectedTabIndex = 0;
 
   @ViewChild('drawer') drawer!: MatSidenav;
 
   constructor(private router: Router, private route: ActivatedRoute) {
     this.checkScreen();
+  }
+
+  onTabChange(idx: number) {
+    const map: ('participations' | 'public' | 'private')[] = [
+      'participations', 'public', 'private'
+    ];
+    this.currentTab = map[idx];
+    this.selectedTabIndex = idx;
   }
 
   @HostListener('window:resize')
@@ -59,7 +71,7 @@ export class ShellComponent {
   }
 
   navigateHome() {
-    this.router.navigate(['/']); 
+    this.router.navigate(['/']);
   }
 
   ngOnInit() {
