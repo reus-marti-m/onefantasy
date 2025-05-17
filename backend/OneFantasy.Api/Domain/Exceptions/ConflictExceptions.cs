@@ -2,7 +2,7 @@
 
 namespace OneFantasy.Api.Domain.Exceptions
 {
-    public abstract class ConflictExceptions : ApiException
+    public abstract class ConflictExceptions : OneFantasyException
     {
         public ConflictExceptions(string message) : 
             base("Conflict", message, StatusCodes.Status409Conflict) 

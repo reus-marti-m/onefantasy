@@ -20,6 +20,7 @@ namespace OneFantasy.Api.Data
         public DbSet<Player> Players { get; set; }
         public DbSet<Participation> Participations { get; set; }
         public DbSet<UserParticipation> UserParticipations { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder mb)
         {

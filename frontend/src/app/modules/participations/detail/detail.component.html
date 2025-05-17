@@ -5,8 +5,8 @@
 
       <div class="participation-header">
         <button class="close-btn" mat-icon-button *ngIf="isMobile" (click)="closeDetail()">
-                    <mat-icon>arrow_back</mat-icon>
-                </button>
+          <mat-icon>arrow_back</mat-icon>
+        </button>
         <span class="competition">{{ participation.competition }}&nbsp;</span>
         <mat-icon class="star-icon" [ngClass]="getStarClass(participation)">star</mat-icon>
         <span class="right-text subtext">{{ getRightText(participation) }}</span>
@@ -24,13 +24,14 @@
             <mat-card-title>
               {{ g.title }}
             </mat-card-title>
-            <mat-icon *ngIf="participationStarted && participation.hasPlayed" class="left-icon" [ngClass]="getLeftClass(g)">fiber_manual_record</mat-icon>
-            <mat-card-subtitle *ngIf="!participationStarted" class="group-subtitle">
+            <mat-icon *ngIf="disabled && participation.hasPlayed" class="left-icon"
+              [ngClass]="getLeftClass(g)">fiber_manual_record</mat-icon>
+            <mat-card-subtitle *ngIf="!disabled" class="group-subtitle">
               {{ g.items[0].kind==='triple' && participation.type===0
               ? 'Endevina el resultat dels partits'
               : 'Endevina els aspectes del partit' }}
             </mat-card-subtitle>
-            <mat-card-subtitle *ngIf="participationStarted" class="group-subtitle">
+            <mat-card-subtitle *ngIf="disabled" class="group-subtitle">
               {{ g.score ?? 0 }}/{{ getGroupMaxPoints() }} punts
             </mat-card-subtitle>
           </mat-card-header>
@@ -46,8 +47,9 @@
               </app-triple-toggle>
 
               <app-chip-selector *ngIf="item.kind==='chip'" (selectedChange)="onUserChange()" [title]="item.model.title"
-                [optionGroups]="item.model.optionGroups" [(selected)]="item.model.selected" [hasResult]="item.model.hasResult"
-                [score]="item.model.score" [disabled]="item.model.disabled" [actualResult]="item.model.actualResult">
+                [optionGroups]="item.model.optionGroups" [(selected)]="item.model.selected"
+                [hasResult]="item.model.hasResult" [score]="item.model.score" [disabled]="item.model.disabled"
+                [actualResult]="item.model.actualResult">
               </app-chip-selector>
 
             </div>
@@ -65,16 +67,19 @@
         És obligatori triar una o dues opcions de cada minijoc
       </div>
       <span matTooltip="No hi ha canvis per desar" [matTooltipDisabled]="hasChanges">
-        <button *ngIf="!participationStarted" mat-flat-button color="primary" (click)="saveParticipation()" [disabled]="!hasChanges"
+        <button *ngIf="!disabled" mat-flat-button color="primary" (click)="saveParticipation()" [disabled]="!hasChanges"
           matTooltip="No hi ha canvis per desar" matTooltipDisabled="hasChanges">
           Desar repte
         </button>
       </span>
+      <button *ngIf="!logged" mat-flat-button color="primary" (click)="navigateToWelcome()">
+        Inicia sessió per jugar
+      </button>
     </div>
   </div>
 
   <div class="status-bar" *ngIf="participation">
-    <ng-container *ngIf="!participationStarted">
+    <ng-container *ngIf="!disabled">
       <div class="status-item">
         <div class="status-value" [class.negative]="hasNegativeSpentBudget()">
           {{ getSpentBudget() }}/{{ getBudget() }} M
@@ -117,7 +122,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="participationStarted">
+    <ng-container *ngIf="disabled">
       <ng-container *ngIf="!participation.hasPlayed">
         <div class="status-item">
           <div class="status-value"><mat-icon class="icon-close">close</mat-icon></div>

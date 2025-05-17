@@ -13,6 +13,7 @@ import { NotificationsComponent } from '../../notifications/notifications/notifi
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { filter } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-shell',
@@ -30,7 +31,8 @@ import { filter } from 'rxjs';
     MatButtonModule,
     NotificationsComponent,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatTooltipModule
   ],
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss']
@@ -80,18 +82,19 @@ export class ShellComponent {
     }
   }
 
-  tokenPresent() {
-    return !!localStorage.getItem('token');
+  clearLocalStorage() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('guest');
+  }
+
+  isLogged() {
+    return !localStorage.getItem('guest');
   }
 
   navigateToWelcome() {
-    localStorage.removeItem('guest');
+    this.clearLocalStorage()
     this.router.navigateByUrl('/');
-  }
-
-  logout() {
-    localStorage.removeItem('token');
-    this.navigateToWelcome();
   }
 
   openFullScreen(panel: 'profile' | 'rules' | 'help' | 'settings' | 'create-league' | 'preferences') {

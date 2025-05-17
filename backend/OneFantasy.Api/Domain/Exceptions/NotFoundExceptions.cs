@@ -2,7 +2,7 @@
 
 namespace OneFantasy.Api.Domain.Exceptions
 {
-    public abstract class NotFoundExceptions : ApiException
+    public abstract class NotFoundExceptions : OneFantasyException
     {
         public NotFoundExceptions(string message) : 
             base("Not Found", message, StatusCodes.Status404NotFound) 

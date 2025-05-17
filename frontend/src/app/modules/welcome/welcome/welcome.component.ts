@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EmailAuthDialogComponent } from '../../auth/email-auth-dialog/email-auth-dialog.component';
 import { Router } from '@angular/router';
+import { LoginResponseDto, Service } from '../../../core/api';
 
 @Component({
   selector: 'app-welcome',
@@ -20,14 +21,12 @@ import { Router } from '@angular/router';
 export class WelcomeComponent {
   constructor(
     private dialog: MatDialog,
-    private router: Router
-  ) {}
+    private router: Router,
+    private service: Service
+  ) { }
 
   ngOnInit() {
-    const token = localStorage.getItem('token');
-    const isGuest = localStorage.getItem('guest') === 'true';
-
-    if (token || isGuest) {
+    if (localStorage.getItem('token')) {
       this.router.navigateByUrl('/app');
     }
   }
@@ -39,7 +38,21 @@ export class WelcomeComponent {
   }
 
   enterAsGuest() {
-    localStorage.setItem('guest', 'true');
-    this.router.navigateByUrl('/app');
+    this.service.guest().subscribe({
+      next: (res: LoginResponseDto) => {
+        localStorage.setItem('token', res.token!);
+        if (res.refreshToken) {
+          localStorage.setItem('refreshToken', res.refreshToken);
+        } else {
+          localStorage.removeItem('refreshToken');
+        }
+        localStorage.setItem('guest', 'true');
+        this.router.navigateByUrl('/app');
+      },
+      error: err => {
+        console.error('Error fent guest login', err);
+      }
+    });
   }
+
 }

@@ -80,7 +80,6 @@ export interface MinijocGroup {
     MatCardModule,
     RouterModule
   ],
-  providers: [Service],
   styleUrls: ['./detail.component.scss']
 })
 export class DetailComponent implements OnInit, OnDestroy {
@@ -88,7 +87,8 @@ export class DetailComponent implements OnInit, OnDestroy {
   id: number | null = null;
   private season: number | null = null;
   private sub!: Subscription;
-  participationStarted: boolean = false;
+  disabled: boolean = false;
+  logged: boolean = false;
   hasChanges = false;
   hasSaved = false;
   savedAt: Date | undefined = undefined;
@@ -147,11 +147,10 @@ export class DetailComponent implements OnInit, OnDestroy {
       .participations(this.season, this.id)
       .subscribe({
         next: (resp: ParticipationDtoResponse) => {
-          // debugger;
-          this.participationStarted = new Date() > resp.date;
+          this.logged = this.isLogged()
+          this.disabled = new Date() > resp.date || !this.logged;
           this.hasSaved = resp.hasPlayed ?? false;
           this.savedAt = resp.lastUpdate;
-          console.log(JSON.stringify(resp, null, 4));
           switch (resp.type) {
             case 1:
               this.handleExtra(resp as ParticipationExtraDtoResponse);
@@ -170,6 +169,10 @@ export class DetailComponent implements OnInit, OnDestroy {
       });
   }
 
+  isLogged() {
+    return !localStorage.getItem('guest');
+  }
+
   private handleStandard(p: ParticipationStandardDtoResponse) {
     this.participation = p;
     this.groups = [];
@@ -180,11 +183,11 @@ export class DetailComponent implements OnInit, OnDestroy {
       { kind: 'triple', model: this.buildTripleModelForResult(p.minigameGroupMulti.match2), minigameId: p.minigameGroupMulti.match2.id! },
       { kind: 'triple', model: this.buildTripleModelForResult(p.minigameGroupMulti.match3), minigameId: p.minigameGroupMulti.match3.id! },
     ];
-    this.groups.push({ 
-      title: 'Multi', 
-      items: multiItems, 
+    this.groups.push({
+      title: 'Multi',
+      items: multiItems,
       score: p.minigameGroupMulti.score,
-      groupId: p.minigameGroupMulti.id! ,
+      groupId: p.minigameGroupMulti.id!,
       hasResult: p.minigameGroupMulti.match1.isResolved && p.minigameGroupMulti.match2.isResolved && p.minigameGroupMulti.match3.isResolved
     });
 
@@ -196,10 +199,10 @@ export class DetailComponent implements OnInit, OnDestroy {
       { kind: 'chip', model: this.buildChipsModelForPlayers(g3.homeTeamName!, g3.visitingTeamName!, g3.minigamePlayers1), minigameId: g3.minigamePlayers1.id! },
       { kind: 'chip', model: this.buildChipsModelForPlayers(g3.homeTeamName!, g3.visitingTeamName!, g3.minigamePlayers2), minigameId: g3.minigamePlayers2.id! },
     ];
-    this.groups.push({ 
-      title: title3, 
-      items: match3Items, 
-      score: g3.score, 
+    this.groups.push({
+      title: title3,
+      items: match3Items,
+      score: g3.score,
       groupId: g3.id!,
       hasResult: g3.minigameScores.isResolved && g3.minigamePlayers1.isResolved && g3.minigamePlayers2.isResolved
     });
@@ -254,19 +257,19 @@ export class DetailComponent implements OnInit, OnDestroy {
       {
         label: `Local${mg.homeVictory.teamId}`,
         value: `home_${mg.homeVictory.id ?? ''}`,
-        info: this.makeInfo(mg.homeVictory.price ?? 100, true, mg.isResolved, mg.homeVictory.hasOccurred, mg.homeVictory.isPlayed)[0],
+        info: this.makeInfo(mg.homeVictory.price ?? 100)[0],
         cost: mg.homeVictory.price!
       },
       {
         label: 'Empat',
         value: `draw_${mg.draw.id ?? ''}`,
-        info: this.makeInfo(mg.draw.price ?? 100, true, mg.isResolved, mg.draw.hasOccurred, mg.draw.isPlayed)[0],
+        info: this.makeInfo(mg.draw.price ?? 100)[0],
         cost: mg.draw.price!
       },
       {
         label: `Visitant${mg.visitingVictory.teamId}`,
         value: `away_${mg.visitingVictory.id ?? ''}`,
-        info: this.makeInfo(mg.visitingVictory.price ?? 100, true, mg.isResolved, mg.visitingVictory.hasOccurred, mg.visitingVictory.isPlayed)[0],
+        info: this.makeInfo(mg.visitingVictory.price ?? 100)[0],
         cost: mg.visitingVictory.price!
       }
     ];
@@ -290,9 +293,9 @@ export class DetailComponent implements OnInit, OnDestroy {
       options: opts,
       selected,
       actualResult: actual,
-      disabled: this.participationStarted,
+      disabled: this.disabled,
       hasResult: mg.isResolved,
-      score: `${mg.score}/${this.getPerItemPoints()} punts`
+      score: `${mg.score ?? 0}/${this.getPerItemPoints()} punts`
     };
   }
 
@@ -311,7 +314,7 @@ export class DetailComponent implements OnInit, OnDestroy {
         label = `${opt.min}`;
       }
 
-      let info = this.makeInfo(opt.price ?? 100, first, mg.isResolved, opt.hasOccurred, opt.isPlayed);
+      let info = this.makeInfo(opt.price ?? 100);
       first = info[1];
 
       return {
@@ -350,9 +353,9 @@ export class DetailComponent implements OnInit, OnDestroy {
       options: opts,
       selected,
       actualResult: actual,
-      disabled: this.participationStarted,
+      disabled: this.disabled,
       hasResult: mg.isResolved,
-      score: `${mg.score}/${this.getPerItemPoints()} punts`
+      score: `${mg.score ?? 0}/${this.getPerItemPoints()} punts`
     };
   }
 
@@ -360,7 +363,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     let first = true;
     const groupMap = mg.options!
       .reduce((map, opt) => {
-        const [infoText, nextFirst] = this.makeInfo(opt.price ?? 100, first, mg.isResolved, opt.hasOccurred, opt.isPlayed);
+        const [infoText, nextFirst] = this.makeInfo(opt.price ?? 100);
         first = nextFirst;
 
         const toggleOpt: ToggleOption = {
@@ -413,9 +416,9 @@ export class DetailComponent implements OnInit, OnDestroy {
       optionGroups: scoreOptionGroups,
       selected: selectedScores,
       actualResult: actualScores,
-      disabled: this.participationStarted,
+      disabled: this.disabled,
       hasResult: mg.isResolved,
-      score: `${mg.score}/${this.getPerItemPoints()} punts`
+      score: `${mg.score ?? 0}/${this.getPerItemPoints()} punts`
     };
   }
 
@@ -424,7 +427,7 @@ export class DetailComponent implements OnInit, OnDestroy {
 
     const groupMap = mg.options!
       .reduce((map, opt) => {
-        const [infoText, nextFirst] = this.makeInfo(opt.price ?? 100, first, mg.isResolved, opt.hasOccurred, opt.isPlayed);
+        const [infoText, nextFirst] = this.makeInfo(opt.price ?? 100);
         first = nextFirst;
 
         const toggleOpt: ToggleOption = {
@@ -489,9 +492,9 @@ export class DetailComponent implements OnInit, OnDestroy {
       optionGroups: playerOptionGroups,
       selected: selectedPlayers,
       actualResult: actualPlayers,
-      disabled: this.participationStarted,
+      disabled: this.disabled,
       hasResult: mg.isResolved,
-      score: `${mg.score}/${this.getPerItemPoints()} punts`
+      score: `${mg.score ?? 0}/${this.getPerItemPoints()} punts`
     };
   }
 
@@ -507,24 +510,8 @@ export class DetailComponent implements OnInit, OnDestroy {
     return this.participation.type === 2 ? 16 : 8;
   }
 
-  private makeInfo(price: number, firstWin: boolean, isResolved: boolean | undefined, hasOccurred: boolean | undefined, isPlayed: boolean | undefined): [string, boolean] {
-    // if (!this.participationStarted) {
+  private makeInfo(price: number): [string, boolean] {
     return [`${price} M`, true];
-    // }
-
-    // if (!this.participation.hasPlayed || !isResolved) {
-    //   return ['-', true];
-    // }
-
-    // if (isPlayed) {
-    //   if (hasOccurred && firstWin) {
-    //     return [`${this.getPerItemPoints()} punts`, false];
-    //   } else {
-    //     return ['0 punts', true];
-    //   }
-    // }
-
-    // return ['-', true];
   }
 
   getParticipationTypeName(p: ParticipationDtoResponse): string {
@@ -582,8 +569,6 @@ export class DetailComponent implements OnInit, OnDestroy {
       this.errors.budgetExceeded = true;
     }
 
-    console.log(spent + ' from ' + budget);
-
     if (!this.errors.budgetExceeded && !this.hasMissingSelection()) {
       const body: CreateUserParticipationDto = CreateUserParticipationDto.fromJS({
         groups: this.groups.map(g => ({
@@ -597,7 +582,6 @@ export class DetailComponent implements OnInit, OnDestroy {
         }))
       });
 
-      console.log(JSON.stringify(body, null, 4));
       this.service.play(1, this.id!, body).subscribe({
         next: () => {
           this.hasSaved = true;
@@ -608,7 +592,6 @@ export class DetailComponent implements OnInit, OnDestroy {
           });
         },
         error: ex => {
-          console.log(ex);
           this.snackBar.open(
             'Error enviant la participació. Torna-ho a provar.',
             'Tancar',
@@ -697,6 +680,17 @@ export class DetailComponent implements OnInit, OnDestroy {
   // }
 
   // TODO: Comunes amb component de llista, haurien d'estar en un arxiu comú
+
+  navigateToWelcome() {
+    this.clearLocalStorage()
+    this.router.navigateByUrl('/');
+  }
+
+  clearLocalStorage() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('guest');
+  }
 
   isLive(p: ParticipationDtoResponse): boolean {
     const participationDate = new Date(p.date).getTime();

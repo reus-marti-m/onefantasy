@@ -304,6 +304,9 @@ namespace OneFantasy.Api.Domain.Implementations
                 .FirstOrDefaultAsync(p => p.Id == participationId && p.SeasonId == seasonId)
                 ?? throw new NotFoundException(nameof(Participation), participationId);
 
+            if (participation.Date < DateTime.Now)
+                throw new ParticipationAlredyStartedException(participation.Id, participation.Date);
+
             var user = await _users.FindByIdAsync(userId)
                        ?? throw new InvalidCredentialsException();
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OneFantasy.Api.Domain.Abstractions;
+using OneFantasy.Api.Domain.Exceptions;
 using OneFantasy.Api.DTOs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,7 +12,12 @@ namespace OneFantasy.Api.Controllers
     [ApiController]
     [Route("api/teams/{teamId:int}/players")]
     [Consumes("application/json")]
-    [Produces("application/json")]
+    [Produces("application/json", "application/problem+json")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public class PlayersController : ControllerBase
     {
         private readonly IPlayerService _svc;

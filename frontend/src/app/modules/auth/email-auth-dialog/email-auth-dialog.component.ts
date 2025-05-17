@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
-import { AuthDto, Service } from '../../../core/api';
+import { AuthDto, LoginResponseDto, Service } from '../../../core/api';
 
 @Component({
   selector: 'app-email-auth-dialog',
@@ -21,21 +21,18 @@ import { AuthDto, Service } from '../../../core/api';
     MatButtonModule,
     MatDialogActions
   ],
-  providers: [
-    Service,
-  ],
   templateUrl: './email-auth-dialog.component.html',
   styleUrls: ['./email-auth-dialog.component.scss']
 })
 export class EmailAuthDialogComponent {
 
   form: FormGroup<{
-    email:    FormControl<string>;
+    email: FormControl<string>;
     password: FormControl<string>;
   }>;
 
-  isLogin  = true;
-  loading  = false;
+  isLogin = true;
+  loading = false;
   errorMsg = '';
 
   constructor(
@@ -45,7 +42,7 @@ export class EmailAuthDialogComponent {
     private router: Router
   ) {
     this.form = this.fb.group({
-      email:    this.fb.control('', [Validators.required, Validators.email]),
+      email: this.fb.control('', [Validators.required, Validators.email]),
       password: this.fb.control('', Validators.required)
     });
   }
@@ -71,16 +68,16 @@ export class EmailAuthDialogComponent {
       : this.service.register(dto);
 
     obs.subscribe({
-      next: res => {
-        if (this.isLogin && (res as any).token) {
-          localStorage.setItem('token', (res as any).token);
-        }
+      next: (res: LoginResponseDto) => {
+        localStorage.setItem('token', res.token!);
+        localStorage.setItem('refreshToken', res.refreshToken!);
+        localStorage.removeItem('guest');
         this.dialogRef.close(true);
         this.router.navigateByUrl('/app');
       },
       error: err => {
         this.loading = false;
-        this.errorMsg = err.error?.message || 'Ha fallat';
+        this.errorMsg = err.error?.message || 'Usuari o contrasenya incorrectes.';
       }
     });
   }

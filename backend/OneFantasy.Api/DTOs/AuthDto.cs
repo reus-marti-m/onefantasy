@@ -15,5 +15,12 @@ namespace OneFantasy.Api.DTOs
     public class LoginResponseDto
     {
         public string Token { get; set; }
+        public string RefreshToken { get; set; }
+    }
+
+    public class RefreshRequestDto
+    {
+        public string AccessToken { get; set; }
+        public string RefreshToken { get; set; }
     }
 }
