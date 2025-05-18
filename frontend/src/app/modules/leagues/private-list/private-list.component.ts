@@ -163,7 +163,28 @@ export class PrivateListComponent {
       points: 80,
       totalPoints: 80,
       matchdayLabel: '1r'
-    }
+    },
+    {
+      id: 15,
+      name: 'EuroMallorca',
+      positionLabel: '1r',
+      competition: 'Europa',
+      statusIcon: 'close',
+      statusClass: 'status-not-sent',
+      blink: false
+    },
+    {
+      id: 16,
+      name: 'Multi 07110',
+      positionLabel: '89è',
+      competition: 'Multi',
+      statusIcon: 'fiber_manual_record',
+      statusClass: 'status-played',
+      blink: false,
+      points: 80,
+      totalPoints: 80,
+      matchdayLabel: '1r'
+    },
   ];
 
 }

@@ -25,6 +25,15 @@ namespace OneFantasy.Api.DTOs
     {
         [Required]
         public DateTime Date { get; set; }
+
+        [Required]
+        public string Round { get; set; }
+
+        [Required]
+        public string RoundAbbreviation { get; set; }
+
+        [Required]
+        public int NumberInRound { get; set; }
     }
 
     public interface IParticipationDtoResponse

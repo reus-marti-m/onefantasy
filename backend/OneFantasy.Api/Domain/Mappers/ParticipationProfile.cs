@@ -179,6 +179,9 @@ namespace OneFantasy.Api.Domain.Mappers
             // --- Participations ---
             CreateMap<ParticipationExtraDto, ParticipationExtra>()
                 .ForCtorParam("date", opt => opt.MapFrom(src => src.Date))
+                .ForCtorParam("round", opt => opt.MapFrom(src => src.Round))
+                .ForCtorParam("roundAbbreviation", opt => opt.MapFrom(src => src.RoundAbbreviation))
+                .ForCtorParam("numberInRound", opt => opt.MapFrom(src => src.NumberInRound))
                 .ForCtorParam("season", opt => opt.MapFrom((src, ctx) => ctx.Items["season"]))
                 .ForCtorParam("minigameGroupMatch2A", opt => opt.MapFrom(src => src.MinigameGroupMatch2A))
                 .ForCtorParam("minigameGroupMatch2B", opt => opt.MapFrom(src => src.MinigameGroupMatch2B));
@@ -188,12 +191,18 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(d => d.MinigameGroupMatch2B, o => o.MapFrom(src => src.MinigameGroupMatch2B))
                 .ForMember(d => d.Competition, o => o.MapFrom(src => src.Season.Competition.Name))
                 .ForMember(dest => dest.Budget, opt => opt.MapFrom(src => src.Budget))
+                .ForMember(dest => dest.Round, opt => opt.MapFrom(src => src.Round))
+                .ForMember(dest => dest.RoundAbbreviation, opt => opt.MapFrom(src => src.RoundAbbreviation))
+                .ForMember(dest => dest.NumberInRound, opt => opt.MapFrom(src => src.NumberInRound))
                 .ForMember(dest => dest.HasPlayed, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) && items["userParticipation"] != null))
                 .ForMember(dest => dest.LastUpdate, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.LastUpdate : null))
                 .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.Points : null));
 
             CreateMap<ParticipationSpecialDto, ParticipationSpecial>()
                 .ForCtorParam("date", opt => opt.MapFrom(src => src.Date))
+                .ForCtorParam("round", opt => opt.MapFrom(src => src.Round))
+                .ForCtorParam("roundAbbreviation", opt => opt.MapFrom(src => src.RoundAbbreviation))
+                .ForCtorParam("numberInRound", opt => opt.MapFrom(src => src.NumberInRound))
                 .ForCtorParam("season", opt => opt.MapFrom((src, ctx) => ctx.Items["season"]))
                 .ForCtorParam("minigameGroupMatch2A", opt => opt.MapFrom(src => src.MinigameGroupMatch2A))
                 .ForCtorParam("minigameGroupMatch2B", opt => opt.MapFrom(src => src.MinigameGroupMatch2B));
@@ -203,12 +212,18 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(d => d.MinigameGroupMatch2B, o => o.MapFrom(src => src.MinigameGroupMatch2B))
                 .ForMember(d => d.Competition, o => o.MapFrom(src => src.Season.Competition.Name))
                 .ForMember(dest => dest.Budget, opt => opt.MapFrom(src => src.Budget))
+                .ForMember(dest => dest.Round, opt => opt.MapFrom(src => src.Round))
+                .ForMember(dest => dest.RoundAbbreviation, opt => opt.MapFrom(src => src.RoundAbbreviation))
+                .ForMember(dest => dest.NumberInRound, opt => opt.MapFrom(src => src.NumberInRound))
                 .ForMember(dest => dest.HasPlayed, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) && items["userParticipation"] != null))
                 .ForMember(dest => dest.LastUpdate, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.LastUpdate : null))
                 .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.Points : null));
 
             CreateMap<ParticipationStandardDto, ParticipationStandard>()
                 .ForCtorParam("date", opt => opt.MapFrom(src => src.Date))
+                .ForCtorParam("round", opt => opt.MapFrom(src => src.Round))
+                .ForCtorParam("roundAbbreviation", opt => opt.MapFrom(src => src.RoundAbbreviation))
+                .ForCtorParam("numberInRound", opt => opt.MapFrom(src => src.NumberInRound))
                 .ForCtorParam("season", opt => opt.MapFrom((src, ctx) => ctx.Items["season"]))
                 .ForCtorParam("minigameGroupMulti", opt => opt.MapFrom(src => src.MinigameGroupMulti))
                 .ForCtorParam("minigameGroupMatch3", opt => opt.MapFrom(src => src.MinigameGroupMatch3));
@@ -218,6 +233,9 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(d => d.MinigameGroupMatch3, o => o.MapFrom(src => src.MinigameGroupMatch3))
                 .ForMember(d => d.Competition, o => o.MapFrom(src => src.Season.Competition.Name))
                 .ForMember(dest => dest.Budget, opt => opt.MapFrom(src => src.Budget))
+                .ForMember(dest => dest.Round, opt => opt.MapFrom(src => src.Round))
+                .ForMember(dest => dest.RoundAbbreviation, opt => opt.MapFrom(src => src.RoundAbbreviation))
+                .ForMember(dest => dest.NumberInRound, opt => opt.MapFrom(src => src.NumberInRound))
                 .ForMember(dest => dest.HasPlayed, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) && items["userParticipation"] != null))
                 .ForMember(dest => dest.LastUpdate, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.LastUpdate : null))
                 .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.Points : null));

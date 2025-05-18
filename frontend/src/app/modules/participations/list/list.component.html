@@ -2,12 +2,12 @@
 
   <section *ngIf="playableVMs.length">
     <div class="seccions">Jugables</div>
-    <div class="participation-card" *ngFor="let p of playableVMs" (click)="onSelect(p.id)">
+    <div matRipple class="participation-card" *ngFor="let p of playableVMs" (click)="onSelect(p.id)">
       <div class="content">
         <div class="line1">
           <span class="competition">{{ p.competition }}&nbsp;</span>
           <mat-icon class="star-icon" [ngClass]="p.starClass">star</mat-icon>
-          <span class="matchday">&nbsp;J21-1</span>
+          <span class="matchday">&nbsp;{{ p.roundText }}</span>
           <span class="date">{{ p.rightText }}</span>
         </div>
         <div class="line2">
@@ -20,12 +20,12 @@
 
   <section *ngIf="startedVMs.length">
     <div class="seccions">Iniciats</div>
-    <div class="participation-card" *ngFor="let p of startedVMs" (click)="onSelect(p.id)">
+    <div matRipple class="participation-card" *ngFor="let p of startedVMs" (click)="onSelect(p.id)">
       <div class="content">
         <div class="line1">
           <span class="competition">{{ p.competition }}&nbsp;</span>
           <mat-icon class="star-icon" [ngClass]="p.starClass">star</mat-icon>
-          <span class="matchday">&nbsp;J21-1</span>
+          <span class="matchday">&nbsp;{{ p.roundText }}</span>
           <span class="date">{{ p.rightText }}</span>
         </div>
         <div class="line2">

@@ -10,6 +10,7 @@ import {
 } from '../../../core/api';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
+import { MatRippleModule } from '@angular/material/core';
 
 interface ParticipationVM {
   id?: number;
@@ -21,6 +22,7 @@ interface ParticipationVM {
   leftClass: string;
   statusText: string;
   rightText: string;
+  roundText: string;
 }
 
 @Component({
@@ -29,7 +31,8 @@ interface ParticipationVM {
   imports: [
     CommonModule,
     MatListModule,
-    MatIconModule
+    MatIconModule,
+    MatRippleModule
   ],
   templateUrl: './list.component.html',
   styleUrls: ['../../common/list.component.scss']
@@ -77,10 +80,10 @@ export class ListComponent implements OnInit {
     // Status text
     let statusText: string;
     if (playable) {
-      statusText = p.hasPlayed ? 'Enviada' : 'Pendent';
+      statusText = p.hasPlayed ? 'Jugat' : 'Pendent';
     } else {
       if (!p.hasPlayed) {
-        statusText = 'No enviada';
+        statusText = 'No enviat';
       } else {
         const score = p.score ?? 0;
         const max = this.getMaxPoints(p);
@@ -121,6 +124,8 @@ export class ListComponent implements OnInit {
       default: starClass = 'star-standard';
     }
 
+    const roundText: string = `${p.roundAbbreviation}-${p.numberInRound}`;
+
     return {
       id: p.id,
       competition: p.competition!,
@@ -130,7 +135,8 @@ export class ListComponent implements OnInit {
       leftIcon,
       leftClass,
       statusText,
-      rightText
+      rightText,
+      roundText
     };
   }
 

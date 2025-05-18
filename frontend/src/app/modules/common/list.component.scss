@@ -5,6 +5,10 @@
     border-bottom: 1px solid #c4c6d0;
     cursor: pointer;
 
+    &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
     .content {
         flex: 1 1 auto;
 
@@ -118,5 +122,5 @@ section+section .participation-card:first-child {
 }
 
 .verified-icon {
-  color: #49ADF4;
+    color: #49ADF4;
 }

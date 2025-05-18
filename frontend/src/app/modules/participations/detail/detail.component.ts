@@ -17,6 +17,7 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
+import { MatRippleModule } from '@angular/material/core';
 
 export interface ToggleOptionGroup {
   title: string,
@@ -78,7 +79,8 @@ export interface MinijocGroup {
     MatButtonToggleModule,
     MatTooltipModule,
     MatCardModule,
-    RouterModule
+    RouterModule,
+    MatRippleModule
   ],
   styleUrls: ['./detail.component.scss']
 })
@@ -93,6 +95,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   hasSaved = false;
   savedAt: Date | undefined = undefined;
   isMobile = false;
+  roundText = '';
 
   minigameToggles: TripleToggleModel[] = [];
   chipModels: ChipSelectorModel[] = [];
@@ -151,6 +154,7 @@ export class DetailComponent implements OnInit, OnDestroy {
           this.disabled = new Date() > resp.date || !this.logged;
           this.hasSaved = resp.hasPlayed ?? false;
           this.savedAt = resp.lastUpdate;
+          this.roundText = this.getRoundText(resp);
           switch (resp.type) {
             case 1:
               this.handleExtra(resp as ParticipationExtraDtoResponse);
@@ -171,6 +175,27 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   isLogged() {
     return !localStorage.getItem('guest');
+  }
+
+  private getRoundText(p: ParticipationDtoResponse): string {
+    let numberCat: string;
+    switch (p.numberInRound) {
+      case 1:
+        numberCat = 'Primer';
+        break;
+      case 2:
+        numberCat = 'Segon';
+        break;
+      case 3:
+        numberCat = 'Tercer';
+        break;
+      case 4:
+        numberCat = 'Quart';
+        break;
+      default:
+        numberCat = `${p.numberInRound}è`
+    }
+    return `${numberCat} repte diari de${p.round}.`;
   }
 
   private handleStandard(p: ParticipationStandardDtoResponse) {

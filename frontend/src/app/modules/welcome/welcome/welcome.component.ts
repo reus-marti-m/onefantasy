@@ -5,6 +5,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EmailAuthDialogComponent } from '../../auth/email-auth-dialog/email-auth-dialog.component';
 import { Router } from '@angular/router';
 import { LoginResponseDto, Service } from '../../../core/api';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-welcome',
@@ -12,7 +14,9 @@ import { LoginResponseDto, Service } from '../../../core/api';
   imports: [
     CommonModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    MatIconModule,
+    MatTooltipModule
   ],
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.scss']

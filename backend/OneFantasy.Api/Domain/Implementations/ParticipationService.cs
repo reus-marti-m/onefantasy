@@ -435,7 +435,8 @@ namespace OneFantasy.Api.Domain.Implementations
             .Include(p => p.Groups)
                 .ThenInclude(g => ((MinigameGroupMatch3)g).VisitingTeam)
             .Include(p => p.Season)
-                .ThenInclude(s => s.Competition);
+                .ThenInclude(s => s.Competition)
+            .OrderByDescending(p => p.Date);
 
         private IParticipationDtoResponse MapParticipation(Participation p, UserParticipation userParticipation, int? id = null)
         {

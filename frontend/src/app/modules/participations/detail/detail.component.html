@@ -1,7 +1,7 @@
-<div class="detail-container">
+<div class="detail-container" *ngIf="participation">
 
   <div class="scroll-content">
-    <ng-container *ngIf="participation">
+    <ng-container>
 
       <div class="participation-header">
         <button class="close-btn" mat-icon-button *ngIf="isMobile" (click)="closeDetail()">
@@ -13,9 +13,9 @@
       </div>
 
       <p class="subtext">
-        Primera participació dels quarts de final.
+        {{ roundText }}
         <br>Modalitat {{ getParticipationTypeName(participation) }}: fins a {{ getMaxPoints(participation) }} punts.
-        <br>Tens dues lligues que inclouen aquesta participació.
+        <br>Tens dues lligues que inclouen aquest repte.
       </p>
 
       <div class="groups-grid">
@@ -111,7 +111,7 @@
             </ng-container>
           </ng-template>
           <ng-template #labelNotSent>
-            No enviada
+            No enviat
           </ng-template>
         </div>
       </div>
@@ -126,7 +126,7 @@
       <ng-container *ngIf="!participation.hasPlayed">
         <div class="status-item">
           <div class="status-value"><mat-icon class="icon-close">close</mat-icon></div>
-          <div class="status-label">No enviada</div>
+          <div class="status-label">No enviat</div>
         </div>
       </ng-container>
       <ng-container *ngIf="participation.hasPlayed">

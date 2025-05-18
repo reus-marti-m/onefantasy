@@ -1,6 +1,6 @@
 <div class="participations-container">
   <section *ngIf="officialLeagues.length">
-    <div class="seccions">lligues favorites</div>
+    <div class="seccions">Lligues favorites</div>
     <div class="participation-card" *ngFor="let l of officialLeagues" (click)="onSelect(l.id)">
       <div class="content">
         <div class="line1"><span class="competition">{{l.name}}</span><ng-container *ngIf="l.isFavorite">&nbsp;<mat-icon
@@ -9,7 +9,7 @@
         <div class="line2"><ng-container *ngIf="l.statusIcon==='close';else circle"><mat-icon class="left-icon"
               [ngClass]="l.statusClass">close</mat-icon></ng-container><ng-template #circle><mat-icon class="left-icon"
               [ngClass]="l.statusClass+(l.blink?' blink':'')">fiber_manual_record</mat-icon></ng-template><span
-            class="status-text">&nbsp;{{l.statusIcon!=='close'?l.points+'/'+l.totalPoints+' punts':'No enviada'}}<span
+            class="status-text">&nbsp;{{l.statusIcon!=='close'?l.points+'/'+l.totalPoints+' punts':'No enviat'}}<span
               *ngIf="l.statusIcon!=='close'" class="matchday">&nbsp;· {{l.matchdayLabel}}</span></span></div>
       </div>
     </div>
@@ -23,7 +23,7 @@
         <div class="line2"><ng-container *ngIf="l.statusIcon==='close';else circle2"><mat-icon class="left-icon"
               [ngClass]="l.statusClass">close</mat-icon></ng-container><ng-template #circle2><mat-icon class="left-icon"
               [ngClass]="l.statusClass+(l.blink?' blink':'')">fiber_manual_record</mat-icon></ng-template><span
-            class="status-text">&nbsp;{{l.statusIcon!=='close'?l.points+'/'+l.totalPoints+' punts':'No enviada'}}<span
+            class="status-text">&nbsp;{{l.statusIcon!=='close'?l.points+'/'+l.totalPoints+' punts':'No enviat'}}<span
               *ngIf="l.statusIcon!=='close'" class="matchday">&nbsp;· {{l.matchdayLabel}}</span></span></div>
       </div>
     </div>

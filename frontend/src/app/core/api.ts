@@ -4575,6 +4575,9 @@ export interface IOptionTeamDtoResponse {
 
 export class ParticipationExtraDto implements IParticipationExtraDto {
     date!: Date;
+    round!: string;
+    roundAbbreviation!: string;
+    numberInRound!: number;
     minigameGroupMatch2A!: MinigameGroupMatch2ADto;
     minigameGroupMatch2B!: MinigameGroupMatch2BDto;
 
@@ -4594,6 +4597,9 @@ export class ParticipationExtraDto implements IParticipationExtraDto {
     init(_data?: any) {
         if (_data) {
             this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+            this.round = _data["round"];
+            this.roundAbbreviation = _data["roundAbbreviation"];
+            this.numberInRound = _data["numberInRound"];
             this.minigameGroupMatch2A = _data["minigameGroupMatch2A"] ? MinigameGroupMatch2ADto.fromJS(_data["minigameGroupMatch2A"]) : new MinigameGroupMatch2ADto();
             this.minigameGroupMatch2B = _data["minigameGroupMatch2B"] ? MinigameGroupMatch2BDto.fromJS(_data["minigameGroupMatch2B"]) : new MinigameGroupMatch2BDto();
         }
@@ -4609,6 +4615,9 @@ export class ParticipationExtraDto implements IParticipationExtraDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["round"] = this.round;
+        data["roundAbbreviation"] = this.roundAbbreviation;
+        data["numberInRound"] = this.numberInRound;
         data["minigameGroupMatch2A"] = this.minigameGroupMatch2A ? this.minigameGroupMatch2A.toJSON() : <any>undefined;
         data["minigameGroupMatch2B"] = this.minigameGroupMatch2B ? this.minigameGroupMatch2B.toJSON() : <any>undefined;
         return data;
@@ -4617,12 +4626,18 @@ export class ParticipationExtraDto implements IParticipationExtraDto {
 
 export interface IParticipationExtraDto {
     date: Date;
+    round: string;
+    roundAbbreviation: string;
+    numberInRound: number;
     minigameGroupMatch2A: MinigameGroupMatch2ADto;
     minigameGroupMatch2B: MinigameGroupMatch2BDto;
 }
 
 export class ParticipationExtraDtoResponse implements IParticipationExtraDtoResponse {
     date!: Date;
+    round!: string;
+    roundAbbreviation!: string;
+    numberInRound!: number;
     minigameGroupMatch2A!: MinigameGroupMatch2ADtoResponse;
     minigameGroupMatch2B!: MinigameGroupMatch2BDtoResponse;
     type?: ParticipationType;
@@ -4649,6 +4664,9 @@ export class ParticipationExtraDtoResponse implements IParticipationExtraDtoResp
     init(_data?: any) {
         if (_data) {
             this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+            this.round = _data["round"];
+            this.roundAbbreviation = _data["roundAbbreviation"];
+            this.numberInRound = _data["numberInRound"];
             this.minigameGroupMatch2A = _data["minigameGroupMatch2A"] ? MinigameGroupMatch2ADtoResponse.fromJS(_data["minigameGroupMatch2A"]) : new MinigameGroupMatch2ADtoResponse();
             this.minigameGroupMatch2B = _data["minigameGroupMatch2B"] ? MinigameGroupMatch2BDtoResponse.fromJS(_data["minigameGroupMatch2B"]) : new MinigameGroupMatch2BDtoResponse();
             this.type = _data["type"];
@@ -4671,6 +4689,9 @@ export class ParticipationExtraDtoResponse implements IParticipationExtraDtoResp
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["round"] = this.round;
+        data["roundAbbreviation"] = this.roundAbbreviation;
+        data["numberInRound"] = this.numberInRound;
         data["minigameGroupMatch2A"] = this.minigameGroupMatch2A ? this.minigameGroupMatch2A.toJSON() : <any>undefined;
         data["minigameGroupMatch2B"] = this.minigameGroupMatch2B ? this.minigameGroupMatch2B.toJSON() : <any>undefined;
         data["type"] = this.type;
@@ -4686,6 +4707,9 @@ export class ParticipationExtraDtoResponse implements IParticipationExtraDtoResp
 
 export interface IParticipationExtraDtoResponse {
     date: Date;
+    round: string;
+    roundAbbreviation: string;
+    numberInRound: number;
     minigameGroupMatch2A: MinigameGroupMatch2ADtoResponse;
     minigameGroupMatch2B: MinigameGroupMatch2BDtoResponse;
     type?: ParticipationType;
@@ -4750,6 +4774,9 @@ export interface IParticipationResultDto {
 
 export class ParticipationSpecialDto implements IParticipationSpecialDto {
     date!: Date;
+    round!: string;
+    roundAbbreviation!: string;
+    numberInRound!: number;
     minigameGroupMatch2A!: MinigameGroupMatch2ADto;
     minigameGroupMatch2B!: MinigameGroupMatch2BDto;
 
@@ -4769,6 +4796,9 @@ export class ParticipationSpecialDto implements IParticipationSpecialDto {
     init(_data?: any) {
         if (_data) {
             this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+            this.round = _data["round"];
+            this.roundAbbreviation = _data["roundAbbreviation"];
+            this.numberInRound = _data["numberInRound"];
             this.minigameGroupMatch2A = _data["minigameGroupMatch2A"] ? MinigameGroupMatch2ADto.fromJS(_data["minigameGroupMatch2A"]) : new MinigameGroupMatch2ADto();
             this.minigameGroupMatch2B = _data["minigameGroupMatch2B"] ? MinigameGroupMatch2BDto.fromJS(_data["minigameGroupMatch2B"]) : new MinigameGroupMatch2BDto();
         }
@@ -4784,6 +4814,9 @@ export class ParticipationSpecialDto implements IParticipationSpecialDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["round"] = this.round;
+        data["roundAbbreviation"] = this.roundAbbreviation;
+        data["numberInRound"] = this.numberInRound;
         data["minigameGroupMatch2A"] = this.minigameGroupMatch2A ? this.minigameGroupMatch2A.toJSON() : <any>undefined;
         data["minigameGroupMatch2B"] = this.minigameGroupMatch2B ? this.minigameGroupMatch2B.toJSON() : <any>undefined;
         return data;
@@ -4792,12 +4825,18 @@ export class ParticipationSpecialDto implements IParticipationSpecialDto {
 
 export interface IParticipationSpecialDto {
     date: Date;
+    round: string;
+    roundAbbreviation: string;
+    numberInRound: number;
     minigameGroupMatch2A: MinigameGroupMatch2ADto;
     minigameGroupMatch2B: MinigameGroupMatch2BDto;
 }
 
 export class ParticipationSpecialDtoResponse implements IParticipationSpecialDtoResponse {
     date!: Date;
+    round!: string;
+    roundAbbreviation!: string;
+    numberInRound!: number;
     minigameGroupMatch2A!: MinigameGroupMatch2ADtoResponse;
     minigameGroupMatch2B!: MinigameGroupMatch2BDtoResponse;
     type?: ParticipationType;
@@ -4824,6 +4863,9 @@ export class ParticipationSpecialDtoResponse implements IParticipationSpecialDto
     init(_data?: any) {
         if (_data) {
             this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+            this.round = _data["round"];
+            this.roundAbbreviation = _data["roundAbbreviation"];
+            this.numberInRound = _data["numberInRound"];
             this.minigameGroupMatch2A = _data["minigameGroupMatch2A"] ? MinigameGroupMatch2ADtoResponse.fromJS(_data["minigameGroupMatch2A"]) : new MinigameGroupMatch2ADtoResponse();
             this.minigameGroupMatch2B = _data["minigameGroupMatch2B"] ? MinigameGroupMatch2BDtoResponse.fromJS(_data["minigameGroupMatch2B"]) : new MinigameGroupMatch2BDtoResponse();
             this.type = _data["type"];
@@ -4846,6 +4888,9 @@ export class ParticipationSpecialDtoResponse implements IParticipationSpecialDto
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["round"] = this.round;
+        data["roundAbbreviation"] = this.roundAbbreviation;
+        data["numberInRound"] = this.numberInRound;
         data["minigameGroupMatch2A"] = this.minigameGroupMatch2A ? this.minigameGroupMatch2A.toJSON() : <any>undefined;
         data["minigameGroupMatch2B"] = this.minigameGroupMatch2B ? this.minigameGroupMatch2B.toJSON() : <any>undefined;
         data["type"] = this.type;
@@ -4861,6 +4906,9 @@ export class ParticipationSpecialDtoResponse implements IParticipationSpecialDto
 
 export interface IParticipationSpecialDtoResponse {
     date: Date;
+    round: string;
+    roundAbbreviation: string;
+    numberInRound: number;
     minigameGroupMatch2A: MinigameGroupMatch2ADtoResponse;
     minigameGroupMatch2B: MinigameGroupMatch2BDtoResponse;
     type?: ParticipationType;
@@ -4874,6 +4922,9 @@ export interface IParticipationSpecialDtoResponse {
 
 export class ParticipationStandardDto implements IParticipationStandardDto {
     date!: Date;
+    round!: string;
+    roundAbbreviation!: string;
+    numberInRound!: number;
     minigameGroupMulti!: MinigameGroupMultiDto;
     minigameGroupMatch3!: MinigameGroupMatch3Dto;
 
@@ -4893,6 +4944,9 @@ export class ParticipationStandardDto implements IParticipationStandardDto {
     init(_data?: any) {
         if (_data) {
             this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+            this.round = _data["round"];
+            this.roundAbbreviation = _data["roundAbbreviation"];
+            this.numberInRound = _data["numberInRound"];
             this.minigameGroupMulti = _data["minigameGroupMulti"] ? MinigameGroupMultiDto.fromJS(_data["minigameGroupMulti"]) : new MinigameGroupMultiDto();
             this.minigameGroupMatch3 = _data["minigameGroupMatch3"] ? MinigameGroupMatch3Dto.fromJS(_data["minigameGroupMatch3"]) : new MinigameGroupMatch3Dto();
         }
@@ -4908,6 +4962,9 @@ export class ParticipationStandardDto implements IParticipationStandardDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["round"] = this.round;
+        data["roundAbbreviation"] = this.roundAbbreviation;
+        data["numberInRound"] = this.numberInRound;
         data["minigameGroupMulti"] = this.minigameGroupMulti ? this.minigameGroupMulti.toJSON() : <any>undefined;
         data["minigameGroupMatch3"] = this.minigameGroupMatch3 ? this.minigameGroupMatch3.toJSON() : <any>undefined;
         return data;
@@ -4916,12 +4973,18 @@ export class ParticipationStandardDto implements IParticipationStandardDto {
 
 export interface IParticipationStandardDto {
     date: Date;
+    round: string;
+    roundAbbreviation: string;
+    numberInRound: number;
     minigameGroupMulti: MinigameGroupMultiDto;
     minigameGroupMatch3: MinigameGroupMatch3Dto;
 }
 
 export class ParticipationStandardDtoResponse implements IParticipationStandardDtoResponse {
     date!: Date;
+    round!: string;
+    roundAbbreviation!: string;
+    numberInRound!: number;
     minigameGroupMulti!: MinigameGroupMultiDtoResponse;
     minigameGroupMatch3!: MinigameGroupMatch3DtoResponse;
     type?: ParticipationType;
@@ -4948,6 +5011,9 @@ export class ParticipationStandardDtoResponse implements IParticipationStandardD
     init(_data?: any) {
         if (_data) {
             this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+            this.round = _data["round"];
+            this.roundAbbreviation = _data["roundAbbreviation"];
+            this.numberInRound = _data["numberInRound"];
             this.minigameGroupMulti = _data["minigameGroupMulti"] ? MinigameGroupMultiDtoResponse.fromJS(_data["minigameGroupMulti"]) : new MinigameGroupMultiDtoResponse();
             this.minigameGroupMatch3 = _data["minigameGroupMatch3"] ? MinigameGroupMatch3DtoResponse.fromJS(_data["minigameGroupMatch3"]) : new MinigameGroupMatch3DtoResponse();
             this.type = _data["type"];
@@ -4970,6 +5036,9 @@ export class ParticipationStandardDtoResponse implements IParticipationStandardD
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["round"] = this.round;
+        data["roundAbbreviation"] = this.roundAbbreviation;
+        data["numberInRound"] = this.numberInRound;
         data["minigameGroupMulti"] = this.minigameGroupMulti ? this.minigameGroupMulti.toJSON() : <any>undefined;
         data["minigameGroupMatch3"] = this.minigameGroupMatch3 ? this.minigameGroupMatch3.toJSON() : <any>undefined;
         data["type"] = this.type;
@@ -4985,6 +5054,9 @@ export class ParticipationStandardDtoResponse implements IParticipationStandardD
 
 export interface IParticipationStandardDtoResponse {
     date: Date;
+    round: string;
+    roundAbbreviation: string;
+    numberInRound: number;
     minigameGroupMulti: MinigameGroupMultiDtoResponse;
     minigameGroupMatch3: MinigameGroupMatch3DtoResponse;
     type?: ParticipationType;

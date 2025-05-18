@@ -226,6 +226,15 @@ namespace OneFantasy.Api.Data
                 e.Property(p => p.Date)
                     .IsRequired();
 
+                e.Property(p => p.Round)
+                    .IsRequired();
+
+                e.Property(p => p.RoundAbbreviation)
+                    .IsRequired();
+
+                e.Property(p => p.NumberInRound)
+                    .IsRequired();
+
                 e.HasOne(p => p.Season)
                     .WithMany(s => s.Participations)
                     .HasForeignKey(p => p.SeasonId)
