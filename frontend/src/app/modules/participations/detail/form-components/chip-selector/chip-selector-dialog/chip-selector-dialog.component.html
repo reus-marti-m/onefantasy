@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>{{ data.title || 'Selecciona fins a 2' }}</h2>
+<div class="dialog-description">
+  Tria una o dues opcions (només compta un encert).
+</div>
+
+<mat-form-field appearance="outline" class="filter-input">
+  <mat-label>Filtra per nom</mat-label>
+  <input matInput placeholder="Escriu per filtrar..." [(ngModel)]="filterText">
+</mat-form-field>
+
+<div class="budget-toolbar">
+  <span class="budget-display" [class.negative]="isOverBudget">
+    {{ newSpentTotal }}/{{ totalBudget }} M
+  </span>
+  <button mat-icon-button (click)="toggleHideOverBudget()" [matTooltip]="hideOverBudget
+      ? 'Clica per mostrar les opcions que superin el pressupost'
+      : 'Clica per ocultar les opcions que superin el pressupost'">
+    <mat-icon>
+      {{ hideOverBudget ? 'visibility_off' : 'visibility' }}
+    </mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <ng-container *ngFor="let group of data.optionGroups">
+    <div *ngIf="hasOptions(group)" class="option-group">
+      <h3 class="group-title">{{ group.title }}</h3>
+      <mat-checkbox *ngFor="let opt of optionsToDisplay(group.options)" class="full-checkbox"
+        [checked]="tempSelected.includes(opt.value)" (change)="onToggle(opt.value)" [disabled]="
+          !tempSelected.includes(opt.value)
+          && tempSelected.length >= 2
+        ">
+        {{ opt.label }} ({{ opt.info }})
+      </mat-checkbox>
+    </div>
+  </ng-container>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button color="primary" (click)="onDone()">Fet</button>
+</mat-dialog-actions>

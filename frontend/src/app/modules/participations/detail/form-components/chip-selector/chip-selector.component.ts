@@ -4,8 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ChipSelectorDialogComponent } from './chip-selector-dialog/chip-selector-dialog.component';
-import { ToggleOptionGroup } from '../detail.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ToggleOptionGroup } from '../../detail.component';
 
 @Component({
   selector: 'app-chip-selector',
@@ -30,21 +30,37 @@ export class ChipSelectorComponent {
   @Input() actualResult: [string, string][] = [];
   @Input() hasResult: boolean | undefined = false;
   @Input() score: string | undefined = '';
+  @Input() budgetSpent = 0;
+  @Input() budgetTotal = 0;
 
   constructor(private dialog: MatDialog) { }
 
   openDialog() {
     if (this.disabled) return;
+
+    const oldSelection = [...this.selected];
+
     const ref = this.dialog.open(ChipSelectorDialogComponent, {
       data: {
         optionGroups: this.optionGroups,
         selected: this.selected,
-        title: this.title
+        title: this.title,
+        budgetSpent: this.budgetSpent,
+        budgetTotal: this.budgetTotal
       }
     });
-    ref.afterClosed().subscribe((res: string[] | undefined) => {
-      if (res) {
-        this.selected = res;
+
+    ref.afterClosed().subscribe(res => {
+      const dialogInst = ref.componentInstance as ChipSelectorDialogComponent;
+      const newSelection = res !== undefined
+        ? res
+        : dialogInst.tempSelected;
+
+      const equal = oldSelection.length === newSelection.length
+        && oldSelection.every(v => newSelection.includes(v));
+
+      if (!equal) {
+        this.selected = newSelection;
         this.selectedChange.emit(this.selected);
       }
     });

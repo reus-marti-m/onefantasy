@@ -9,13 +9,16 @@
         </button>
         <span class="competition">{{ participation.competition }}&nbsp;</span>
         <mat-icon class="star-icon" [ngClass]="getStarClass(participation)">star</mat-icon>
-        <span class="right-text subtext">{{ getRightText(participation) }}</span>
+        <span class="right-text">&nbsp;{{ getRightText(participation) }}</span>
       </div>
 
       <p class="subtext">
-        {{ roundText }}
-        <br>Modalitat {{ getParticipationTypeName(participation) }}: fins a {{ getMaxPoints(participation) }} punts.
-        <br>Tens dues lligues que inclouen aquest repte.
+        <span>{{ roundText }}</span>
+        <br><span>Modalitat {{ getParticipationTypeName(participation) }}: fins a {{ getMaxPoints() }}
+          punts. </span><mat-icon [matTooltip]="getModalityToolTipText(null)" matTooltipClass="multiline-tooltip"
+          class="subtext-icon">info_outline</mat-icon>
+        <br><span>No tens cap lliga que inclogui aquest repte. </span><mat-icon matTooltip="Pròximament disponible."
+          class="subtext-icon">info_outline</mat-icon>
       </p>
 
       <div class="groups-grid">
@@ -27,12 +30,17 @@
             <mat-icon *ngIf="disabled && participation.hasPlayed" class="left-icon"
               [ngClass]="getLeftClass(g)">fiber_manual_record</mat-icon>
             <mat-card-subtitle *ngIf="!disabled" class="group-subtitle">
-              {{ g.items[0].kind==='triple' && participation.type===0
-              ? 'Endevina el resultat dels partits'
-              : 'Endevina els aspectes del partit' }}
+              <span>
+                {{ getGroupPos(gi) }} grup: fins a {{ getGroupMaxPoints() }}
+                punts </span>
+              <mat-icon [matTooltip]="getGroupToolTipText(g.encerts)" matTooltipClass="multiline-tooltip"
+                class="subtext-icon">info_outline</mat-icon>
             </mat-card-subtitle>
             <mat-card-subtitle *ngIf="disabled" class="group-subtitle">
-              {{ g.score ?? 0 }}/{{ getGroupMaxPoints() }} punts
+              <span>
+                {{ g.score ?? 0 }}/{{ getGroupMaxPoints() }} punts </span>
+              <mat-icon [matTooltip]="getGroupToolTipText(g.encerts)" matTooltipClass="multiline-tooltip"
+                class="subtext-icon">info_outline</mat-icon>
             </mat-card-subtitle>
           </mat-card-header>
 
@@ -49,7 +57,7 @@
               <app-chip-selector *ngIf="item.kind==='chip'" (selectedChange)="onUserChange()" [title]="item.model.title"
                 [optionGroups]="item.model.optionGroups" [(selected)]="item.model.selected"
                 [hasResult]="item.model.hasResult" [score]="item.model.score" [disabled]="item.model.disabled"
-                [actualResult]="item.model.actualResult">
+                [actualResult]="item.model.actualResult" [budgetSpent]="getSpentBudget()" [budgetTotal]="getBudget()">
               </app-chip-selector>
 
             </div>
@@ -66,12 +74,12 @@
       <div *ngIf="hasMissingSelection() && notAllMinigamesResolved()" class="error-text">
         És obligatori triar una o dues opcions de cada minijoc
       </div>
-      <span matTooltip="No hi ha canvis per desar" [matTooltipDisabled]="hasChanges">
+      <div class="desar" matTooltip="No hi ha canvis per desar" [matTooltipDisabled]="hasChanges">
         <button *ngIf="!disabled" mat-flat-button color="primary" (click)="saveParticipation()" [disabled]="!hasChanges"
           matTooltip="No hi ha canvis per desar" matTooltipDisabled="hasChanges">
           Desar repte
         </button>
-      </span>
+      </div>
       <button *ngIf="!logged" mat-flat-button color="primary" (click)="navigateToWelcome()">
         Inicia sessió per jugar
       </button>
@@ -132,7 +140,7 @@
       <ng-container *ngIf="participation.hasPlayed">
         <div class="status-item">
           <div class="status-value">
-            {{ participation.score || 0 }}/{{ getMaxPoints(participation) }}
+            {{ participation.score || 0 }}/{{ getMaxPoints() }}
           </div>
           <div class="status-label">Punts</div>
         </div>

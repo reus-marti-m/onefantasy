@@ -6,15 +6,16 @@
         </button>
     </div>
 
-    <p *ngIf="hasResult && title !== null" class="resultat-final">{{score}}</p>
+    <!-- <p *ngIf="hasResult && title !== null" class="resultat-final">{{score}}</p> -->
     <p *ngIf="selected.length === 0 && !disabled" class="minigame-subtitle">Tria una o dues opcions (només compta un
         encert).</p>
     <p *ngIf="selected.length === 0 && disabled" class="minigame-subtitle">Sense opcions seleccionades.</p>
     <div matTooltip="Resultat final: {{ getResultInfo() }}" [matTooltipDisabled]="!hasResult" class="chips">
         <div class="chip" *ngFor="let val of selected" [ngClass]="{
-      'result-success': disabled && isActualResult(val),
-      'result-error' : disabled && !isActualResult(val)
-    }">
+            'no-result': !hasResult && disabled,
+            'result-success': hasResult && disabled && isActualResult(val),
+            'result-error' : hasResult && disabled && !isActualResult(val)
+        }">
             <button mat-stroked-button [disabled]="disabled" class="fake-button">
                 <div class="texts">
                     <div class="label">{{ getLabel(val) }}</div>

@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { TripleToggleComponent } from './form-components/triple-toggle/triple-toggle.component';
 import { CommonModule } from '@angular/common';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { ChipSelectorComponent } from './chip-selector/chip-selector.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,6 +17,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
+import { ChipSelectorComponent } from './form-components/chip-selector/chip-selector.component';
+import { RefreshService } from '../../../core/refresh.service';
 
 export interface ToggleOptionGroup {
   title: string,
@@ -62,6 +63,7 @@ export interface MinijocGroup {
   items: MinijocItem[];
   score: number | undefined;
   hasResult: boolean | undefined;
+  encerts: number | null;
 }
 
 @Component({
@@ -111,12 +113,20 @@ export class DetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private service: Service,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private refreshSvc: RefreshService
   ) { this.checkScreen(); }
 
   @HostListener('window:resize')
   checkScreen() {
     this.isMobile = window.innerWidth < 700;
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: BeforeUnloadEvent) {
+    if (this.hasChanges) {
+      $event.returnValue = true;
+    }
   }
 
   closeDetail() {
@@ -195,7 +205,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       default:
         numberCat = `${p.numberInRound}è`
     }
-    return `${numberCat} repte diari de${p.round}.`;
+    return `${numberCat} repte diari de${p.round}. `;
   }
 
   private handleStandard(p: ParticipationStandardDtoResponse) {
@@ -208,12 +218,22 @@ export class DetailComponent implements OnInit, OnDestroy {
       { kind: 'triple', model: this.buildTripleModelForResult(p.minigameGroupMulti.match2), minigameId: p.minigameGroupMulti.match2.id! },
       { kind: 'triple', model: this.buildTripleModelForResult(p.minigameGroupMulti.match3), minigameId: p.minigameGroupMulti.match3.id! },
     ];
+
+    const multi = p.minigameGroupMulti;
+    const multiMatches = [
+      multi.match1,
+      multi.match2,
+      multi.match3
+    ];
+    const multiHasResult = multiMatches.every(m => m.isResolved);
+    const multiEncerts = multiMatches.some(m => m.isResolved) ? multiMatches.filter(m => (m.score ?? 0) > 0).length : null;
     this.groups.push({
       title: 'Multi',
       items: multiItems,
       score: p.minigameGroupMulti.score,
       groupId: p.minigameGroupMulti.id!,
-      hasResult: p.minigameGroupMulti.match1.isResolved && p.minigameGroupMulti.match2.isResolved && p.minigameGroupMulti.match3.isResolved
+      hasResult: multiHasResult,
+      encerts: multiEncerts
     });
 
     // Match
@@ -224,12 +244,20 @@ export class DetailComponent implements OnInit, OnDestroy {
       { kind: 'chip', model: this.buildChipsModelForPlayers(g3.homeTeamName!, g3.visitingTeamName!, g3.minigamePlayers1), minigameId: g3.minigamePlayers1.id! },
       { kind: 'chip', model: this.buildChipsModelForPlayers(g3.homeTeamName!, g3.visitingTeamName!, g3.minigamePlayers2), minigameId: g3.minigamePlayers2.id! },
     ];
+    const scoresMatches = [
+      g3.minigameScores,
+      g3.minigamePlayers1,
+      g3.minigamePlayers2
+    ];
+    const scoresHasResult = scoresMatches.every(m => m.isResolved);
+    const scoresEncerts = scoresMatches.some(m => m.isResolved) ? scoresMatches.filter(m => (m.score ?? 0) > 0).length : null;
     this.groups.push({
       title: title3,
       items: match3Items,
       score: g3.score,
       groupId: g3.id!,
-      hasResult: g3.minigameScores.isResolved && g3.minigamePlayers1.isResolved && g3.minigamePlayers2.isResolved
+      hasResult: scoresHasResult,
+      encerts: scoresEncerts
     });
   }
 
@@ -237,34 +265,61 @@ export class DetailComponent implements OnInit, OnDestroy {
     this.participation = p;
     this.groups = [];
 
-    // Match 1
+    // Grup A (Match 1)
     const ga = p.minigameGroupMatch2A;
     const titleA = `${ga.homeTeamName} v ${ga.visitingTeamName}`;
+    const groupA = [ga.minigameScores, ga.minigamePlayers];
+    const hasResultA = groupA.every(m => m.isResolved);
+    const encertsA = groupA.some(m => m.isResolved) ? groupA.filter(m => (m.score ?? 0) > 0).length : null;
+
     this.groups.push({
       title: titleA,
       items: [
-        { kind: 'chip', model: this.buildChipsModelForScores(ga.homeTeamName!, ga.visitingTeamName!, ga.minigameScores), minigameId: ga.minigameScores.id! },
-        { kind: 'chip', model: this.buildChipsModelForPlayers(ga.homeTeamName!, ga.visitingTeamName!, ga.minigamePlayers), minigameId: ga.minigamePlayers.id! },
+        {
+          kind: 'chip',
+          model: this.buildChipsModelForScores(ga.homeTeamName!, ga.visitingTeamName!, ga.minigameScores),
+          minigameId: ga.minigameScores.id!
+        },
+        {
+          kind: 'chip',
+          model: this.buildChipsModelForPlayers(ga.homeTeamName!, ga.visitingTeamName!, ga.minigamePlayers),
+          minigameId: ga.minigamePlayers.id!
+        },
       ],
       score: ga.score,
       groupId: ga.id!,
-      hasResult: ga.minigamePlayers.isResolved && ga.minigameScores.isResolved
+      hasResult: hasResultA,
+      encerts: encertsA
     });
 
-    // Match 2
+    // Grup B (Match 2)
     const gb = p.minigameGroupMatch2B;
     const titleB = `${gb.homeTeamName} v ${gb.visitingTeamName}`;
+    const groupB = [gb.minigameMatch, gb.minigamePlayers];
+    const hasResultB = groupB.every(m => m.isResolved);
+    const encertsB = groupB.some(m => m.isResolved) ? groupB.filter(m => (m.score ?? 0) > 0).length : null;
+
     this.groups.push({
       title: titleB,
       items: [
-        { kind: 'triple', model: this.buildTripleModelForMatch(gb.minigameMatch), minigameId: gb.minigameMatch.id! },
-        { kind: 'chip', model: this.buildChipsModelForPlayers(gb.homeTeamName!, gb.visitingTeamName!, gb.minigamePlayers), minigameId: gb.minigamePlayers.id! },
+        {
+          kind: 'triple',
+          model: this.buildTripleModelForMatch(gb.minigameMatch),
+          minigameId: gb.minigameMatch.id!
+        },
+        {
+          kind: 'chip',
+          model: this.buildChipsModelForPlayers(gb.homeTeamName!, gb.visitingTeamName!, gb.minigamePlayers),
+          minigameId: gb.minigamePlayers.id!
+        },
       ],
       score: gb.score,
       groupId: gb.id!,
-      hasResult: gb.minigameMatch.isResolved && gb.minigamePlayers.isResolved
+      hasResult: hasResultB,
+      encerts: encertsB
     });
   }
+
 
   private handleSpecial(p: ParticipationSpecialDtoResponse) {
     this.handleExtra(p);
@@ -523,6 +578,59 @@ export class DetailComponent implements OnInit, OnDestroy {
     };
   }
 
+  getGroupToolTipText(encerts: number | null): string {
+    const m = this.getGroupMaxPoints();      
+    const p = this.getPerItemPoints();       
+    const e = this.getPerItemsExtraPoints(); 
+    const nt = this.getPerItemMinigameNum(); 
+    const ntText = this.getPerItemMinigameNumText();
+
+    if (encerts === null) {
+      return [
+        `${m - e} pts (2 prediccions × ${p} pts)`,
+        `+ ${e} pts bonus*`,
+        `= ${m} pts`,
+        ``,
+        `* El bonus només s'obté si encertes les ${ntText} prediccions`
+      ].join('\n');
+    }
+
+    const basePoints = encerts * p;
+    const bonusPoints = (encerts === nt ? e : 0);
+    const totalPoints = basePoints + bonusPoints;
+
+    return [
+      `${basePoints} pts (${encerts} prediccions × ${p} pts)`,
+      `+ ${bonusPoints} pts bonus*`,
+      `= ${totalPoints} pts`,
+      ``,
+      `* El bonus només s'obté si encertes les ${ntText} prediccions`
+    ].join('\n');
+  }
+
+  getModalityToolTipText(encerts: number | null): string {
+    const m = this.getGroupMaxPoints();
+    const e = this.getPerItemsExtraPoints();
+    const nt = this.getNumTextMax();
+    const total = this.getMaxPoints();
+
+    return [
+      `${total - (e * 2)} pts (2 grups × ${m} pts)`,
+      `+ ${e * 2} pts bonus*`,
+      `= ${total} pts`,
+      '',
+      `* El bonus només s'obté si encertes les ${nt} prediccions`
+    ].join('\n');
+  }
+
+  getMaxPoints(): number {
+    switch (this.participation.type) {
+      case 1: return 40;
+      case 2: return 80;
+      default: return 60;
+    }
+  }
+
   getGroupMaxPoints(): number {
     switch (this.participation.type) {
       case 1: return 18;
@@ -531,8 +639,27 @@ export class DetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  getGroupPos(p: number): string {
+    return p === 0 ? 'Primer' : 'Segon';
+  }
+
   getPerItemPoints(): number {
     return this.participation.type === 2 ? 16 : 8;
+  }
+  getPerItemsExtraPoints(): number {
+    return this.participation.type === 2 ? 4 : 2;
+  }
+
+  getPerItemMinigameNum(): number {
+    return this.participation.type === 0 ? 3 : 2;
+  }
+
+  getPerItemMinigameNumText(): string {
+    return this.participation.type === 0 ? 'tres' : 'dues';
+  }
+
+  getNumTextMax(): string {
+    return this.participation.type === 0 ? 'sis' : 'quatre';
   }
 
   private makeInfo(price: number): [string, boolean] {
@@ -612,15 +739,22 @@ export class DetailComponent implements OnInit, OnDestroy {
           this.hasSaved = true;
           this.hasChanges = false;
           this.savedAt = new Date();
+          this.refreshSvc.notifyRefresh();
           this.snackBar.open('Participació desada correctament.', 'Tancar', {
-            duration: 3000
+            duration: 3000,
+            verticalPosition: 'top',
+            horizontalPosition: 'center'
           });
         },
         error: ex => {
           this.snackBar.open(
             'Error enviant la participació. Torna-ho a provar.',
             'Tancar',
-            { duration: 5000 }
+            {
+              duration: 5000,
+              verticalPosition: 'top',
+              horizontalPosition: 'center'
+            }
           );
         }
       });
@@ -760,14 +894,6 @@ export class DetailComponent implements OnInit, OnDestroy {
 
   isPlayable(p: ParticipationDtoResponse) {
     return new Date(p.date).getTime() >= Date.now();
-  }
-
-  getMaxPoints(p: ParticipationDtoResponse): number {
-    switch (p.type) {
-      case 1: return 40;
-      case 2: return 80;
-      default: return 60;
-    }
   }
 
 }

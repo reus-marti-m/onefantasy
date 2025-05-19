@@ -84,11 +84,11 @@
 }
 
 .status-live {
-    color: red;
+    color: #f44336;
 }
 
 .blink {
-    animation: blink 2s infinite;
+    animation: blink 1.25s infinite;
 }
 
 @keyframes blink {

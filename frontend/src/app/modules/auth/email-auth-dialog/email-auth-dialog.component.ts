@@ -34,6 +34,7 @@ export class EmailAuthDialogComponent {
   isLogin = true;
   loading = false;
   errorMsg = '';
+  private passwordPattern = /^(?=.*[0-9])(?=.*[^a-zA-Z0-9])(?=.*[A-Z]).+$/;
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -43,13 +44,21 @@ export class EmailAuthDialogComponent {
   ) {
     this.form = this.fb.group({
       email: this.fb.control('', [Validators.required, Validators.email]),
-      password: this.fb.control('', Validators.required)
+      password: this.fb.control('', [Validators.required])
     });
   }
 
   toggleMode() {
     this.isLogin = !this.isLogin;
     this.errorMsg = '';
+
+    const pw = this.form.get('password')!;
+    if (!this.isLogin) {
+      pw.setValidators([Validators.required, Validators.pattern(this.passwordPattern)]);
+    } else {
+      pw.setValidators([Validators.required]);
+    }
+    pw.updateValueAndValidity();
   }
 
   submit() {
@@ -77,7 +86,7 @@ export class EmailAuthDialogComponent {
       },
       error: err => {
         this.loading = false;
-        this.errorMsg = err.error?.message || 'Usuari o contrasenya incorrectes.';
+        this.errorMsg = err.error?.message || (this.isLogin ? 'Usuari o contrasenya incorrectes.' : 'Ja existeix un compte amb aquest correu.');
       }
     });
   }

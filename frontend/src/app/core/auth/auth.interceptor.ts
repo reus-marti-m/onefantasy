@@ -44,13 +44,21 @@ export class AuthInterceptor implements HttpInterceptor {
               this.snackBar.open(
                 'Per motius de seguretat, la sessió caduca cada 30 dies. Si us plau, torna a iniciar sessió.',
                 'Tanca',
-                { duration: 15000 }
+                {
+                  duration: 15000,
+                  verticalPosition: 'top',
+                  horizontalPosition: 'center'
+                }
               );
             } else {
               this.snackBar.open(
                 'Per motius de seguretat, la sessió de convidat només dura 24 h. Si us plau, torna accedir amb una de les opcions d’autenticació.',
                 'Tanca',
-                { duration: 15000 }
+                {
+                  duration: 15000,
+                  verticalPosition: 'top',
+                  horizontalPosition: 'center'
+                }
               );
             }
             localStorage.removeItem('token');
@@ -88,7 +96,11 @@ export class AuthInterceptor implements HttpInterceptor {
           this.snackBar.open(
             'Per motius de seguretat, la sessió caduca cada 30 dies. Si us plau, torna a iniciar sessió.',
             'Tanca',
-            { duration: 15000 }
+            {
+              duration: 15000,
+              verticalPosition: 'top',
+              horizontalPosition: 'center'
+            }
           );
           this.isRefreshing = false;
           localStorage.removeItem('token');

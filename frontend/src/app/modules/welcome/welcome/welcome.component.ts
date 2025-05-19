@@ -37,7 +37,8 @@ export class WelcomeComponent {
 
   openEmailAuth() {
     this.dialog.open(EmailAuthDialogComponent, {
-      width: '400px'
+      width: '400px',
+      // height: '310px'
     });
   }
 

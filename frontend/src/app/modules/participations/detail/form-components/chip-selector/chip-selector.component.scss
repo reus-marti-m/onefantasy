@@ -37,6 +37,12 @@
             color: rgba(16, 16, 16, 0.3);
             padding-right: 16px;
         }
+
+        &.no-result {
+            background-color: #e3e3e4 !important;
+            color: #49454f;
+            padding-right: 16px;
+        }
     }
 
     .fake-button {

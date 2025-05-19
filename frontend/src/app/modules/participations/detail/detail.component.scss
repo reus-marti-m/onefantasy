@@ -11,14 +11,8 @@
 }
 
 .participation-header {
-  height: 40px;
   display: flex;
   align-items: center;
-
-  .back-button {
-    margin-right: 1rem;
-    font-size: 0.875rem;
-  }
 }
 
 @media (max-width: 699px) {
@@ -50,7 +44,9 @@
 }
 
 .right-text {
-  margin-left: auto !important;
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 1.2rem;
+  // margin-left: auto !important;
 }
 
 .points {
@@ -59,15 +55,21 @@
 }
 
 .subtext {
-  margin-top: 0;
-  font-size: 0.875rem;
   color: rgba(0, 0, 0, 0.4);
   margin-bottom: 2rem;
 }
 
+.subtext-icon {
+  vertical-align: middle;
+}
+
+.subtext > span, .group-subtitle > span {
+  vertical-align: middle;
+}
+
 .group-subtitle {
   margin: 0;
-  font-size: 0.875rem;
+  // font-size: 0.875rem;
   color: rgba(0, 0, 0, 0.4);
   font-weight: 400;
 }
@@ -90,6 +92,7 @@
 .actions {
   margin-top: 2rem;
   text-align: center;
+  justify-items: center;
 }
 
 .status-bar {
@@ -212,7 +215,7 @@
 }
 
 .blink {
-  animation: blink 1.5s infinite;
+  animation: blink 1.25s infinite;
 }
 
 @keyframes blink {
@@ -230,4 +233,12 @@
 .header-with-icon {
   display: flex;
   justify-content: space-between;
+}
+
+.desar {
+  width: fit-content;
+}
+
+::ng-deep .multiline-tooltip {
+  white-space: pre-line !important;
 }

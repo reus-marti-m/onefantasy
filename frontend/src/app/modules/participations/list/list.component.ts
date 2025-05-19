@@ -11,6 +11,8 @@ import {
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
+import { RefreshService } from '../../../core/refresh.service';
+import { Subscription } from 'rxjs';
 
 interface ParticipationVM {
   id?: number;
@@ -41,9 +43,26 @@ export class ListComponent implements OnInit {
   playableVMs: ParticipationVM[] = [];
   startedVMs: ParticipationVM[] = [];
 
-  constructor(private service: Service, private router: Router) { }
+  private subs = new Subscription();
+
+  constructor(
+    private service: Service,
+    private router: Router,
+    private refreshSvc: RefreshService
+  ) { }
 
   ngOnInit(): void {
+    this.loadAll();
+    this.subs.add(
+      this.refreshSvc.refreshNeeded$.subscribe(() => this.loadAll())
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
+  loadAll() {
     this.service.participationsAll(1).subscribe(data => {
       const now = Date.now();
       const vms = data.map(p => this.createViewModel(p, now));
