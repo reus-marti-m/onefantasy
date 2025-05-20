@@ -57,6 +57,7 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
                 .ForMember(dest => dest.HasOccurred, opt => opt.MapFrom(src => src.HasOccurred))
+                .ForMember(dest => dest.TeamName, opt => opt.MapFrom(src => src.Team.Name))
                 .ForMember(dest => dest.IsPlayed, opt => opt.MapFrom((src, dest, _, ctx) => OptionIsPlayed(ctx, src)));
 
             CreateMap<OptionIntervalDto, OptionInterval>()

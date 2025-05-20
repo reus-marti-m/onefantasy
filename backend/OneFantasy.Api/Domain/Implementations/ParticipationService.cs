@@ -265,6 +265,8 @@ namespace OneFantasy.Api.Domain.Implementations
                     {
                         grp.Points = 0;
                         allGroupsFullyCorrect = false;
+                        foreach (var um in grp.UserMinigames)
+                            um.Points = 0;
                         continue;
                     }
 
@@ -272,16 +274,23 @@ namespace OneFantasy.Api.Domain.Implementations
                     int correctCount = resolvedMgs
                         .Count(um => um.UserOptions.Any(uo => uo.Option.HasOccurred));
 
-                    // Base points
-                    int groupPoints = correctCount * basePerMinigame;
-
-                    // Group bonus points
                     bool groupFullyCorrect = correctCount == resolvedMgs.Count;
-                    if (groupFullyCorrect)
-                        groupPoints += groupBonus;
-                    else
+                    if (!groupFullyCorrect)
                         allGroupsFullyCorrect = false;
 
+                    foreach (var um in resolvedMgs)
+                    {
+                        bool hit = um.UserOptions.Any(uo => uo.Option.HasOccurred);
+                        um.Points = hit ? basePerMinigame : 0;
+                        if (hit && groupFullyCorrect)
+                            um.Points += groupBonus;
+                    }
+
+                    foreach (var um in grp.UserMinigames.Except(resolvedMgs))
+                        um.Points = 0;
+
+                    int groupPoints = correctCount * basePerMinigame
+                                      + (groupFullyCorrect ? groupBonus : 0);
                     grp.Points = groupPoints;
                     participationPoints += groupPoints;
                 }
@@ -438,6 +447,10 @@ namespace OneFantasy.Api.Domain.Implementations
                 .ThenInclude(g => ((MinigameGroupMatch3)g).VisitingTeam)
             .Include(p => p.Season)
                 .ThenInclude(s => s.Competition)
+            .Include(p => p.Groups)
+                .ThenInclude(g => g.Minigames)
+                    .ThenInclude(m => m.Options)
+                        .ThenInclude(opt => ((OptionTeam)opt).Team)
             .OrderByDescending(p => p.Date);
 
         private IParticipationDtoResponse MapParticipation(Participation p, UserParticipation userParticipation, int? id = null)

@@ -64,8 +64,6 @@ export interface MinijocGroup {
   score: number | undefined;
   hasResult: boolean | undefined;
   encerts: number | null;
-  minigameTitle: string | null;
-  minigameDescr: string | null;
 }
 
 @Component({
@@ -163,6 +161,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       .participations(this.season, this.id)
       .subscribe({
         next: (resp: ParticipationDtoResponse) => {
+          // console.log(resp);
           this.logged = this.isLogged()
           this.disabled = new Date() > resp.date || !this.logged;
           this.hasSaved = resp.hasPlayed ?? false;
@@ -208,7 +207,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       default:
         numberCat = `${p.numberInRound}è`
     }
-    return `${numberCat} repte diari de${p.round}. `;
+    return `${numberCat} repte diari de ${p.round}. `;
   }
 
   private handleStandard(p: ParticipationStandardDtoResponse) {
@@ -217,9 +216,9 @@ export class DetailComponent implements OnInit, OnDestroy {
 
     // Multi
     const multiItems: MinijocItem[] = [
-      { kind: 'triple', model: this.buildTripleModelForResult(p.minigameGroupMulti.match1), minigameId: p.minigameGroupMulti.match1.id! },
-      { kind: 'triple', model: this.buildTripleModelForResult(p.minigameGroupMulti.match2), minigameId: p.minigameGroupMulti.match2.id! },
-      { kind: 'triple', model: this.buildTripleModelForResult(p.minigameGroupMulti.match3), minigameId: p.minigameGroupMulti.match3.id! },
+      { kind: 'triple', model: this.buildTripleModelForResult(p.minigameGroupMulti.match1, 'Primer'), minigameId: p.minigameGroupMulti.match1.id! },
+      { kind: 'triple', model: this.buildTripleModelForResult(p.minigameGroupMulti.match2, 'Segon'), minigameId: p.minigameGroupMulti.match2.id! },
+      { kind: 'triple', model: this.buildTripleModelForResult(p.minigameGroupMulti.match3, 'Tercer'), minigameId: p.minigameGroupMulti.match3.id! },
     ];
 
     const multi = p.minigameGroupMulti;
@@ -237,8 +236,6 @@ export class DetailComponent implements OnInit, OnDestroy {
       groupId: p.minigameGroupMulti.id!,
       hasResult: multiHasResult,
       encerts: multiEncerts,
-      minigameTitle: 'Resultats',
-      minigameDescr: 'Tria una o dues opcions de cada partit.'
     });
 
     // Match
@@ -263,8 +260,6 @@ export class DetailComponent implements OnInit, OnDestroy {
       groupId: g3.id!,
       hasResult: scoresHasResult,
       encerts: scoresEncerts,
-      minigameTitle: null,
-      minigameDescr: null
     });
   }
 
@@ -297,8 +292,6 @@ export class DetailComponent implements OnInit, OnDestroy {
       groupId: ga.id!,
       hasResult: hasResultA,
       encerts: encertsA,
-      minigameTitle: null,
-      minigameDescr: null
     });
 
     // Grup B (Match 2)
@@ -326,8 +319,6 @@ export class DetailComponent implements OnInit, OnDestroy {
       groupId: gb.id!,
       hasResult: hasResultB,
       encerts: encertsB,
-      minigameTitle: null,
-      minigameDescr: null
     });
   }
 
@@ -342,22 +333,22 @@ export class DetailComponent implements OnInit, OnDestroy {
     this.errors.budgetExceeded = false;
   }
 
-  private buildTripleModelForResult(mg: MinigameResultDtoResponse): TripleToggleModel {
+  private buildTripleModelForResult(mg: MinigameResultDtoResponse, n: string): TripleToggleModel {
     const opts: ToggleOption[] = [
       {
-        label: `Local${mg.homeVictory.teamId}`,
+        label: `${mg.homeVictory.teamName}`,
         value: `home_${mg.homeVictory.id ?? ''}`,
         info: this.makeInfo(mg.homeVictory.price ?? 100)[0],
         cost: mg.homeVictory.price!
       },
       {
-        label: 'Empat',
+        label: 'X',
         value: `draw_${mg.draw.id ?? ''}`,
         info: this.makeInfo(mg.draw.price ?? 100)[0],
         cost: mg.draw.price!
       },
       {
-        label: `Visitant${mg.visitingVictory.teamId}`,
+        label: `${mg.visitingVictory.teamName}`,
         value: `away_${mg.visitingVictory.id ?? ''}`,
         info: this.makeInfo(mg.visitingVictory.price ?? 100)[0],
         cost: mg.visitingVictory.price!
@@ -379,7 +370,7 @@ export class DetailComponent implements OnInit, OnDestroy {
           : [['', '']];
 
     return {
-      title: null,
+      title: `${n} resultat`,
       options: opts,
       selected,
       actualResult: actual,
@@ -431,7 +422,7 @@ export class DetailComponent implements OnInit, OnDestroy {
         title = "Gols"
         break;
       default:
-        title = "Número de Corners"
+        title = "Número de corners"
         break;
     }
 
@@ -592,7 +583,7 @@ export class DetailComponent implements OnInit, OnDestroy {
 
     if (encerts === null) {
       return [
-        `${m - e} pts (2 prediccions × ${p} pts)`,
+        `${m - e} pts (${nt} encerts × ${p} pts)`,
         `+ ${e} pts bonus*`,
         `= ${m} pts`,
         ``,
@@ -605,7 +596,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     const totalPoints = basePoints + bonusPoints;
 
     return [
-      `${basePoints} pts (${encerts} prediccions × ${p} pts)`,
+      `${basePoints} pts (${encerts} encert × ${p} pts)`,
       `+ ${bonusPoints} pts bonus*`,
       `= ${totalPoints} pts`,
       ``,
@@ -653,7 +644,14 @@ export class DetailComponent implements OnInit, OnDestroy {
   }
 
   getPerItemsExtraPoints(): number {
-    return this.participation.type === 2 ? 4 : 2;
+    switch (this.participation.type) {
+      case 1:
+        return 2;
+      case 2:
+        return 4;
+      default:
+        return 3;
+    }
   }
 
   getPerItemMinigameNum(): number {

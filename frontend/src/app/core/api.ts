@@ -4527,6 +4527,7 @@ export class OptionTeamDtoResponse implements IOptionTeamDtoResponse {
     price?: number;
     hasOccurred?: boolean;
     isPlayed?: boolean | undefined;
+    teamName?: string | undefined;
 
     constructor(data?: IOptionTeamDtoResponse) {
         if (data) {
@@ -4544,6 +4545,7 @@ export class OptionTeamDtoResponse implements IOptionTeamDtoResponse {
             this.price = _data["price"];
             this.hasOccurred = _data["hasOccurred"];
             this.isPlayed = _data["isPlayed"];
+            this.teamName = _data["teamName"];
         }
     }
 
@@ -4561,6 +4563,7 @@ export class OptionTeamDtoResponse implements IOptionTeamDtoResponse {
         data["price"] = this.price;
         data["hasOccurred"] = this.hasOccurred;
         data["isPlayed"] = this.isPlayed;
+        data["teamName"] = this.teamName;
         return data;
     }
 }
@@ -4571,6 +4574,7 @@ export interface IOptionTeamDtoResponse {
     price?: number;
     hasOccurred?: boolean;
     isPlayed?: boolean | undefined;
+    teamName?: string | undefined;
 }
 
 export class ParticipationExtraDto implements IParticipationExtraDto {

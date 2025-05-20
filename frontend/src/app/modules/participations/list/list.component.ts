@@ -75,13 +75,13 @@ export class ListComponent implements OnInit {
   private createViewModel(p: ParticipationDtoResponse, now: number): ParticipationVM {
     const dateObj = new Date(p.date);
     const playable = dateObj.getTime() >= now;
-
+    const notLive = this.computeNotLive(p);
     // Left icon
     let leftIcon: string;
     if (playable) {
       leftIcon = p.hasPlayed ? 'check_box' : 'warning';
     } else {
-      leftIcon = !p.hasPlayed ? 'close' : 'fiber_manual_record';
+      leftIcon = !p.hasPlayed && notLive ? 'close' : 'fiber_manual_record';
     }
 
     // CSS left icon
@@ -89,11 +89,10 @@ export class ListComponent implements OnInit {
     if (playable) {
       leftClass = p.hasPlayed ? 'status-played' : 'status-pending';
     } else {
-      if (!p.hasPlayed) {
-        leftClass = 'status-not-sent';
+      if (!notLive) {
+        leftClass = 'status-live blink';
       } else {
-        const resolved = this.computeNotLive(p);
-        leftClass = resolved ? 'status-played' : 'status-live blink';
+        leftClass = p.hasPlayed ? 'status-played' : 'status-not-sent';
       }
     }
 

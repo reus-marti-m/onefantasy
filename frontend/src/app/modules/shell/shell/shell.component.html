@@ -65,10 +65,12 @@
                         OneFantasy
                     </span>
                     <span class="toolbar-spacer"></span>
-                    <button mat-icon-button (click)="notifDrawer.toggle()" matBadge="•" matBadgeColor="warn"
-                        matBadgePosition="above after" matBadgeOverlap="false">
-                        <mat-icon class="toolbar-icons">notifications</mat-icon>
-                    </button>
+                    <div matTooltip="Pròximament disponible.">
+                        <button mat-icon-button (click)="notifDrawer.toggle()" disabled="true" matBadge="•"
+                            matBadgeColor="warn" matBadgePosition="above after" matBadgeOverlap="false">
+                            <mat-icon class="toolbar-icons">notifications</mat-icon>
+                        </button>
+                    </div>
                 </mat-toolbar>
 
                 <mat-tab-group class="custom-tabs" [selectedIndex]="selectedTabIndex"
@@ -96,10 +98,13 @@
                 <div matTooltip="Inicia sessió per tenir accés a totes les funcionalitats"
                     [matTooltipDisabled]="isLogged()" class="fab-container"
                     *ngIf="!modalActive && !(isMobile && showDetail)">
-                    <button *ngIf="currentTab === 'participations'" mat-fab color="primary" (click)="picker.open()"
-                        aria-label="Filtrar per data" class="fab-button" [disabled]="!isLogged()">
+                    <div matTooltip="Pròximament disponible.">
+                        <button *ngIf="currentTab === 'participations'" mat-fab color="primary" (click)="picker.open()"
+                        aria-label="Filtrar per data" class="fab-button" [disabled]="!isLogged() || true">
                         <mat-icon>calendar_today</mat-icon>
                     </button>
+                    </div>
+                    
                     <button *ngIf="currentTab !== 'participations'" mat-fab color="primary" [disabled]="!isLogged()"
                         (click)="openFullScreen('create-league')" aria-label="Crear lliga" class="fab-button">
                         <mat-icon>add</mat-icon>

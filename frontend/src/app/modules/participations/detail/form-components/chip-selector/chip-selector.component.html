@@ -8,11 +8,11 @@
     </div>
 
     <p *ngIf="hasResult && title !== null" class="resultat-final">{{score}}</p>
-    <p *ngIf="selected.length === 0 && !disabled" class="minigame-subtitle">No és acumulable, dos encerts compten el mateix que un encert.</p>
+    <p *ngIf="selected.length === 0 && !disabled" class="minigame-subtitle">No és acumulable, dos encerts sumen els mateixos punts que un.</p>
 
     <p *ngIf="selected.length === 0 && disabled" class="minigame-subtitle">Sense opcions seleccionades.</p>
 
-    <div matTooltip="Resultat final: {{ getResultInfo() }}" [matTooltipDisabled]="!hasResult" class="chips">
+    <div *ngIf="selected.length !== 0" matTooltip="Resultat final: {{ getResultInfo() }}" [matTooltipDisabled]="!hasResult" class="chips">
         <div class="chip" *ngFor="let val of selected" [ngClass]="{
             'no-result': !hasResult && disabled,
             'result-success': hasResult && disabled && isActualResult(val),

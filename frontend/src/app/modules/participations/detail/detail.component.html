@@ -37,12 +37,11 @@
                 punts. <mat-icon [matTooltip]="getGroupToolTipText(g.encerts)" matTooltipClass="multiline-tooltip"
                   class="subtext-icon">info_outline</mat-icon>
               </span>
-              <span>Tria una o dues opcions de cada predicció per guanyar fins a {{ getPerItemPoints() }}
-                punts.</span>
+              <span>Tria una o dues opcions de cada predicció ({{ getPerItemPoints() }} punts per encert).</span>
             </mat-card-subtitle>
             <mat-card-subtitle *ngIf="disabled" class="group-subtitle">
               <span>
-                {{ getGroupPos(gi) }} grup: {{ g.score ?? 0 }}/{{ getGroupMaxPoints() }} punts </span>
+                {{ getGroupPos(gi) }} grup: {{ g.score ?? 0 }}/{{ getGroupMaxPoints() }} punts. </span>
               <mat-icon [matTooltip]="getGroupToolTipText(g.encerts)" matTooltipClass="multiline-tooltip"
                 class="subtext-icon">info_outline</mat-icon>
             </mat-card-subtitle>
@@ -50,15 +49,8 @@
 
           <mat-card-content>
 
-            <div *ngIf="g.minigameTitle" class="header">
-              <span class="title">{{ g.minigameTitle }}</span>
-            </div>
-
-            <p *ngIf="!disabled && g.minigameTitle" class="minigame-subtitle">{{ g.minigameDescr }}</p>
-
             <div *ngFor="let item of g.items; let ii = index" class="group-item" [ngClass]="{ 
-                'invalid-item': errors.missingSelection[gi][ii],
-                'multi': g.minigameTitle != null
+                'invalid-item': errors.missingSelection[gi][ii]
               }">
 
               <app-triple-toggle *ngIf="item.kind==='triple'" (selectedChange)="onUserChange()"

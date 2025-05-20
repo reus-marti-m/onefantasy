@@ -374,6 +374,7 @@ namespace OneFantasy.Api.DTOs
         public int Price { get; set; }
         public bool HasOccurred { get; set; }
         public bool? IsPlayed { get; set; }
+        public string TeamName { get; set; }
 
         [JsonIgnore]
         public new decimal Probability { get; set; }
