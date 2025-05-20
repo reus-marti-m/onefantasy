@@ -65,7 +65,7 @@ namespace OneFantasy.Api.Domain.Mappers
                     dest.Participation = part;
                     dest.ParticipationId = part.Id;
 
-                    dest.LastUpdate = DateTime.UtcNow;
+                    dest.LastUpdate = DateTime.Now;
                     dest.UsedBudget = (int)ctx.Items["usedBudget"];
                 });
 

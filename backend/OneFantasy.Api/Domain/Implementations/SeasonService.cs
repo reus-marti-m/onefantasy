@@ -15,6 +15,7 @@ namespace OneFantasy.Api.Domain.Implementations
     {
         private readonly AppDbContext _db;
         private readonly IMapper _mapper;
+
         public SeasonService(AppDbContext db, IMapper mapper)
         {
             _db = db;
@@ -49,7 +50,7 @@ namespace OneFantasy.Api.Domain.Implementations
             return _mapper.Map<SeasonDtoResponse>(season);
         }
 
-        public async Task<IEnumerable<SeasonDtoResponse>> GetByCompetitionAsync(int competitionId)
+        public async Task<List<SeasonDtoResponse>> GetByCompetitionAsync(int competitionId)
         {
             if (!await _db.Competitions.AnyAsync(c => c.Id == competitionId))
                 throw new NotFoundException(nameof(Competition), competitionId);
@@ -60,7 +61,7 @@ namespace OneFantasy.Api.Domain.Implementations
                 .Include(s => s.Teams)
                 .ToListAsync();
 
-            return comp.Select(s => _mapper.Map<SeasonDtoResponse>(s));
+            return [.. comp.Select(_mapper.Map<SeasonDtoResponse>)];
         }
 
         public async Task<SeasonDtoResponse> GetByIdAsync(int seasonId)

@@ -1,0 +1,289 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+:host ::ng-deep .fullscreen-panel {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #ffffff;
+    z-index: 10000;
+
+    overflow: hidden !important;
+    display: flex;
+    flex-direction: column;
+}
+
+:host ::ng-deep mat-sidenav-container,
+:host ::ng-deep mat-sidenav-content {
+    height: 100% !important;
+    overflow: hidden !important;
+}
+
+:host ::ng-deep .shell-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.user-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    overflow: visible;
+}
+
+.user-avatar {
+    display: inline-block;
+    font-size: 40px !important;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    vertical-align: middle;
+    margin-right: 0.75rem;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.user-score {
+    font-size: 0.875rem;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.shell-sidenav mat-list-item {
+    height: auto;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.toolbar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #c6d7f6;
+}
+
+.shell-sidenav mat-list-item .mat-list-item-content {
+    display: flex;
+    align-items: center;
+}
+
+.shell-sidenav mat-list-item span {
+    font-size: 1rem;
+    font-weight: 400;
+    text-transform: none;
+}
+
+.shell-sidenav mat-list-item.activated span {
+    font-weight: 600;
+    border-left: 4px solid #c4c6d0;
+    padding-left: 1rem;
+}
+
+.toolbar-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.25rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: #49454F
+}
+
+.toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+.mat-badge-content {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    min-width: 0;
+    font-size: 0.5rem;
+}
+
+.shell-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+
+    mat-toolbar {
+        flex: none;
+    }
+
+    .shell-body {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+
+        .shell-aside {
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            border-right: 1px solid #c4c6d0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+            width: clamp(310px, 25vw, 450px);
+            overflow: hidden;
+
+            .fab-container {
+                position: absolute;
+                bottom: 1rem;
+                right: 1rem;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                z-index: 20;
+            }
+        }
+
+        .shell-main {
+            flex: 1;
+            overflow-y: auto;
+        }
+    }
+
+    @media (max-width: 699px) {
+        .shell-body {
+            flex-direction: column;
+            position: relative;
+        }
+
+        .shell-aside {
+            width: auto !important;
+            flex: 1 !important;
+            max-width: 100%;
+            border-right: none !important;
+        }
+
+        .shell-main.overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #faf9fd;
+            z-index: 10;
+            box-sizing: border-box;
+        }
+    }
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item {
+    height: auto !important;
+    padding: 0.75rem 1rem !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item .mat-list-item-content {
+    display: flex !important;
+    align-items: center !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item mat-icon {
+    margin-right: 0.75rem !important;
+    font-size: 24px !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-list-item span {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    text-transform: none !important;
+    color: #49454F;
+}
+
+.mat-drawer {
+    background-color: #c6d7f6;
+    width: 180px;
+}
+
+:host ::ng-deep .shell-sidenav mat-nav-list mat-list-item {
+    height: 48px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-nav-list mat-list-item .mat-list-item-content {
+    display: flex !important;
+    align-items: center !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-nav-list mat-list-item mat-icon {
+    margin-right: 0.5rem !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-nav-list mat-list-item span {
+    vertical-align: initial !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 0.5rem;
+}
+
+
+:host ::ng-deep .shell-sidenav mat-nav-list mat-list-item.user-header {
+    height: auto !important;
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+}
+
+:host ::ng-deep .shell-sidenav mat-nav-list mat-list-item.user-header {
+    border-radius: 24px !important;
+}
+
+mdc-list {
+    padding: 0 !important;
+}
+
+.mat-tab-group.mat-primary .mat-ink-bar,
+.mat-tab-nav-bar.mat-primary .mat-ink-bar {
+    background: #6168e7;
+}
+
+.mat-mdc-tab-label-container {
+    background-color: #c6d7f6 !important;
+}
+
+
+:host ::ng-deep mat-tab-group.custom-tabs .mat-mdc-tab-header {
+    background-color: #c6d7f6 !important;
+    color: #49454F;
+}
+
+.shell-body,
+.shell-aside {
+    min-height: 0;
+}
+
+:host ::ng-deep mat-tab-group.custom-tabs {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+}
+
+:host ::ng-deep mat-tab-group.custom-tabs .mat-mdc-tab-body-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    overflow: hidden !important;
+    min-height: 0 !important;
+}
+
+:host ::ng-deep mat-tab-group.custom-tabs .mat-mdc-tab-body {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    min-height: 0 !important;
+    background-color: white;
+}

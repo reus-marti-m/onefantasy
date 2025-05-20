@@ -12,8 +12,8 @@ namespace OneFantasy.Api.Models.Participations
         protected ParticipationStandard() { }
 
         public ParticipationStandard(
-            DateTime date, Season season, MinigameGroupMulti minigameGroupMulti, MinigameGroupMatch3 minigameGroupMatch3
-        ) : base(date, season, 300)
+            DateTime date, Season season, string round, string roundAbbreviation, int numberInRound, MinigameGroupMulti minigameGroupMulti, MinigameGroupMatch3 minigameGroupMatch3
+        ) : base(date, season, 300, round, roundAbbreviation, numberInRound)
         {
             Groups.Add(minigameGroupMulti);
             Groups.Add(minigameGroupMatch3);

@@ -1,0 +1,126 @@
+.participation-card {
+    display: flex;
+    align-items: flex-start;
+    padding: 0.75rem;
+    border-bottom: 1px solid #c4c6d0;
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+
+    .content {
+        flex: 1 1 auto;
+
+        .star-icon,
+        .left-icon {
+            font-size: 16px;
+            vertical-align: middle;
+            flex: 0 0 auto;
+            height: auto;
+            width: auto;
+        }
+
+        .status-text {
+            vertical-align: middle;
+        }
+
+        .line1 {
+            display: flex;
+            align-items: center;
+            width: 100%;
+
+            .competition {
+                flex: 0 0 auto;
+                font-weight: 450;
+                white-space: nowrap;
+            }
+
+            .star-standard {
+                color: #FFD700;
+            }
+
+            .star-extra {
+                color: #C0C0C0;
+            }
+
+            .star-platinum {
+                color: #00BFFF;
+            }
+
+            .matchday {
+                flex: 0 0 auto;
+                margin-right: 0.5rem;
+                color: rgba(0, 0, 0, 0.4);
+            }
+
+            .date {
+                flex: 0 0 auto;
+                margin-left: auto;
+                white-space: nowrap;
+                font-size: 0.875rem;
+                color: rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        .line2 {
+            margin-top: 0.25rem;
+            font-size: 0.875rem;
+            color: rgba(0, 0, 0, 0.7);
+        }
+    }
+}
+
+.status-pending {
+    color: #FFA000;
+}
+
+.status-played {
+    color: #16C60C;
+}
+
+.status-not-sent {
+    color: gray;
+}
+
+.status-live {
+    color: #f44336;
+}
+
+.blink {
+    animation: blink 1.25s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+.seccions {
+    padding: 6px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #49454F;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    font-weight: 500;
+    line-height: 20px;
+}
+
+.participation-card {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+section+section .participation-card:first-child {
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.verified-icon {
+    color: #49ADF4;
+}

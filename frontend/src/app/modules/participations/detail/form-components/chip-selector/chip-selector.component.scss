@@ -1,0 +1,97 @@
+.chip-selector {
+    .header {
+        display: flex;
+        align-items: center;
+        height: 40px;
+
+        .title {
+            font-size: 16px;
+            font-weight: 500;
+        }
+    }
+
+    .chips {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        height: 59.8px; // Mateix tamany que selectors triples
+    }
+
+    .chip {
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 8px 8px 8px 16px;
+        border-radius: 999px;
+        background-color: #dae2f9;
+        border: 1px solid #74777f;
+
+        &.result-success {
+            background-color: rgba(0, 200, 81, 0.4) !important;
+            color: rgba(16, 16, 16, 0.3);
+            padding-right: 16px;
+        }
+
+        &.result-error {
+            background-color: rgba(255, 68, 68, 0.4) !important;
+            color: rgba(16, 16, 16, 0.3);
+            padding-right: 16px;
+        }
+
+        &.no-result {
+            background-color: #e3e3e4 !important;
+            color: #49454f;
+            padding-right: 16px;
+        }
+    }
+
+    .fake-button {
+        padding: 0;
+        border: none;
+        background: none;
+        pointer-events: none;
+        width: 100%;
+        color: #49454F !important;
+    }
+
+    .texts {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .label {
+        font-size: 14px;
+        line-height: 1.2;
+        margin-top: 4px;
+    }
+
+    .info {
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .remove-icon {
+        pointer-events: auto;
+    }
+
+}
+
+:host ::ng-deep button.fake-button:not([disabled]) .texts,
+:host ::ng-deep button.fake-button:not([disabled]) .texts .label,
+:host ::ng-deep button.fake-button:not([disabled]) .texts .info {
+    color: #3E4759 !important;
+}
+
+.resultat-final,
+.minigame-subtitle {
+    margin: 0;
+    // font-size: 0.875rem;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.resultat-final {
+    margin-bottom: 0.5rem;
+}

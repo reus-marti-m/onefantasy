@@ -20,6 +20,7 @@ namespace OneFantasy.Api.Data
         public DbSet<Player> Players { get; set; }
         public DbSet<Participation> Participations { get; set; }
         public DbSet<UserParticipation> UserParticipations { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder mb)
         {
@@ -223,6 +224,15 @@ namespace OneFantasy.Api.Data
                     .IsRequired();
 
                 e.Property(p => p.Date)
+                    .IsRequired();
+
+                e.Property(p => p.Round)
+                    .IsRequired();
+
+                e.Property(p => p.RoundAbbreviation)
+                    .IsRequired();
+
+                e.Property(p => p.NumberInRound)
                     .IsRequired();
 
                 e.HasOne(p => p.Season)

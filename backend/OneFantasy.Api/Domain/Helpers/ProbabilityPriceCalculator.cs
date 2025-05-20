@@ -24,7 +24,7 @@
                 if (probability >= min && probability <= max)
                     return price;
             }
-            return 10;
+            return 100;
         }
 
     }

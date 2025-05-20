@@ -6,12 +6,12 @@ namespace OneFantasy.Api.Domain.Abstractions
 {
     public interface IParticipationService
     {
-        Task<ParticipationStandartDtoResponse> CreateStandardAsync(int seasonId, ParticipationStandartDto dto);
+        Task<ParticipationStandardDtoResponse> CreateStandardAsync(int seasonId, ParticipationStandardDto dto);
         Task<ParticipationSpecialDtoResponse> CreateSpecialAsync(int seasonId, ParticipationSpecialDto dto);
         Task<ParticipationExtraDtoResponse> CreateExtraAsync(int seasonId, ParticipationExtraDto dto);
-        Task<IEnumerable<IParticipationDtoResponse>> GetBySeasonAsync(int seasonId, string userId, bool isAdmin);
+        Task<List<IParticipationDtoResponse>> GetBySeasonAsync(int seasonId, string userId, bool isAdmin);
         Task<IParticipationDtoResponse> GetByIdAsync(int seasonId, int participationId, string userId, bool isAdmin);
-        Task<IEnumerable<IMinigameDtoResponse>> ResolveMinigamesAsync(int seasonId, int participationId, List<ParticipationResultDto> dtos);
+        Task<List<IMinigameDtoResponse>> ResolveMinigamesAsync(int seasonId, int participationId, List<ParticipationResultDto> dtos);
         Task<UserParticipationResponseDto> CreateUserParticipationAsync(int seasonId, int participationId, string userId, CreateUserParticipationDto dto);
     }
 }

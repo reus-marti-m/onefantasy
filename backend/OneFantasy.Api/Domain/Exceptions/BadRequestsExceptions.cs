@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
 namespace OneFantasy.Api.Domain.Exceptions
 {
-    public abstract class BadRequestsExceptions : ApiException
+    public abstract class BadRequestsExceptions : OneFantasyException
     {
         public BadRequestsExceptions(string message) : 
             base("Bad Request", message, StatusCodes.Status400BadRequest) 
@@ -59,13 +60,6 @@ namespace OneFantasy.Api.Domain.Exceptions
         { }
     }
 
-    public class AlreadyPlayedException : BadRequestsExceptions
-    {
-        public AlreadyPlayedException(int participationId, string userId) :
-            base($"Participation {participationId} has already been played by user {userId}.")
-        { }
-    }
-
     public class ParticipationGroupsCountException : BadRequestsExceptions
     {
         public ParticipationGroupsCountException(int count) :
@@ -98,6 +92,13 @@ namespace OneFantasy.Api.Domain.Exceptions
     {
         public ParticipationBudgetExceededException(int budget, int total) :
             base($"Participation budget of {budget} was exceeded by {total}.")
+        { }
+    }
+
+    public class ParticipationAlredyStartedException : BadRequestsExceptions
+    {
+        public ParticipationAlredyStartedException(int id, DateTime start) :
+            base($"Participation {id} has already started ({start:dd/MM HH:mm}).")
         { }
     }
 }

@@ -14,7 +14,7 @@ namespace OneFantasy.Api.Models.Participations.Users
             User = user;
             Participation = participation;
             Groups = groups;
-            LastUpdate = DateTime.UtcNow;
+            LastUpdate = DateTime.Now;
         }
 
         public int Id { get; set; }

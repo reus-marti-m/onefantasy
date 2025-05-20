@@ -15,6 +15,7 @@ namespace OneFantasy.Api.Domain.Implementations
     {
         private readonly AppDbContext _db;
         private readonly IMapper _mapper;
+
         public PlayerService(AppDbContext db, IMapper mapper)
         {
             _db = db;
@@ -43,7 +44,7 @@ namespace OneFantasy.Api.Domain.Implementations
             return _mapper.Map<PlayerDtoResponse>(player);
         }
 
-        public async Task<IEnumerable<PlayerDtoResponse>> GetByTeamAsync(int teamId)
+        public async Task<List<PlayerDtoResponse>> GetByTeamAsync(int teamId)
         {
             if (!await _db.Teams.AnyAsync(t => t.Id == teamId))
                 throw new NotFoundException(nameof(Team), teamId);
@@ -53,7 +54,7 @@ namespace OneFantasy.Api.Domain.Implementations
                 .Include(p => p.Team.Players)
                 .ToListAsync();
 
-            return teams.Select(_mapper.Map<PlayerDtoResponse>);
+            return [.. teams.Select(_mapper.Map<PlayerDtoResponse>)];
         }
 
         public async Task<PlayerDtoResponse> GetByIdAsync(int playerId)

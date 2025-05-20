@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json.Serialization;
+using OneFantasy.Api.Domain.Filters;
 
 namespace OneFantasy.Api
 {
@@ -28,6 +29,22 @@ namespace OneFantasy.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var allowedOrigins = Configuration
+                .GetSection("Cors:AllowedOrigins")
+                .Get<string[]>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("FrontendPolicy", policy =>
+                {
+                    policy
+                        .WithOrigins(allowedOrigins ?? [])
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             // DbContext configuration
             services.AddDbContext<AppDbContext>(
                 options => options.UseSqlite(
@@ -130,6 +147,9 @@ namespace OneFantasy.Api
                     Description = "API to manage competitions and participations"
                 });
 
+                // Manual polymorphic response mapping
+                c.OperationFilter<PolymorphicResponseOperationFilter>();
+
                 // Define Bearer JWT scheme for Swagger UI
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -178,9 +198,12 @@ namespace OneFantasy.Api
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseCors("FrontendPolicy");
+
             // Authentication & Authorization
             app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {
