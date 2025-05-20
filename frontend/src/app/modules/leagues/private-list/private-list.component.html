@@ -1,5 +1,60 @@
-<ul>
-  <li *ngFor="let i of [].constructor(100); let index = index" (click)="onSelect(index + 101)">
-    Lliga privada {{ index + 101 }}
-  </li>
-</ul>
+<div class="participations-container">
+
+  <section *ngIf="officialLeagues.length">
+    <div class="seccions">Lligues favorites</div>
+    <div class="participation-card" *ngFor="let l of officialLeagues" (click)="onSelect(l.id)">
+      <div class="content">
+
+        <div class="line1">
+          <span class="competition">{{l.name}}</span>
+          <ng-container *ngIf="l.isFavorite">&nbsp;
+            <mat-icon class="star-icon verified-icon">verified</mat-icon>
+          </ng-container>&nbsp;
+          <span class="matchday">·
+            {{l.positionLabel}}</span>
+          &nbsp;<span class="date">{{l.competition}}</span>
+        </div>
+
+        <div class="line2">
+          <ng-container *ngIf="l.statusIcon==='close';else circle">
+            <mat-icon class="left-icon" [ngClass]="l.statusClass">close</mat-icon>
+          </ng-container>
+          <ng-template #circle>
+            <mat-icon class="left-icon" [ngClass]="l.statusClass+(l.blink?' blink':'')">fiber_manual_record</mat-icon>
+          </ng-template>
+          <span class="status-text">&nbsp;{{l.statusIcon!=='close'?l.points+'/'+l.totalPoints+' punts':'No
+            enviat'}}<span *ngIf="l.statusIcon!=='close'" class="matchday">&nbsp;· {{l.matchdayLabel}}</span>
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section *ngIf="nonOfficialLeagues.length">
+    <div class="seccions">Lligues no favorites</div>
+    <div class="participation-card" *ngFor="let l of nonOfficialLeagues" (click)="onSelect(l.id)">
+      <div class="content">
+
+        <div class="line1">
+          <span class="competition">{{l.name}}</span>&nbsp;
+          <span class="matchday">·
+            {{l.positionLabel}}</span>&nbsp;
+          <span class="date">{{l.competition}}</span>
+        </div>
+
+        <div class="line2">
+          <ng-container *ngIf="l.statusIcon==='close';else circle2">
+            <mat-icon class="left-icon" [ngClass]="l.statusClass">close</mat-icon>
+          </ng-container><ng-template #circle2>
+            <mat-icon class="left-icon" [ngClass]="l.statusClass+(l.blink?' blink':'')">fiber_manual_record</mat-icon>
+          </ng-template><span class="status-text">&nbsp;{{l.statusIcon!=='close'?l.points+'/'+l.totalPoints+' punts':'No
+            enviat'}}<span *ngIf="l.statusIcon!=='close'" class="matchday">&nbsp;· {{l.matchdayLabel}}</span>
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>

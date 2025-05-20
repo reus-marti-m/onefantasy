@@ -2,7 +2,7 @@
 
 namespace OneFantasy.Api.Domain.Exceptions
 {
-    public abstract class ForbiddenExceptions : ApiException
+    public abstract class ForbiddenExceptions : OneFantasyException
     {
         public ForbiddenExceptions(string message) : 
             base("Forbidden", message, StatusCodes.Status403Forbidden) 

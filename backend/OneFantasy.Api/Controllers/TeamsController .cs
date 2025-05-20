@@ -11,7 +11,12 @@ namespace OneFantasy.Api.Controllers
     [ApiController]
     [Route("api/seasons/{seasonId:int}/teams")]
     [Consumes("application/json")]
-    [Produces("application/json")]
+    [Produces("application/json", "application/problem+json")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public class TeamsController : ControllerBase
     {
         private readonly ITeamService _teamSvc;

@@ -209,6 +209,30 @@ namespace OneFantasy.Api.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("OneFantasy.Api.Models.Authentication.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("OneFantasy.Api.Models.Competitions.Competition", b =>
                 {
                     b.Property<int>("Id")
@@ -396,9 +420,20 @@ namespace OneFantasy.Api.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("NumberInRound")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("ParticipationType")
                         .IsRequired()
                         .HasMaxLength(13)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Round")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RoundAbbreviation")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("SeasonId")
@@ -746,6 +781,17 @@ namespace OneFantasy.Api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("OneFantasy.Api.Models.Authentication.RefreshToken", b =>
+                {
+                    b.HasOne("OneFantasy.Api.Models.Authentication.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OneFantasy.Api.Models.Competitions.Player", b =>

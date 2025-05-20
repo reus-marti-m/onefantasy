@@ -15,6 +15,7 @@ using OneFantasy.Api.Models.Participations.Users;
 using Microsoft.AspNetCore.Identity;
 using OneFantasy.Api.Models.Authentication;
 using OneFantasy.Api.Models.Participations.MinigameGroups;
+using OneFantasy.Api.Models.Participations.MinigameOptions;
 
 namespace OneFantasy.Api.Domain.Implementations
 {
@@ -31,10 +32,10 @@ namespace OneFantasy.Api.Domain.Implementations
             _users = users;
         }
 
-        public async Task<ParticipationStandartDtoResponse> CreateStandardAsync(int seasonId, ParticipationStandartDto dto)
+        public async Task<ParticipationStandardDtoResponse> CreateStandardAsync(int seasonId, ParticipationStandardDto dto)
         {
             // Validations
-            var season = await StandartValidations(seasonId, dto);
+            var season = await StandardValidations(seasonId, dto);
 
             // Validations ok
             var entity = _mapper.Map<ParticipationStandard>(dto, opts =>
@@ -43,7 +44,7 @@ namespace OneFantasy.Api.Domain.Implementations
             });
             _db.Participations.Add(entity);
             await _db.SaveChangesAsync();
-            return _mapper.Map<ParticipationStandartDtoResponse>(entity);
+            return _mapper.Map<ParticipationStandardDtoResponse>(entity);
         }
 
         public async Task<ParticipationSpecialDtoResponse> CreateSpecialAsync(int seasonId, ParticipationSpecialDto dto)
@@ -90,16 +91,37 @@ namespace OneFantasy.Api.Domain.Implementations
             // Validations
             (ApplicationUser user, Participation participation, int usedBudget) = await PlayValidations(seasonId, participationId, userId, dto);
 
+            var existing = await _db.UserParticipations
+                .Include(up => up.Groups)
+                .FirstOrDefaultAsync(up => up.ParticipationId == participationId && up.UserId == userId);
+
             // Validations ok
-            var entity = _mapper.Map<UserParticipation>(dto, opts =>
+            if (existing != null)
             {
-                opts.Items["user"] = user;
-                opts.Items["participation"] = participation;
-                opts.Items["usedBudget"] = usedBudget;
-            });
-            _db.UserParticipations.Add(entity);
-            await _db.SaveChangesAsync();
-            return _mapper.Map<UserParticipationResponseDto>(entity);
+                // Update
+                _mapper.Map(dto, existing, opts =>
+                {
+                    opts.Items["user"] = user;
+                    opts.Items["participation"] = participation;
+                    opts.Items["usedBudget"] = usedBudget;
+                });
+
+                await _db.SaveChangesAsync();
+                return _mapper.Map<UserParticipationResponseDto>(existing);
+            }
+            else
+            {
+                // Create
+                var entity = _mapper.Map<UserParticipation>(dto, opts =>
+                {
+                    opts.Items["user"] = user;
+                    opts.Items["participation"] = participation;
+                    opts.Items["usedBudget"] = usedBudget;
+                });
+                _db.UserParticipations.Add(entity);
+                await _db.SaveChangesAsync();
+                return _mapper.Map<UserParticipationResponseDto>(entity);
+            }
         }
 
         public async Task<List<IMinigameDtoResponse>> ResolveMinigamesAsync(int seasonId, int participationId, List<ParticipationResultDto> dtos)
@@ -193,7 +215,9 @@ namespace OneFantasy.Api.Domain.Implementations
             );
         }
 
+
         #region "Helpers"
+
         private async Task ComputeUserScoresAsync(Participation participation)
         {
             int basePerMinigame, groupBonus, totalBonus;
@@ -241,6 +265,8 @@ namespace OneFantasy.Api.Domain.Implementations
                     {
                         grp.Points = 0;
                         allGroupsFullyCorrect = false;
+                        foreach (var um in grp.UserMinigames)
+                            um.Points = 0;
                         continue;
                     }
 
@@ -248,16 +274,23 @@ namespace OneFantasy.Api.Domain.Implementations
                     int correctCount = resolvedMgs
                         .Count(um => um.UserOptions.Any(uo => uo.Option.HasOccurred));
 
-                    // Base points
-                    int groupPoints = correctCount * basePerMinigame;
-
-                    // Group bonus points
                     bool groupFullyCorrect = correctCount == resolvedMgs.Count;
-                    if (groupFullyCorrect)
-                        groupPoints += groupBonus;
-                    else
+                    if (!groupFullyCorrect)
                         allGroupsFullyCorrect = false;
 
+                    foreach (var um in resolvedMgs)
+                    {
+                        bool hit = um.UserOptions.Any(uo => uo.Option.HasOccurred);
+                        um.Points = hit ? basePerMinigame : 0;
+                        if (hit && groupFullyCorrect)
+                            um.Points += groupBonus;
+                    }
+
+                    foreach (var um in grp.UserMinigames.Except(resolvedMgs))
+                        um.Points = 0;
+
+                    int groupPoints = correctCount * basePerMinigame
+                                      + (groupFullyCorrect ? groupBonus : 0);
                     grp.Points = groupPoints;
                     participationPoints += groupPoints;
                 }
@@ -282,12 +315,11 @@ namespace OneFantasy.Api.Domain.Implementations
                 .FirstOrDefaultAsync(p => p.Id == participationId && p.SeasonId == seasonId)
                 ?? throw new NotFoundException(nameof(Participation), participationId);
 
+            if (participation.Date < DateTime.Now)
+                throw new ParticipationAlredyStartedException(participation.Id, participation.Date);
+
             var user = await _users.FindByIdAsync(userId)
                        ?? throw new InvalidCredentialsException();
-
-            if (await _db.UserParticipations
-                    .AnyAsync(up => up.ParticipationId == participationId && up.UserId == userId))
-                throw new AlreadyPlayedException(participationId, userId);
 
             var count = participation.Groups.Count;
             if (dto.Groups.Count != count)
@@ -398,13 +430,34 @@ namespace OneFantasy.Api.Domain.Implementations
         private IQueryable<Participation> LoadFullParticipationsQuery() => _db.Participations
             .Include(p => p.Groups)
                 .ThenInclude(g => g.Minigames)
-                    .ThenInclude(m => m.Options);
+                    .ThenInclude(m => m.Options)
+                        .ThenInclude(opt => ((OptionPlayer)opt).Player)
+                            .ThenInclude(p => p.Team)
+            .Include(p => p.Groups)
+                .ThenInclude(g => ((MinigameGroupMatch2A)g).HomeTeam)
+            .Include(p => p.Groups)
+                .ThenInclude(g => ((MinigameGroupMatch2A)g).VisitingTeam)
+            .Include(p => p.Groups)
+                .ThenInclude(g => ((MinigameGroupMatch2B)g).HomeTeam)
+            .Include(p => p.Groups)
+                .ThenInclude(g => ((MinigameGroupMatch2B)g).VisitingTeam)
+            .Include(p => p.Groups)
+                .ThenInclude(g => ((MinigameGroupMatch3)g).HomeTeam)
+            .Include(p => p.Groups)
+                .ThenInclude(g => ((MinigameGroupMatch3)g).VisitingTeam)
+            .Include(p => p.Season)
+                .ThenInclude(s => s.Competition)
+            .Include(p => p.Groups)
+                .ThenInclude(g => g.Minigames)
+                    .ThenInclude(m => m.Options)
+                        .ThenInclude(opt => ((OptionTeam)opt).Team)
+            .OrderByDescending(p => p.Date);
 
         private IParticipationDtoResponse MapParticipation(Participation p, UserParticipation userParticipation, int? id = null)
         {
             return p switch
             {
-                ParticipationStandard std => _mapper.Map<ParticipationStandartDtoResponse>(std, opts =>
+                ParticipationStandard std => _mapper.Map<ParticipationStandardDtoResponse>(std, opts =>
                 {
                     opts.Items["userParticipation"] = userParticipation;
                 }),
@@ -420,7 +473,7 @@ namespace OneFantasy.Api.Domain.Implementations
             };
         }
 
-        private async Task<Season> StandartValidations(int seasonId, ParticipationStandartDto dto)
+        private async Task<Season> StandardValidations(int seasonId, ParticipationStandardDto dto)
         {
             // Gets
             var season = await LoadSeasonWithTeamsAsync(seasonId);

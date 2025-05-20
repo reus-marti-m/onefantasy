@@ -1,18 +1,42 @@
 <div class="welcome-container">
-    <h1>Benvingut a OneFantasy</h1>
-    <div class="actions">
-      <button mat-raised-button color="primary" (click)="openEmailAuth()">
-        Continua amb correu electrònic
-      </button>
-      <button mat-stroked-button disabled>
-        Continua amb Google
-      </button>
-      <button mat-stroked-button disabled>
-        Continua amb Facebook
-      </button>
-      <button mat-flat-button color="accent" (click)="enterAsGuest()">
-        Entra com a convidat
-      </button>
+  <h1>OneFantasy</h1>
+  <h2 class="subtitle">Una nova manera de viure el fantasy</h2>
+
+  <div class="features">
+    <div class="feature">
+      <h3><mat-icon class="predict">visibility</mat-icon>&nbsp;Prediu el que passarà</h3>
+      <p>Si encertes, sumes punts. Així de clar. Sense cronistes ni estadístiques injustes.</p>
+    </div>
+    <div class="feature">
+      <h3><mat-icon class="timer">timer</mat-icon>&nbsp;Juga en menys d'un minut</h3>
+      <p>No t'estressaràs per mantenir cap equip. Aquí només vens a jugar.</p>
+    </div>
+    <div class="feature">
+      <h3><mat-icon class="participation">how_to_reg</mat-icon>&nbsp;Una sola participació
+      </h3>
+      <p>No importa a quantes lligues juguis: el que decideixis val per totes.</p>
     </div>
   </div>
-  
+
+  <div class="actions">
+    <p>Per jugar:</p>
+    <button mat-flat-button (click)="openEmailAuth()">
+      Continua amb correu electrònic
+    </button>
+    <div matTooltip="Pròximament disponible">
+      <button mat-flat-button disabled>
+        Continua amb Google
+      </button>
+    </div>
+    <div matTooltip="Pròximament disponible">
+      <button mat-flat-button disabled>
+        Continua amb Facebook
+      </button>
+    </div>
+    <p class="guest">O fes una ullada sense compromís:</p>
+    <button mat-flat-button (click)="enterAsGuest()">
+      Entra com a convidat
+    </button>
+  </div>
+
+</div>

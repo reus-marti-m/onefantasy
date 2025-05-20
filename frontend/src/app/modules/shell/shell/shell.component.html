@@ -1,13 +1,17 @@
 <mat-sidenav-container class="shell-container">
+
     <mat-sidenav #drawer mode="over" class="shell-sidenav">
         <mat-nav-list>
 
-            <ng-container *ngIf="tokenPresent(); else loginBtn">
-                <mat-list-item (click)="openFullScreen('profile')">
-                    <mat-icon>person</mat-icon>
-                    <span>Perfil</span>
+            <ng-container *ngIf="isLogged(); else loginBtn">
+                <mat-list-item class="user-header" (click)="openFullScreen('profile')">
+                    <div class="user-details">
+                        <div class="user-name">Marc Reus Martí</div>
+                        <div class="user-score">62% d'encert</div>
+                    </div>
                 </mat-list-item>
             </ng-container>
+
             <ng-template #loginBtn>
                 <mat-list-item (click)="drawer.close(); navigateToWelcome()">
                     <mat-icon>login</mat-icon>
@@ -16,7 +20,6 @@
             </ng-template>
 
             <mat-divider></mat-divider>
-
 
             <mat-list-item (click)="openFullScreen('rules')">
                 <mat-icon>rule</mat-icon>
@@ -35,12 +38,13 @@
 
             <mat-divider></mat-divider>
 
-            <ng-container *ngIf="tokenPresent()">
-                <mat-list-item (click)="logout()">
+            <ng-container *ngIf="isLogged()">
+                <mat-list-item (click)="navigateToWelcome()">
                     <mat-icon>logout</mat-icon>
                     <span>Tanca sessió</span>
                 </mat-list-item>
             </ng-container>
+
         </mat-nav-list>
     </mat-sidenav>
 
@@ -49,73 +53,79 @@
     </mat-sidenav>
 
     <mat-sidenav-content class="shell-content">
-        <mat-toolbar color="primary" *ngIf="!(isMobile && showDetail)">
-            <button mat-icon-button (click)="drawer.toggle()">
-                <mat-icon>menu</mat-icon>
-            </button>
-            <span>OneFantasy</span>
-            <button mat-icon-button (click)="notifDrawer.toggle()">
-                <mat-icon>notifications</mat-icon>
-            </button>
-        </mat-toolbar>
-
         <div class="shell-body">
+
             <aside class="shell-aside">
-                <nav class="tabs">
-                    <button (click)="currentTab='participations'" [class.active]="currentTab==='participations'">
-                        Participacions
-                    </button>
-                    <button (click)="currentTab='public'" [class.active]="currentTab==='public'">
-                        Lligues públiques
-                    </button>
-                    <button (click)="currentTab='private'" [class.active]="currentTab==='private'">
-                        Lligues privades
-                    </button>
-                </nav>
 
-                <section class="tab-content">
-                    <div class="tab-panel" [hidden]="currentTab!=='participations'">
+                <mat-toolbar class="toolbar" *ngIf="!(isMobile && showDetail)">
+                    <button mat-icon-button (click)="drawer.toggle()">
+                        <mat-icon class="toolbar-icons">menu</mat-icon>
+                    </button>
+                    <span class="toolbar-title" role="button" tabindex="0" (click)="navigateHome()">
+                        OneFantasy
+                    </span>
+                    <span class="toolbar-spacer"></span>
+                    <div matTooltip="Pròximament disponible.">
+                        <button mat-icon-button (click)="notifDrawer.toggle()" disabled="true" matBadge="•"
+                            matBadgeColor="warn" matBadgePosition="above after" matBadgeOverlap="false">
+                            <mat-icon class="toolbar-icons">notifications</mat-icon>
+                        </button>
+                    </div>
+                </mat-toolbar>
+
+                <mat-tab-group class="custom-tabs" [selectedIndex]="selectedTabIndex"
+                    (selectedIndexChange)="onTabChange($event)" mat-stretch-tabs backgroundColor="primary">
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            Reptes
+                        </ng-template>
                         <app-participations-list></app-participations-list>
-                    </div>
-
-                    <div class="tab-panel" [hidden]="currentTab!=='public'">
+                    </mat-tab>
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            Públiques
+                        </ng-template>
                         <app-public-leagues-list></app-public-leagues-list>
-                    </div>
-
-                    <div class="tab-panel" [hidden]="currentTab!=='private'">
+                    </mat-tab>
+                    <mat-tab>
+                        <ng-template mat-tab-label>
+                            Privades
+                        </ng-template>
                         <app-private-leagues-list></app-private-leagues-list>
-                    </div>
-                </section>
-                <div class="fab-container" *ngIf="!modalActive && !(isMobile && showDetail)">
+                    </mat-tab>
+                </mat-tab-group>
 
-                    <button *ngIf="currentTab === 'participations'" mat-fab color="primary" (click)="picker.open()"
-                        aria-label="Filtrar per data">
+                <div matTooltip="Inicia sessió per tenir accés a totes les funcionalitats"
+                    [matTooltipDisabled]="isLogged()" class="fab-container"
+                    *ngIf="!modalActive && !(isMobile && showDetail)">
+                    <div matTooltip="Pròximament disponible.">
+                        <button *ngIf="currentTab === 'participations'" mat-fab color="primary" (click)="picker.open()"
+                        aria-label="Filtrar per data" class="fab-button" [disabled]="!isLogged() || true">
                         <mat-icon>calendar_today</mat-icon>
                     </button>
-
-                    <button *ngIf="currentTab !== 'participations'" mat-fab color="primary" [disabled]="!tokenPresent()"
-                        (click)="openFullScreen('create-league')" aria-label="Crear lliga">
+                    </div>
+                    
+                    <button *ngIf="currentTab !== 'participations'" mat-fab color="primary" [disabled]="!isLogged()"
+                        (click)="openFullScreen('create-league')" aria-label="Crear lliga" class="fab-button">
                         <mat-icon>add</mat-icon>
                     </button>
-
-                    <button mat-fab color="accent" [disabled]="!tokenPresent()" (click)="openFullScreen('preferences')"
-                        aria-label="Preferències">
-                        <mat-icon>settings</mat-icon>
+                    <button mat-fab color="primary" [disabled]="!isLogged()" (click)="openFullScreen('preferences')"
+                        class="fab-button" aria-label="Preferències">
+                        <mat-icon>tune</mat-icon>
                     </button>
-
                     <input matInput [matDatepicker]="picker" hidden />
                     <mat-datepicker #picker></mat-datepicker>
                 </div>
+
             </aside>
 
             <main *ngIf="!isMobile || showDetail" class="shell-main" [class.overlay]="isMobile && showDetail">
-                <button class="close-btn" *ngIf="isMobile && showDetail" (click)="closeDetail()">
-                    ← Tornar
-                </button>
                 <router-outlet></router-outlet>
             </main>
+
         </div>
     </mat-sidenav-content>
+
 </mat-sidenav-container>
 
 <div *ngIf="modalActive" class="fullscreen-panel">

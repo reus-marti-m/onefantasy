@@ -1,0 +1,37 @@
+<div class="chip-selector">
+
+    <div class="header">
+        <span class="title">{{ title }}</span>
+        <button *ngIf="!hasResult" mat-icon-button (click)="openDialog()" [disabled]="disabled">
+            <mat-icon>edit</mat-icon>
+        </button>
+    </div>
+
+    <p *ngIf="hasResult && title !== null" class="resultat-final">{{score}}</p>
+    <p *ngIf="selected.length === 0 && !disabled" class="minigame-subtitle">No és acumulable, dos encerts sumen els mateixos punts que un.</p>
+
+    <p *ngIf="selected.length === 0 && disabled" class="minigame-subtitle">Sense opcions seleccionades.</p>
+
+    <div *ngIf="selected.length !== 0" matTooltip="Resultat final: {{ getResultInfo() }}" [matTooltipDisabled]="!hasResult" class="chips">
+        <div class="chip" *ngFor="let val of selected" [ngClass]="{
+            'no-result': !hasResult && disabled,
+            'result-success': hasResult && disabled && isActualResult(val),
+            'result-error' : hasResult && disabled && !isActualResult(val)
+        }">
+
+            <button mat-stroked-button [disabled]="disabled" class="fake-button">
+                <div class="texts">
+                    <div class="label">{{ getLabel(val) }}</div>
+                    <div class="info" *ngIf="getInfo(val)">{{ getInfo(val) }}</div>
+                </div>
+            </button>
+
+            <button *ngIf="!disabled" mat-icon-button class="remove-icon" (click)="removeChip(val)">
+                <mat-icon>close</mat-icon>
+            </button>
+
+        </div>
+    </div>
+
+
+</div>

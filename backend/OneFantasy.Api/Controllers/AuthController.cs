@@ -11,6 +11,11 @@ namespace OneFantasy.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _auth;
@@ -20,22 +25,22 @@ namespace OneFantasy.Api.Controllers
         [AllowAnonymous]
         [ProducesResponseType(typeof(LoginResponseDto), StatusCodes.Status200OK)]
         [Consumes("application/json")]
-        [Produces("application/json")]
-        public async Task<IActionResult> Guest() => Ok(new LoginResponseDto { Token = await _auth.GuestAsync() });
+        [Produces("application/json", "application/problem+json")]
+        public IActionResult Guest() => Ok(_auth.Guest());
 
         [HttpPost("register")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(LoginResponseDto), StatusCodes.Status200OK)]
         [Consumes("application/json")]
-        [Produces("application/json")]
-        public async Task<IActionResult> Register([FromBody] AuthDto dto) => Ok(new LoginResponseDto { Token = await _auth.RegisterAsync(dto) });
+        [Produces("application/json", "application/problem+json")]
+        public async Task<IActionResult> Register([FromBody] AuthDto dto) => Ok(await _auth.RegisterAsync(dto));
 
         [HttpPost("login")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(LoginResponseDto), StatusCodes.Status200OK)]
         [Consumes("application/json")]
-        [Produces("application/json")]
-        public async Task<IActionResult> Login([FromBody] AuthDto dto) => Ok(new LoginResponseDto { Token = await _auth.LoginAsync(dto) });
+        [Produces("application/json", "application/problem+json")]
+        public async Task<IActionResult> Login([FromBody] AuthDto dto) => Ok(await _auth.LoginAsync(dto));
 
         [HttpPost("admin/register")]
         [Authorize(Policy = "RequireAdmin")]
@@ -44,6 +49,16 @@ namespace OneFantasy.Api.Controllers
             var currentUserId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
             await _auth.AdminRegisterAsync(dto, currentUserId);
             return Ok();
+        }
+
+        [HttpPost("refresh")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(LoginResponseDto), StatusCodes.Status200OK)]
+        [Consumes("application/json")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshRequestDto dto)
+        {
+            var response = await _auth.RefreshTokenAsync(dto);
+            return Ok(response);
         }
     }
 

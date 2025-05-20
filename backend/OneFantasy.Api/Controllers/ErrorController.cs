@@ -16,7 +16,7 @@ namespace OneFantasy.Api.Controllers
             var ex = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
 
             // Typed exceptions
-            if (ex is ApiException apiEx)
+            if (ex is OneFantasyException apiEx)
             {
                 return Problem(
                    title: apiEx.Title,

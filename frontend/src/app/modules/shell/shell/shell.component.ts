@@ -13,6 +13,8 @@ import { NotificationsComponent } from '../../notifications/notifications/notifi
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { filter } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-shell',
@@ -30,7 +32,9 @@ import { filter } from 'rxjs';
     MatButtonModule,
     NotificationsComponent,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatTooltipModule,
+    MatTabsModule,
   ],
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss']
@@ -44,6 +48,7 @@ export class ShellComponent {
   lastSelectedType: 'participation' | 'league' | null = null;
   fullScreen: 'profile' | 'rules' | 'help' | 'settings' | 'createLeague' | 'preferences' | null = null;
   modalActive = false;
+  selectedTabIndex = 0;
 
   @ViewChild('drawer') drawer!: MatSidenav;
 
@@ -51,18 +56,28 @@ export class ShellComponent {
     this.checkScreen();
   }
 
+  onTabChange(idx: number) {
+    const map: ('participations' | 'public' | 'private')[] = [
+      'participations', 'public', 'private'
+    ];
+    this.currentTab = map[idx];
+    this.selectedTabIndex = idx;
+  }
+
   @HostListener('window:resize')
   checkScreen() {
-    this.isMobile = window.innerWidth < 768;
+    this.isMobile = window.innerWidth < 700;
+  }
+
+  navigateHome() {
+    this.router.navigate(['/']);
   }
 
   ngOnInit() {
     this.checkScreen();
 
-    // Check on first load
     this.updateViewFlags();
 
-    // Check into router events
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe(() => {
@@ -78,23 +93,19 @@ export class ShellComponent {
     }
   }
 
-  closeDetail() {
-    this.showDetail = false;
-    this.router.navigate(['/app']);
+  clearLocalStorage() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('guest');
   }
 
-  tokenPresent() {
-    return !!localStorage.getItem('token');
+  isLogged() {
+    return !localStorage.getItem('guest');
   }
 
   navigateToWelcome() {
-    localStorage.removeItem('guest');
+    this.clearLocalStorage()
     this.router.navigateByUrl('/');
-  }
-
-  logout() {
-    localStorage.removeItem('token');
-    this.navigateToWelcome();
   }
 
   openFullScreen(panel: 'profile' | 'rules' | 'help' | 'settings' | 'create-league' | 'preferences') {

@@ -2,16 +2,18 @@
 
 namespace OneFantasy.Api.Domain.Exceptions
 {
-    public abstract class ApiException : Exception
+    public class OneFantasyException : Exception
     {
+
         public int StatusCode { get; }
         public string Title { get; }
 
-        protected ApiException(string title, string message, int statusCode)
+        protected OneFantasyException(string title, string message, int statusCode)
             : base(message)
         {
             Title = title;
             StatusCode = statusCode;
         }
+
     }
 }

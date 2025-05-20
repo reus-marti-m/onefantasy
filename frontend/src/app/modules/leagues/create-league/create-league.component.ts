@@ -1,11 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-league',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule
+  ],
   templateUrl: './create-league.component.html',
   styleUrl: './create-league.component.scss'
 })

@@ -10,17 +10,21 @@ import { HelpComponent } from './modules/help/help/help.component';
 import { SettingsComponent } from './modules/settings/settings/settings.component';
 import { CreateLeagueComponent } from './modules/leagues/create-league/create-league.component';
 import { PreferencesComponent } from './modules/preferences/preferences/preferences.component';
+import { PendingChangesGuard } from './modules/common/pending-changes.guard';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
-
   {
     path: 'app',
     component: ShellComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: 'participations/:id', component: ParticipationDetailComponent },
-      { path: 'leagues/:id',         component: LeagueDetailComponent },
+      {
+        path: 'participations/:id',
+        component: ParticipationDetailComponent,
+        canDeactivate: [PendingChangesGuard]
+      },
+      { path: 'leagues/:id', component: LeagueDetailComponent },
       { path: 'profile', component: ProfileComponent, outlet: 'modal' },
       { path: 'rules', component: RulesComponent, outlet: 'modal' },
       { path: 'help', component: HelpComponent, outlet: 'modal' },
@@ -29,6 +33,5 @@ export const routes: Routes = [
       { path: 'preferences', component: PreferencesComponent, outlet: 'modal' }
     ]
   },
-
   { path: '**', redirectTo: '' }
 ];

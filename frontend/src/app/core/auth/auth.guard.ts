@@ -7,22 +7,14 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
+
   constructor(private router: Router) {}
 
   canActivate(): boolean | UrlTree {
-    const token = localStorage.getItem('token');
-    const isGuest = localStorage.getItem('guest') === 'true';
-
-    // Si tenim un JWT vàlid o l’usuari és convidat, permet passar
-    if (token) {
+    if (localStorage.getItem('token')) {
       return true;
     }
-
-    if (isGuest) {
-      return true;
-    }
-
-    // Altrament redirigeix a l’arrel (Welcome)
     return this.router.parseUrl('/');
   }
+  
 }

@@ -12,7 +12,12 @@ namespace OneFantasy.Api.Controllers
     [Route("api/competitions/{competitionId:int}/seasons")]
     [Authorize(Policy = "RequireAdmin")]
     [Consumes("application/json")]
-    [Produces("application/json")]
+    [Produces("application/json", "application/problem+json")]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public class SeasonsController : ControllerBase
     {
         private readonly ISeasonService _svc;

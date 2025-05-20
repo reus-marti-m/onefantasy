@@ -1,0 +1,59 @@
+.triple-group {
+  justify-content: space-between;
+  width: 100%;
+}
+
+:host ::ng-deep .mat-button-toggle.result-success {
+  background-color: rgba(0, 200, 81, 0.4) !important;
+}
+
+:host ::ng-deep .mat-button-toggle.result-error {
+  background-color: rgba(255, 68, 68, 0.4) !important;
+}
+
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  color: #49454F !important;
+}
+
+.triple-toggle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  text-align: center;
+
+  .label {
+    font-size: 14px;
+    line-height: 1.2;
+    margin-top: 4px;
+  }
+
+  .info {
+    font-size: 12px;
+    line-height: 1.2;
+    margin-top: 4px;
+  }
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.header {
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.resultat-final,
+.minigame-subtitle {
+  margin: 0;
+  // font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.resultat-final {
+  margin-bottom: 0.5rem;
+}
