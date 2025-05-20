@@ -20,6 +20,7 @@ export class LeagueDetailComponent implements OnInit {
   id: number | null = null;
   private sub!: Subscription;
   isMobile = false;
+  
   constructor(
     private route: ActivatedRoute,
     private router: Router

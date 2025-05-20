@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Humanizer;
 using static OneFantasy.Api.Models.Participations.Minigames.MinigameMatch;
 using static OneFantasy.Api.Models.Participations.Minigames.MinigamePlayers;
 

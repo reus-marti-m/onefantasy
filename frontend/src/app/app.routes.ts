@@ -14,14 +14,13 @@ import { PendingChangesGuard } from './modules/common/pending-changes.guard';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
-
   {
     path: 'app',
     component: ShellComponent,
     canActivate: [AuthGuard],
     children: [
-      { 
-        path: 'participations/:id', 
+      {
+        path: 'participations/:id',
         component: ParticipationDetailComponent,
         canDeactivate: [PendingChangesGuard]
       },
@@ -34,6 +33,5 @@ export const routes: Routes = [
       { path: 'preferences', component: PreferencesComponent, outlet: 'modal' }
     ]
   },
-
   { path: '**', redirectTo: '' }
 ];

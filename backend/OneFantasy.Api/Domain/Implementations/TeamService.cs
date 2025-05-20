@@ -15,6 +15,7 @@ namespace OneFantasy.Api.Domain.Implementations
     {
         private readonly AppDbContext _db;
         private readonly IMapper _mapper;
+
         public TeamService(AppDbContext db, IMapper mapper)
         {
             _db = db;

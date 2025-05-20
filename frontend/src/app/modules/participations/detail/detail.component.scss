@@ -46,7 +46,6 @@
 .right-text {
   color: rgba(0, 0, 0, 0.4);
   font-size: 1.2rem;
-  // margin-left: auto !important;
 }
 
 .points {
@@ -59,17 +58,26 @@
   margin-bottom: 2rem;
 }
 
+.subtext>span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+
 .subtext-icon {
   vertical-align: middle;
 }
 
-.subtext > span, .group-subtitle > span {
+.subtext>span,
+.group-subtitle>span {
   vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
 }
 
 .group-subtitle {
   margin: 0;
-  // font-size: 0.875rem;
   color: rgba(0, 0, 0, 0.4);
   font-weight: 400;
 }
@@ -204,6 +212,7 @@
   flex: 0 0 auto;
   height: auto;
   width: auto;
+  display: none; // No em convenç, de moment ho llevam
 }
 
 .status-played {
@@ -241,4 +250,25 @@
 
 ::ng-deep .multiline-tooltip {
   white-space: pre-line !important;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  margin-top: 8px;
+
+  .title {
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
+.minigame-subtitle {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.multi {
+  margin-top: 16px !important;
 }

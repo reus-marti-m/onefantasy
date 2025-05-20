@@ -6,15 +6,16 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-public-leagues-list',
   standalone: true,
-  imports: [ CommonModule, MatIconModule ],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './public-list.component.html',
   styleUrls: ['../../common/list.component.scss']
 })
 export class PublicListComponent {
-  constructor(private router: Router) {}
+  
+  constructor(private router: Router) { }
 
   onSelect(id: number) {
-    this.router.navigate(['/app','leagues',id]);
+    this.router.navigate(['/app', 'leagues', id]);
   }
 
   officialLeagues = [

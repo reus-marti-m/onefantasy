@@ -1,9 +1,6 @@
-// pending-changes.guard.ts
 import { Injectable } from '@angular/core';
 import {
     CanDeactivate,
-    ActivatedRouteSnapshot,
-    RouterStateSnapshot,
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,11 +12,10 @@ export interface ComponentCanDeactivate {
 
 @Injectable({ providedIn: 'root' })
 export class PendingChangesGuard implements CanDeactivate<ComponentCanDeactivate> {
+
     constructor(private dialog: MatDialog) { }
 
-    canDeactivate(
-        component: ComponentCanDeactivate
-    ): Observable<boolean> | boolean {
+    canDeactivate(component: ComponentCanDeactivate): Observable<boolean> | boolean {
         if (!component.hasChanges) {
             return true;
         }
@@ -32,4 +28,5 @@ export class PendingChangesGuard implements CanDeactivate<ComponentCanDeactivate
         });
         return dialogRef.afterClosed();
     }
+
 }

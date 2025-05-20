@@ -170,6 +170,9 @@ namespace OneFantasy.Api.Domain.Implementations
                 .AsNoTracking()
                 .FirstOrDefaultAsync(rt => rt.UserId == userId);
 
+
+        #region Helpers
+
         private string GenerateJwt(IEnumerable<Claim> claims)
         {
             var jwt = _config.GetSection("Jwt");
@@ -229,6 +232,9 @@ namespace OneFantasy.Api.Domain.Implementations
             await _db.SaveChangesAsync();
             return refresh;
         }
+
+        #endregion
+
 
     }
 }

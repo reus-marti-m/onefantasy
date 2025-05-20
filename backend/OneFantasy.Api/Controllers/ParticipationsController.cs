@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OneFantasy.Api.Domain.Abstractions;
-using OneFantasy.Api.Domain.Exceptions;
 using OneFantasy.Api.DTOs;
 using System.Collections.Generic;
 using System.Linq;

@@ -18,7 +18,6 @@ bootstrapApplication(AppComponent, {
     Service,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: API_BASE_URL, useValue: environment.apiUrl },
-    
+
   ]
-})
-.catch(err => console.error(err));
+}).catch(err => console.error(err));

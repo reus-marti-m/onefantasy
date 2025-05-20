@@ -14,6 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+
   private isRefreshing = false;
   private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 

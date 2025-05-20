@@ -1,4 +1,4 @@
-import { Component, HostListener, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ListComponent as ParticipationsListComponent } from '../../participations/list/list.component';
 import { PublicListComponent } from '../../leagues/public-list/public-list.component';
@@ -36,7 +36,6 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatTooltipModule,
     MatTabsModule,
   ],
-  // encapsulation: ViewEncapsulation.None,
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss']
 })

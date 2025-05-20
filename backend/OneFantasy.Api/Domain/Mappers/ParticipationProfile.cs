@@ -241,6 +241,9 @@ namespace OneFantasy.Api.Domain.Mappers
                 .ForMember(dest => dest.Score, opt => opt.MapFrom((src, dest, _, ctx) => ctx.TryGetItems(out var items) ? (items["userParticipation"] as UserParticipation)?.Points : null));
         }
 
+
+        #region Helpers 
+
         private static OptionInterval FromDto(OptionIntervalDto dto)
         {
             var price = ProbabilityPriceCalculator.GetPrice(dto.Probability);
@@ -274,5 +277,9 @@ namespace OneFantasy.Api.Domain.Mappers
             var userGrp = up.Groups.FirstOrDefault(ug => ug.MinigameGroupId == g.Id);
             return userGrp?.Points;
         }
+
+        #endregion
+
+
     }
 }

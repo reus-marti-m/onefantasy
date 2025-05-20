@@ -1,8 +1,7 @@
 <div *ngIf="title !== null" class="header">
     <span class="title">{{ title }}</span>
 </div>
-
-<!-- <p *ngIf="hasResult && title !== null" class="resultat-final">{{score}}</p> -->
+<p *ngIf="hasResult && title !== null" class="resultat-final">{{score}}</p>
 
 <mat-button-toggle-group matTooltip="Resultat final: {{ getResultInfo() }}" [matTooltipDisabled]="!hasResult" multiple
     [hideMultipleSelectionIndicator]="true" [disabled]="disabled" [value]="selected"

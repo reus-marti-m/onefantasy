@@ -2,6 +2,7 @@
 
     <mat-sidenav #drawer mode="over" class="shell-sidenav">
         <mat-nav-list>
+
             <ng-container *ngIf="isLogged(); else loginBtn">
                 <mat-list-item class="user-header" (click)="openFullScreen('profile')">
                     <div class="user-details">
@@ -10,32 +11,40 @@
                     </div>
                 </mat-list-item>
             </ng-container>
+
             <ng-template #loginBtn>
                 <mat-list-item (click)="drawer.close(); navigateToWelcome()">
                     <mat-icon>login</mat-icon>
                     <span>Iniciar sessió</span>
                 </mat-list-item>
             </ng-template>
+
             <mat-divider></mat-divider>
+
             <mat-list-item (click)="openFullScreen('rules')">
                 <mat-icon>rule</mat-icon>
                 <span>Regles</span>
             </mat-list-item>
+
             <mat-list-item (click)="openFullScreen('help')">
                 <mat-icon>help_outline</mat-icon>
                 <span>Ajuda</span>
             </mat-list-item>
+
             <mat-list-item (click)="openFullScreen('settings')">
                 <mat-icon>settings</mat-icon>
                 <span>Configuració</span>
             </mat-list-item>
+
             <mat-divider></mat-divider>
+
             <ng-container *ngIf="isLogged()">
                 <mat-list-item (click)="navigateToWelcome()">
                     <mat-icon>logout</mat-icon>
                     <span>Tanca sessió</span>
                 </mat-list-item>
             </ng-container>
+
         </mat-nav-list>
     </mat-sidenav>
 
@@ -44,9 +53,10 @@
     </mat-sidenav>
 
     <mat-sidenav-content class="shell-content">
-
         <div class="shell-body">
+
             <aside class="shell-aside">
+
                 <mat-toolbar class="toolbar" *ngIf="!(isMobile && showDetail)">
                     <button mat-icon-button (click)="drawer.toggle()">
                         <mat-icon class="toolbar-icons">menu</mat-icon>
@@ -63,21 +73,18 @@
 
                 <mat-tab-group class="custom-tabs" [selectedIndex]="selectedTabIndex"
                     (selectedIndexChange)="onTabChange($event)" mat-stretch-tabs backgroundColor="primary">
-
                     <mat-tab>
                         <ng-template mat-tab-label>
                             Reptes
                         </ng-template>
                         <app-participations-list></app-participations-list>
                     </mat-tab>
-
                     <mat-tab>
                         <ng-template mat-tab-label>
                             Públiques
                         </ng-template>
                         <app-public-leagues-list></app-public-leagues-list>
                     </mat-tab>
-
                     <mat-tab>
                         <ng-template mat-tab-label>
                             Privades
@@ -85,7 +92,6 @@
                         <app-private-leagues-list></app-private-leagues-list>
                     </mat-tab>
                 </mat-tab-group>
-
 
                 <div matTooltip="Inicia sessió per tenir accés a totes les funcionalitats"
                     [matTooltipDisabled]="isLogged()" class="fab-container"
@@ -102,20 +108,20 @@
                         class="fab-button" aria-label="Preferències">
                         <mat-icon>tune</mat-icon>
                     </button>
-
                     <input matInput [matDatepicker]="picker" hidden />
                     <mat-datepicker #picker></mat-datepicker>
                 </div>
+
             </aside>
 
             <main *ngIf="!isMobile || showDetail" class="shell-main" [class.overlay]="isMobile && showDetail">
                 <router-outlet></router-outlet>
             </main>
+
         </div>
-
     </mat-sidenav-content>
-</mat-sidenav-container>
 
+</mat-sidenav-container>
 
 <div *ngIf="modalActive" class="fullscreen-panel">
     <router-outlet name="modal"></router-outlet>

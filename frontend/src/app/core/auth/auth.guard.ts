@@ -7,6 +7,7 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
+
   constructor(private router: Router) {}
 
   canActivate(): boolean | UrlTree {
@@ -15,4 +16,5 @@ export class AuthGuard implements CanActivate {
     }
     return this.router.parseUrl('/');
   }
+  
 }

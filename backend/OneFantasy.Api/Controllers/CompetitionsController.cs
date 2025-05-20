@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OneFantasy.Api.Domain.Abstractions;
-using OneFantasy.Api.Domain.Exceptions;
 using OneFantasy.Api.DTOs;
 
 namespace OneFantasy.Api.Controllers

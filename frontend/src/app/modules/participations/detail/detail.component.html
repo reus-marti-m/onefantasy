@@ -1,6 +1,7 @@
 <div class="detail-container" *ngIf="participation">
 
   <div class="scroll-content">
+
     <ng-container>
 
       <div class="participation-header">
@@ -15,7 +16,7 @@
       <p class="subtext">
         <span>{{ roundText }}</span>
         <br><span>Modalitat {{ getParticipationTypeName(participation) }}: fins a {{ getMaxPoints() }}
-          punts. </span><mat-icon [matTooltip]="getModalityToolTipText(null)" matTooltipClass="multiline-tooltip"
+          punts. </span><mat-icon [matTooltip]="getModalityToolTipText()" matTooltipClass="multiline-tooltip"
           class="subtext-icon">info_outline</mat-icon>
         <br><span>No tens cap lliga que inclogui aquest repte. </span><mat-icon matTooltip="Pròximament disponible."
           class="subtext-icon">info_outline</mat-icon>
@@ -23,6 +24,7 @@
 
       <div class="groups-grid">
         <mat-card appearance="outlined" class="group-block" *ngFor="let g of groups; let gi = index">
+
           <mat-card-header class="header-with-icon">
             <mat-card-title>
               {{ g.title }}
@@ -32,21 +34,32 @@
             <mat-card-subtitle *ngIf="!disabled" class="group-subtitle">
               <span>
                 {{ getGroupPos(gi) }} grup: fins a {{ getGroupMaxPoints() }}
-                punts </span>
-              <mat-icon [matTooltip]="getGroupToolTipText(g.encerts)" matTooltipClass="multiline-tooltip"
-                class="subtext-icon">info_outline</mat-icon>
+                punts. <mat-icon [matTooltip]="getGroupToolTipText(g.encerts)" matTooltipClass="multiline-tooltip"
+                  class="subtext-icon">info_outline</mat-icon>
+              </span>
+              <span>Tria una o dues opcions de cada predicció per guanyar fins a {{ getPerItemPoints() }}
+                punts.</span>
             </mat-card-subtitle>
             <mat-card-subtitle *ngIf="disabled" class="group-subtitle">
               <span>
-                {{ g.score ?? 0 }}/{{ getGroupMaxPoints() }} punts </span>
+                {{ getGroupPos(gi) }} grup: {{ g.score ?? 0 }}/{{ getGroupMaxPoints() }} punts </span>
               <mat-icon [matTooltip]="getGroupToolTipText(g.encerts)" matTooltipClass="multiline-tooltip"
                 class="subtext-icon">info_outline</mat-icon>
             </mat-card-subtitle>
           </mat-card-header>
 
           <mat-card-content>
-            <div *ngFor="let item of g.items; let ii = index" class="group-item"
-              [ngClass]="{ 'invalid-item': errors.missingSelection[gi][ii] }">
+
+            <div *ngIf="g.minigameTitle" class="header">
+              <span class="title">{{ g.minigameTitle }}</span>
+            </div>
+
+            <p *ngIf="!disabled && g.minigameTitle" class="minigame-subtitle">{{ g.minigameDescr }}</p>
+
+            <div *ngFor="let item of g.items; let ii = index" class="group-item" [ngClass]="{ 
+                'invalid-item': errors.missingSelection[gi][ii],
+                'multi': g.minigameTitle != null
+              }">
 
               <app-triple-toggle *ngIf="item.kind==='triple'" (selectedChange)="onUserChange()"
                 [title]="item.model.title" [options]="item.model.options" [disabled]="item.model.disabled"
@@ -61,7 +74,9 @@
               </app-chip-selector>
 
             </div>
+
           </mat-card-content>
+
         </mat-card>
       </div>
 
@@ -84,10 +99,12 @@
         Inicia sessió per jugar
       </button>
     </div>
+
   </div>
 
   <div class="status-bar" *ngIf="participation">
     <ng-container *ngIf="!disabled">
+
       <div class="status-item">
         <div class="status-value" [class.negative]="hasNegativeSpentBudget()">
           {{ getSpentBudget() }}/{{ getBudget() }} M
@@ -96,6 +113,7 @@
       </div>
 
       <div class="status-item">
+
         <div class="status-value">
           <ng-container *ngIf="hasChanges; else savedOrNot">
             <mat-icon class="icon-warning">warning</mat-icon>
@@ -109,6 +127,7 @@
             <mat-icon class="icon-close">close</mat-icon>
           </ng-template>
         </div>
+
         <div class="status-label">
           <ng-container *ngIf="hasChanges; else labelSavedOrNot">
             Canvis no desats
@@ -122,21 +141,25 @@
             No enviat
           </ng-template>
         </div>
+
       </div>
 
       <div class="status-item">
         <div class="status-value">{{ getSelectedCount() }}/{{ getTotalMinigames() }}</div>
         <div class="status-label">Prediccions</div>
       </div>
+
     </ng-container>
 
     <ng-container *ngIf="disabled">
+
       <ng-container *ngIf="!participation.hasPlayed">
         <div class="status-item">
           <div class="status-value"><mat-icon class="icon-close">close</mat-icon></div>
           <div class="status-label">No enviat</div>
         </div>
       </ng-container>
+
       <ng-container *ngIf="participation.hasPlayed">
         <div class="status-item">
           <div class="status-value">
@@ -149,6 +172,7 @@
           <div class="status-label">Prediccions</div>
         </div>
       </ng-container>
+
     </ng-container>
   </div>
 

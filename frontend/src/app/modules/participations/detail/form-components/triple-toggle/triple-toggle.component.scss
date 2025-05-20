@@ -12,19 +12,8 @@
 }
 
 .mat-button-toggle-appearance-standard.mat-button-toggle-checked {
-  // background: linear-gradient(circle at center,
-  //     #c6d7f6 10%,
-  //     #faf9fd 90%);
   color: #49454F !important;
 }
-
-// .mat-button-toggle-group-appearance-standard .mat-button-toggle-appearance-standard+.mat-button-toggle-appearance-standard {
-//   color: #3e4759 !important;
-// }
-
-// .mat-button-toggle-appearance-standard.mat-button-toggle-disabled {
-//   color: #3e4759 !important;
-// }
 
 .triple-toggle {
   flex: 1;
@@ -61,7 +50,7 @@
 .resultat-final,
 .minigame-subtitle {
   margin: 0;
-  font-size: 0.875rem;
+  // font-size: 0.875rem;
   color: rgba(0, 0, 0, 0.4);
 }
 

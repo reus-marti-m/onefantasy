@@ -215,7 +215,9 @@ namespace OneFantasy.Api.Domain.Implementations
             );
         }
 
+
         #region "Helpers"
+
         private async Task ComputeUserScoresAsync(Participation participation)
         {
             int basePerMinigame, groupBonus, totalBonus;

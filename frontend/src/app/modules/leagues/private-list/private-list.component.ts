@@ -12,10 +12,10 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class PrivateListComponent {
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   onSelect(id: number) {
-    this.router.navigate(['/app','leagues',id]);
+    this.router.navigate(['/app', 'leagues', id]);
   }
 
   officialLeagues = [

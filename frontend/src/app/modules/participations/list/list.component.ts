@@ -40,6 +40,7 @@ interface ParticipationVM {
   styleUrls: ['../../common/list.component.scss']
 })
 export class ListComponent implements OnInit {
+
   playableVMs: ParticipationVM[] = [];
   startedVMs: ParticipationVM[] = [];
 
@@ -188,4 +189,5 @@ export class ListComponent implements OnInit {
   onSelect(id?: number) {
     if (id) this.router.navigate(['/app', 'participations', id]);
   }
+  
 }

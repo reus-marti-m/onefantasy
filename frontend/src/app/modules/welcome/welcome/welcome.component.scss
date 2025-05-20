@@ -1,9 +1,7 @@
 .welcome-container {
-  background: linear-gradient(
-    to bottom,      
-    #c6d7f6 20%,  
-    #faf9fd 80%  
-  );
+  background: linear-gradient(to bottom,
+      #c6d7f6 20%,
+      #faf9fd 80%);
   color: #49454F;
   display: flex;
   flex-direction: column;
@@ -94,18 +92,7 @@
     }
 
     .guest {
-      // margin-top: 0.5rem;
       padding-top: 1rem;
-
-      // &::before {
-      //   content: "";
-      //   display: block;
-      //   width: 50%;
-      //   height: 1px;
-      //   background-color: rgba(73, 69, 79, 0.2);
-      //   margin: 0 auto 1rem;
-      // }
-
     }
   }
 

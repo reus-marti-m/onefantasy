@@ -10,8 +10,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import {
   CreateUserParticipationDto,
-  MinigameMatchDtoResponse, MinigameMatchType, MinigamePlayersDtoResponse, MinigamePlayersType, MinigameResultDtoResponse, MinigameScoresDtoResponse, MiniGameType, ParticipationDtoResponse,
-  ParticipationExtraDtoResponse, ParticipationSpecialDtoResponse, ParticipationStandardDtoResponse, Service
+  MinigameMatchDtoResponse, MinigameMatchType, MinigamePlayersDtoResponse, MinigamePlayersType, MinigameResultDtoResponse, MinigameScoresDtoResponse,
+  ParticipationDtoResponse, ParticipationExtraDtoResponse, ParticipationSpecialDtoResponse, ParticipationStandardDtoResponse, Service
 } from '../../../core/api';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -64,6 +64,8 @@ export interface MinijocGroup {
   score: number | undefined;
   hasResult: boolean | undefined;
   encerts: number | null;
+  minigameTitle: string | null;
+  minigameDescr: string | null;
 }
 
 @Component({
@@ -125,6 +127,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: BeforeUnloadEvent) {
     if (this.hasChanges) {
+      // TODO: Revisar
       $event.returnValue = true;
     }
   }
@@ -233,7 +236,9 @@ export class DetailComponent implements OnInit, OnDestroy {
       score: p.minigameGroupMulti.score,
       groupId: p.minigameGroupMulti.id!,
       hasResult: multiHasResult,
-      encerts: multiEncerts
+      encerts: multiEncerts,
+      minigameTitle: 'Resultats',
+      minigameDescr: 'Tria una o dues opcions de cada partit.'
     });
 
     // Match
@@ -257,7 +262,9 @@ export class DetailComponent implements OnInit, OnDestroy {
       score: g3.score,
       groupId: g3.id!,
       hasResult: scoresHasResult,
-      encerts: scoresEncerts
+      encerts: scoresEncerts,
+      minigameTitle: null,
+      minigameDescr: null
     });
   }
 
@@ -289,7 +296,9 @@ export class DetailComponent implements OnInit, OnDestroy {
       score: ga.score,
       groupId: ga.id!,
       hasResult: hasResultA,
-      encerts: encertsA
+      encerts: encertsA,
+      minigameTitle: null,
+      minigameDescr: null
     });
 
     // Grup B (Match 2)
@@ -316,10 +325,11 @@ export class DetailComponent implements OnInit, OnDestroy {
       score: gb.score,
       groupId: gb.id!,
       hasResult: hasResultB,
-      encerts: encertsB
+      encerts: encertsB,
+      minigameTitle: null,
+      minigameDescr: null
     });
   }
-
 
   private handleSpecial(p: ParticipationSpecialDtoResponse) {
     this.handleExtra(p);
@@ -375,12 +385,11 @@ export class DetailComponent implements OnInit, OnDestroy {
       actualResult: actual,
       disabled: this.disabled,
       hasResult: mg.isResolved,
-      score: `${mg.score ?? 0}/${this.getPerItemPoints()} punts`
+      score: `${mg.score ?? 0} punts`
     };
   }
 
   private buildTripleModelForMatch(mg: MinigameMatchDtoResponse): TripleToggleModel {
-    let first = true;
     const opts: ToggleOption[] = mg.options!.map(opt => {
       let label: string;
 
@@ -395,8 +404,6 @@ export class DetailComponent implements OnInit, OnDestroy {
       }
 
       let info = this.makeInfo(opt.price ?? 100);
-      first = info[1];
-
       return {
         label,
         value: `interval_${opt.id ?? ''}`,
@@ -435,7 +442,7 @@ export class DetailComponent implements OnInit, OnDestroy {
       actualResult: actual,
       disabled: this.disabled,
       hasResult: mg.isResolved,
-      score: `${mg.score ?? 0}/${this.getPerItemPoints()} punts`
+      score: `${mg.score ?? 0} punts`
     };
   }
 
@@ -498,17 +505,15 @@ export class DetailComponent implements OnInit, OnDestroy {
       actualResult: actualScores,
       disabled: this.disabled,
       hasResult: mg.isResolved,
-      score: `${mg.score ?? 0}/${this.getPerItemPoints()} punts`
+      score: `${mg.score ?? 0} punts`
     };
   }
 
   private buildChipsModelForPlayers(localTeamName: string, visitingTeamName: string, mg: MinigamePlayersDtoResponse): ChipSelectorModel {
-    let first = true;
 
     const groupMap = mg.options!
       .reduce((map, opt) => {
         const [infoText, nextFirst] = this.makeInfo(opt.price ?? 100);
-        first = nextFirst;
 
         const toggleOpt: ToggleOption = {
           label: opt.playerName!,
@@ -574,15 +579,15 @@ export class DetailComponent implements OnInit, OnDestroy {
       actualResult: actualPlayers,
       disabled: this.disabled,
       hasResult: mg.isResolved,
-      score: `${mg.score ?? 0}/${this.getPerItemPoints()} punts`
+      score: `${mg.score ?? 0} punts`
     };
   }
 
   getGroupToolTipText(encerts: number | null): string {
-    const m = this.getGroupMaxPoints();      
-    const p = this.getPerItemPoints();       
-    const e = this.getPerItemsExtraPoints(); 
-    const nt = this.getPerItemMinigameNum(); 
+    const m = this.getGroupMaxPoints();
+    const p = this.getPerItemPoints();
+    const e = this.getPerItemsExtraPoints();
+    const nt = this.getPerItemMinigameNum();
     const ntText = this.getPerItemMinigameNumText();
 
     if (encerts === null) {
@@ -608,7 +613,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     ].join('\n');
   }
 
-  getModalityToolTipText(encerts: number | null): string {
+  getModalityToolTipText(): string {
     const m = this.getGroupMaxPoints();
     const e = this.getPerItemsExtraPoints();
     const nt = this.getNumTextMax();
@@ -646,6 +651,7 @@ export class DetailComponent implements OnInit, OnDestroy {
   getPerItemPoints(): number {
     return this.participation.type === 2 ? 16 : 8;
   }
+
   getPerItemsExtraPoints(): number {
     return this.participation.type === 2 ? 4 : 2;
   }
@@ -832,13 +838,7 @@ export class DetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  // getLeftClass(p: ParticipationDtoResponse): string {
-  //   if (this.isPlayable(p) && p.hasPlayed) return p.hasPlayed ? 'status-played' : 'status-pending';
-  //   if (!p.hasPlayed) return 'status-not-sent';
-  //   return this.isLive(p) ? 'status-live blink' : 'status-sent';
-  // }
-
-  // TODO: Comunes amb component de llista, haurien d'estar en un arxiu comú
+  // TODO: Comunes amb component de llista, potser haurien d'estar en un arxiu comú
 
   navigateToWelcome() {
     this.clearLocalStorage()

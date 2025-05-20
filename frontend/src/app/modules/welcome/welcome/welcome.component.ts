@@ -23,6 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 
 export class WelcomeComponent {
+  
   constructor(
     private dialog: MatDialog,
     private router: Router,
@@ -38,7 +39,6 @@ export class WelcomeComponent {
   openEmailAuth() {
     this.dialog.open(EmailAuthDialogComponent, {
       width: '400px',
-      // height: '310px'
     });
   }
 

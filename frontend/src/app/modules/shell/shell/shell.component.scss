@@ -233,22 +233,23 @@ body {
 
 
 :host ::ng-deep .shell-sidenav mat-nav-list mat-list-item.user-header {
-  height: auto !important;          
-  padding-top: 1.5rem !important;   
-  padding-bottom: 1.5rem !important;
-} 
+    height: auto !important;
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+}
 
 :host ::ng-deep .shell-sidenav mat-nav-list mat-list-item.user-header {
-  border-radius: 24px !important;  
+    border-radius: 24px !important;
 }
 
 mdc-list {
     padding: 0 !important;
 }
 
-.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar{
-    background:#6168e7;
-  }
+.mat-tab-group.mat-primary .mat-ink-bar,
+.mat-tab-nav-bar.mat-primary .mat-ink-bar {
+    background: #6168e7;
+}
 
 .mat-mdc-tab-label-container {
     background-color: #c6d7f6 !important;
@@ -256,33 +257,33 @@ mdc-list {
 
 
 :host ::ng-deep mat-tab-group.custom-tabs .mat-mdc-tab-header {
-  background-color: #c6d7f6 !important;
-  color: #49454F;
+    background-color: #c6d7f6 !important;
+    color: #49454F;
 }
 
 .shell-body,
 .shell-aside {
-  min-height: 0;           
+    min-height: 0;
 }
 
 :host ::ng-deep mat-tab-group.custom-tabs {
-  display: flex !important;
-  flex-direction: column !important;
-  flex: 1 1 auto !important;
-  min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
 }
 
 :host ::ng-deep mat-tab-group.custom-tabs .mat-mdc-tab-body-wrapper {
-  display: flex !important;
-  flex-direction: column !important;
-  flex: 1 1 auto !important;
-  overflow: hidden !important;
-  min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    overflow: hidden !important;
+    min-height: 0 !important;
 }
 
 :host ::ng-deep mat-tab-group.custom-tabs .mat-mdc-tab-body {
-  flex: 1 1 auto !important;
-  overflow-y: auto !important;
-  min-height: 0 !important;
-  background-color: white;
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    min-height: 0 !important;
+    background-color: white;
 }
