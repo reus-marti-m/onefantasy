@@ -11,8 +11,8 @@ OneFantasy pretén ser un joc fantasy de futbol —amb possibilitat d’extensi�
 El disseny de la interfície s'ha creat amb Figma:  
 [Prototipus Figma](https://www.figma.com/proto/edSPpMYNTvGSXCo9gEaNOm/TFG?node-id=0-1&t=XEylq2RLvQSlJYJs-1)
 
-## Implementació
-La implementació actual de l'aplicació web inclou:  
+## Funcionalitats implementades
+L'atual versió de l'aplicació web inclou:  
 - **Sistema d’autenticació** (registre/login amb email i contrasenya, o accés com a convidat).
 - **Pàgina principal amb llistes de reptes i de lligues** (dades de lligues amb mock).  
 - **Mecànica de jugar reptes diaris i consultar-ne els resultats**: Els reptes diaris (o “participacions diàries”) tenen un pressupost fictici limitat, i estan formats per dos grups de minijocs. Cada minijoc té una predicció sobre un aspecte d’un partit de futbol. Punts clau:  
@@ -101,7 +101,7 @@ ng serve --open           # obre http://localhost:4200
 3. Juga reptes i consulta resultats  
 
 
-## Backend – Implementació tècnica
+## Backend – Detalls tècnics
 
 ### 1. Tecnologies i Frameworks
 - **.NET SDK:** Microsoft.NET.Sdk.Web (TargetFramework: net8.0)  
@@ -199,10 +199,13 @@ backend/
   - **Cors:** origens permesos (`http://localhost:4200`)  
 - **Startup.cs / Program.cs:**  
   - Registre de serveis (DbContext, Identity, Authentication/JWT, CORS, AutoMapper, Domain Services)  
-  - Configuració de Middleware (HTTPS, CORS, Authentication, Authorization, Swagger a dev)  
+  - Configuració de Middleware (HTTPS, CORS, Authentication, Authorization, Swagger a dev)
+ 
+### 7. Deute tècnic
+Tot i que l’arquitectura està preparada per ser testejable, per falta de temps no s'han pogut incloure tests automatitzats de cap tipus (ni unitaris ni d'integració). Aquesta serà una millora a considerar en futurs desenvolupaments.
 
 
-## Frontend – Implementació tècnica
+## Frontend – Detalls tècnics
 
 ### 1. Tecnologies i Frameworks
 - **Angular:** 19.2.7 amb TypeScript 5.7.2  
@@ -280,3 +283,6 @@ frontend/
   - `npm test` → `ng test`  
   - `npm run gen:api` → `nswag run` + `npm run patch:array-ops` + `npm run patch:polymorphism`  
 - **Environments**: `environment.ts` / `environment.prod.ts` amb `apiUrl`  
+
+### 7. Deute tècnic
+Tot i que l’arquitectura està prepadada per ser testejable, per falta de temps no s'han pogut incloure tests automatitzats de cap tipus (ni dels components ni e2e). Aquesta serà una millora a considerar en futurs desenvolupaments.
