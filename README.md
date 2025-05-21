@@ -20,6 +20,7 @@ La implementació actual de l'aplicació web inclou:
 Pots veure una demostració en vídeo aquí:  
 [Vídeo demo](https://drive.google.com/file/d/1yjYSVD7WkO5jvrZRIeIYCY8_HydRiUQI/view?usp=sharing)
 
+### Context addicional
 <details>
   <summary>Mecànica de reptes diaris (fes clic per desplegar)</summary>
 
