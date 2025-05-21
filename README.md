@@ -39,7 +39,7 @@ Aquestes instruccions descriuen dues vies per arrancar el projecte:
 ### 1. Obtenir el codi  
 ```bash
 # Des de GitHub:
-git clone https://github.com/EL_TEUNOM/one-fantasy.git one-fantasy
+git clone https://github.com/{nom-usuari}/one-fantasy.git one-fantasy
 cd one-fantasy
 
 # Utilitzant el bundle de l'entrega (assumint que el codi està descomprimit dins la carpeta one-fantasy):
@@ -47,8 +47,6 @@ cd one-fantasy
 ```
 
 ### 2. Backend
-
-Obre terminal al directori del backend i restaura paquets:  
 ```bash
 cd backend/OneFantasy.Api
 dotnet restore
@@ -56,7 +54,7 @@ dotnet restore
 
 **2.A. Clonant des de GitHub (sense la BD)**  
 ```bash
-dotnet tool restore      # si no tens el CLI d’EF instal·lat
+dotnet tool restore      # si no es té el CLI d’EF instal·lat
 dotnet ef database update
 ```
 
@@ -65,40 +63,35 @@ _No cal fer migracions; la BD ja ve creada al directori_
 
 Per arrancar el servidor:  
 ```bash
-dotnet run                # arranca a https://localhost:5001
+dotnet run                # necessari https://localhost:5001
 ```
 
 **2.C. Provar l’API amb Swagger**
 
 El backend inclou Swagger UI per facilitar la prova dels endpoints.
-Un cop el servidor està en marxa a `https://localhost:5001`, hi pots accedir des de `https://localhost:5001/swagger/index.html`
+Un cop el servidor està en marxa a `https://localhost:5001`, s'hi pots accedir des de `https://localhost:5001/swagger/index.html`
 
 Les rutes autenticades requereixen un token JWT:
 
-1. Fes una petició `POST /api/auth/login` amb el teu email i contrasenya. Algunes peticions requereixen el rol d'admin.
-2. Copia el valor del camp `token` de la resposta.
-3. A la Swagger UI, fes clic a **Authorize** que apareix a dalt a la dreta.
-4. Enganxa `<token>` al camp de text i prem **Authorize** (**sense** el prefix Bearer).
-5. Ara podràs invocar les rutes protegides directament des de Swagger.
+1. Fer una petició `POST /api/auth/login` amb email i contrasenya. Algunes peticions requereixen el rol d'admin.
+2. Copiar el valor del camp `token` de la resposta.
+3. A la Swagger UI, clicar a **Authorize** que apareix a dalt a la dreta.
+4. Enganxar `<token>` al camp de text i prémer **Authorize** (**sense** el prefix Bearer).
+5. Ara es poden invocar les rutes protegides directament des de Swagger.
 
 ### 3. Frontend
 
-Obre una altra terminal, ves al directori del frontend i instal·la dependències:  
 ```bash
 cd frontend
 npm install
-```
-
-Després arrenca l’app Angular:  
-```bash
-ng serve --open           # obre http://localhost:4200
+ng serve --open           # http://localhost:4200
 ```
 
 ### 4. Provar l’aplicació
 
-1. Accedeix a http://localhost:4200  
-2. Registra’t o entra com a **convidat**  
-3. Juga reptes i consulta resultats  
+1. Accedir a http://localhost:4200  
+2. Registrar-se o entrar com a convidat
+3. Jugar reptes i consultar resultats  
 
 
 ## Backend – Detalls tècnics
