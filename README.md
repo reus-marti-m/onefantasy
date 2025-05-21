@@ -23,7 +23,7 @@ Pots veure una demostració en vídeo aquí:
 ### Context addicional
 <details>
   <summary>Mecànica de reptes diaris (fes clic per desplegar)</summary>
-
+<br>
 Els reptes diaris (o “participacions diàries”) tenen un pressupost fictici limitat, i estan formats per dos grups de minijocs. Cada minijoc té una predicció sobre un aspecte d’un partit de futbol (a llarg termini s’afegiran altres disciplines esportives). Punts clau:  
 1. **Selecció d’opcions:** l’usuari tria una o dues opcions per minijoc.  
 2. **Pressupost:** cada opció té un “cost” fictici basat en la probabilitat d’ocurrència (en el futur es preveu obtenir aquestes probabilitats automàticament de tercers). L’usuari ha de gestionar el pressupost disponible per cobrir totes les prediccions.  
@@ -35,7 +35,8 @@ Per tant, el pressupost restringeix quantes i quines prediccions es poden fer, p
 
 <details>
   <summary>Diferències amb els fantasy tradicionals (fes clic per desplegar)</summary>
-
+<br>
+  
 - **Predicció d’aspectes de partit vs actuacions de jugadors:** aquí es valoren objectivament les prediccions encertades, en comptes de puntuacions subjectives de cronistes o basades només en estadístiques individuals.  
 - **Temps i esforç:** fer un repte diari dura menys d’un minut, mentre que gestionar un equip i mercat en un fantasy tradicional pot portar moltes hores.  
 - **Participació centralitzada:** un sol repte diari servirà per a totes les lligues que el tinguin assignat (les lligues encara no estan implementades), evitant haver de repetir la mateixa gestió en cada lliga.
