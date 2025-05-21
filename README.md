@@ -1,6 +1,3 @@
-© 2025 Marc Reus Martí. Tots els drets reservats.  
-Aquest codi és propietari i **no** pot ser utilitzat, copiat ni distribuït sense permís exprés de l’autor.
-
 # OneFantasy TFG
 
 **Autor:** Marc Reus Martí  
@@ -148,7 +145,7 @@ backend/
 ### 4. API RESTful
 - **Rutes principals:**  
   - `/api/auth/*` → gestió usuaris
-  - `/api/competitions/*` → CRUD competicions  
+  - `/api/competitions/*` → gestió competicions  
   - `/api/competitions/{id}/seasons/*` → gestió de temporades  
   - `/api/seasons/{sid}/participations/*` → gestió de participacions
   - `/api/seasons/{sid}/teams/*` → gestió d'equips 
@@ -226,7 +223,7 @@ frontend/
 ```
 
 ### 3. Patrons arquitecturals
-- **Modular**: separació clara entre `core` (servicis de nivell app) i `modules` (funcionalitats)  
+- **Modular**: separació clara entre `core` (serveis de nivell app) i `modules` (funcionalitats)  
 - **Dependency Injection**: servei d’autenticació, API client i guards injectats automàticament per Angular  
 - **Interceptors HTTP**:  
   - `AuthInterceptor` afegeix el token JWT a les peticions, gestiona errors 401 i refresca el token quan cal  
