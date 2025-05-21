@@ -50,6 +50,7 @@ cd one-fantasy
 ```bash
 cd backend/OneFantasy.Api
 dotnet restore
+dotnet dev-certs https --trust  # necessari per indicar que es confia en el certificat 
 ```
 
 **2.A. Clonant des de GitHub (sense la BD)**  
