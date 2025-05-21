@@ -39,11 +39,11 @@ Aquestes instruccions descriuen dues vies per arrancar el projecte:
 ### 1. Obtenir el codi  
 ```bash
 # Des de GitHub:
-git clone https://github.com/{nom-usuari}/one-fantasy.git one-fantasy
-cd one-fantasy
+git clone https://github.com/{nom-usuari}/onefantasy.git onefantasy
+cd onefantasy
 
-# Utilitzant el bundle de l'entrega (assumint que el codi està descomprimit dins la carpeta one-fantasy):
-cd one-fantasy
+# Utilitzant el bundle de l'entrega (assumint que el codi està descomprimit dins la carpeta onefantasy):
+cd onefantasy
 ```
 
 ### 2. Backend
