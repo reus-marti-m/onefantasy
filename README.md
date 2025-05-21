@@ -1,3 +1,6 @@
+© 2025 Marc Reus Martí. Tots els drets reservats.  
+Aquest codi és propietari i **no** pot ser utilitzat, copiat ni distribuït sense permís exprés de l’autor.
+
 # OneFantasy TFG
 
 **Autor:** Marc Reus Martí  
