@@ -1,18 +1,46 @@
-# OneFantasy TFG
+© 2025 Marc Reus Martí. Tots els drets reservats.  
+Aquest codi és propietari i no pot ser utilitzat, copiat ni distribuït sense permís exprés de l’autor.
 
+# OneFantasy (TFG)
 **Autor:** Marc Reus Martí  
 **Assignatura:** 05.678 – TFG Desenvolupament Web (Universitat Oberta de Catalunya)  
 
-OneFantasy és una aplicació web per gestionar i jugar reptes esportius diaris en format competitiu. El prototip de la interfície ha estat dissenyat en Figma i pot veure’s aquí:  
+OneFantasy pretén ser un joc fantasy de futbol —amb possibilitat d’extensió a altres esports— en format competitiu. Així, aquest projecte inclou la demo funcional que mostra com jugar-hi mitjançant reptes diaris. Cal destacar que encara no és un joc complet. 
+
+### Disseny de la interfície
+El disseny de la interfície s'ha creat amb Figma:  
 [Prototipus Figma](https://www.figma.com/proto/edSPpMYNTvGSXCo9gEaNOm/TFG?node-id=0-1&t=XEylq2RLvQSlJYJs-1)
 
-La implementació actual inclou:  
-- Sistema d’autenticació (registre/login amb email i contrasenya, o accés com a **convidat**)  
-- Pàgina principal amb llistes de reptes i de lligues (dades de lligues amb mock)  
-- Mecànica de jugar reptes diaris i consultar-ne els resultats  
+### Implementació actual
+La implementació actual de l'aplicació web inclou:  
+- Sistema d’autenticació (registre/login amb email i contrasenya, o accés com a convidat).
+- Pàgina principal amb llistes de reptes i de lligues (dades de lligues amb mock).  
+- Mecànica de jugar reptes diaris i consultar-ne els resultats.
 
-Mira una demostració en vídeo aquí:  
+Pots veure una demostració en vídeo aquí:  
 [Vídeo demo](https://drive.google.com/file/d/1yjYSVD7WkO5jvrZRIeIYCY8_HydRiUQI/view?usp=sharing)
+
+<details>
+  <summary>Mecànica de reptes diaris (fes clic per desplegar)</summary>
+
+Els reptes diaris (o “participacions diàries”) tenen un pressupost fictici limitat, i estan formats per dos grups de minijocs. Cada minijoc té una predicció sobre un aspecte d’un partit de futbol (a llarg termini s’afegiran altres disciplines esportives). Punts clau:  
+1. **Selecció d’opcions:** l’usuari tria una o dues opcions per minijoc.  
+2. **Pressupost:** cada opció té un “cost” fictici basat en la probabilitat d’ocurrència (en el futur es preveu obtenir aquestes probabilitats automàticament de tercers). L’usuari ha de gestionar el pressupost disponible per cobrir totes les prediccions.  
+3. **Resolució i puntuació:** un cop esdevingut l’esdeveniment, s’assignen punts fixos per cada predicció encertada, independentment del cost de l’opció.  
+
+Per tant, el pressupost restringeix quantes i quines prediccions es poden fer, però el nombre de punts per encertar és objectiu i no depèn del cost.
+
+</details>
+
+<details>
+  <summary>Diferències amb els fantasy tradicionals (fes clic per desplegar)</summary>
+
+- **Predicció d’aspectes de partit vs actuacions de jugadors:** aquí es valoren objectivament les prediccions encertades, en comptes de puntuacions subjectives de cronistes o basades només en estadístiques individuals.  
+- **Temps i esforç:** fer un repte diari dura menys d’un minut, mentre que gestionar un equip i mercat en un fantasy tradicional pot portar moltes hores.  
+- **Participació centralitzada:** un sol repte diari servirà per a totes les lligues que el tinguin assignat (les lligues encara no estan implementades), evitant haver de repetir la mateixa gestió en cada lliga.
+
+</details>
+
 
 
 ## Configuració en local
