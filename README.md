@@ -58,6 +58,19 @@ Per arrancar el servidor:
 dotnet run                # arranca a https://localhost:5001
 ```
 
+**2.C. Provar l’API amb Swagger**
+
+El backend inclou Swagger UI per facilitar la prova dels endpoints.
+Un cop el servidor està en marxa a `https://localhost:5001`, hi pots accedir des de `https://localhost:5001/swagger/index.html`
+
+Les rutes autenticades requereixen un token JWT:
+
+1. Fes una petició `POST /api/auth/login` amb el teu email i contrasenya. Algunes peticions requereixen el rol d'admin.
+2. Copia el valor del camp `token` de la resposta.
+3. A la Swagger UI, fes clic a **Authorize** que apareix a dalt a la dreta.
+4. Enganxa `<token>` al camp de text i prem **Authorize** (**sense** el prefix Bearer).
+5. Ara podràs invocar les rutes protegides directament des de Swagger.
+
 ### 3. Frontend
 
 Obre una altra terminal, ves al directori del frontend i instal·la dependències:  
